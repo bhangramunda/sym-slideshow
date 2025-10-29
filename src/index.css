@@ -48,3 +48,14 @@ h1, h2, h3, h4, h5, h6, p {
   word-break: keep-all;
   overflow-wrap: break-word;
 }
+
+/* Prevent text selection during resize */
+body.resizing {
+  user-select: none;
+  cursor: col-resize;
+}
+
+body.resizing-horizontal {
+  user-select: none;
+  cursor: row-resize;
+}

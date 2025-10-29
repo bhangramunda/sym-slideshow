@@ -21,6 +21,18 @@ export default function Editor() {
   // Image upload state
   const [uploadingImage, setUploadingImage] = useState(false);
 
+  // Resizable panels state
+  const [leftPanelWidth, setLeftPanelWidth] = useState(() => {
+    const saved = localStorage.getItem('editorLeftPanelWidth');
+    return saved ? parseFloat(saved) : 50;
+  });
+  const [topPanelHeight, setTopPanelHeight] = useState(() => {
+    const saved = localStorage.getItem('editorTopPanelHeight');
+    return saved ? parseFloat(saved) : 60;
+  });
+  const [isDraggingVertical, setIsDraggingVertical] = useState(false);
+  const [isDraggingHorizontal, setIsDraggingHorizontal] = useState(false);
+
   // Save to history when scenes change
   const saveToHistory = (newScenes) => {
     const newHistory = history.slice(0, historyIndex + 1);
@@ -196,6 +208,72 @@ export default function Editor() {
     setShowConflictWarning(false);
   };
 
+  // Handle vertical resize (left/right panels)
+  useEffect(() => {
+    if (isDraggingVertical) {
+      document.body.classList.add('resizing');
+    } else {
+      document.body.classList.remove('resizing');
+    }
+
+    if (!isDraggingVertical) return;
+
+    const handleMouseMove = (e) => {
+      const newWidth = (e.clientX / window.innerWidth) * 100;
+      if (newWidth >= 20 && newWidth <= 80) {
+        setLeftPanelWidth(newWidth);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDraggingVertical(false);
+      localStorage.setItem('editorLeftPanelWidth', leftPanelWidth.toString());
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDraggingVertical, leftPanelWidth]);
+
+  // Handle horizontal resize (top/bottom in right panel)
+  useEffect(() => {
+    if (isDraggingHorizontal) {
+      document.body.classList.add('resizing-horizontal');
+    } else {
+      document.body.classList.remove('resizing-horizontal');
+    }
+
+    if (!isDraggingHorizontal) return;
+
+    const handleMouseMove = (e) => {
+      const rightPanel = document.querySelector('.right-panel');
+      if (!rightPanel) return;
+
+      const rect = rightPanel.getBoundingClientRect();
+      const newHeight = ((e.clientY - rect.top) / rect.height) * 100;
+      if (newHeight >= 30 && newHeight <= 80) {
+        setTopPanelHeight(newHeight);
+      }
+    };
+
+    const handleMouseUp = () => {
+      setIsDraggingHorizontal(false);
+      localStorage.setItem('editorTopPanelHeight', topPanelHeight.toString());
+    };
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [isDraggingHorizontal, topPanelHeight]);
+
   const selectedScene = scenes[selectedIndex];
 
   return (
@@ -230,8 +308,11 @@ export default function Editor() {
         </div>
       )}
 
-      {/* Editor Panel */}
-      <div className="w-1/2 flex flex-col border-r border-gray-700">
+      {/* Editor Panel - Left Side */}
+      <div
+        className="flex flex-col border-r border-gray-700"
+        style={{ width: `${leftPanelWidth}%` }}
+      >
         {/* Header */}
         <div className="p-4 border-b border-gray-700 bg-gray-800">
           <div className="flex items-center justify-between mb-4">
@@ -350,58 +431,110 @@ export default function Editor() {
         </div>
       </div>
 
-      {/* Edit Panel */}
-      <div className="w-1/2 flex flex-col">
-        {/* Preview Controls */}
-        <div className="p-4 border-b border-gray-700 bg-gray-800">
-          <div className="flex items-center justify-between mb-2">
-            <h2 className="text-lg font-semibold">
-              Preview: Slide {previewIndex + 1} of {scenes.length}
-            </h2>
+      {/* Vertical Resize Handle */}
+      <div
+        className="w-1 bg-gray-700 hover:bg-tgteal cursor-col-resize transition-colors relative group"
+        onMouseDown={() => setIsDraggingVertical(true)}
+      >
+        <div className="absolute inset-y-0 -left-1 -right-1" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-tgteal text-black px-2 py-1 rounded text-xs font-bold whitespace-nowrap pointer-events-none">
+          ⇔ Resize
+        </div>
+      </div>
+
+      {/* Right Panel */}
+      <div
+        className="flex flex-col right-panel"
+        style={{ width: `${100 - leftPanelWidth}%` }}
+      >
+        {/* Preview Section */}
+        <div
+          className="flex flex-col border-b border-gray-700"
+          style={{ height: `${topPanelHeight}%` }}
+        >
+          {/* Preview Controls */}
+          <div className="p-4 border-b border-gray-700 bg-gray-800">
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="text-lg font-semibold">
+                Preview: Slide {previewIndex + 1} of {scenes.length}
+              </h2>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setPreviewIndex(selectedIndex)}
+                  className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 transition-colors text-sm"
+                >
+                  Preview This
+                </button>
+                <button
+                  onClick={() => setIsPlaying(!isPlaying)}
+                  className={`px-3 py-1 rounded transition-colors text-sm ${
+                    isPlaying
+                      ? 'bg-red-600 hover:bg-red-700'
+                      : 'bg-tgteal text-black hover:bg-tgteal/80'
+                  }`}
+                >
+                  {isPlaying ? '⏸ Pause' : '▶ Play'}
+                </button>
+              </div>
+            </div>
             <div className="flex gap-2">
               <button
-                onClick={() => setPreviewIndex(selectedIndex)}
+                onClick={() => setPreviewIndex((prev) => (prev - 1 + scenes.length) % scenes.length)}
                 className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 transition-colors text-sm"
               >
-                Preview This
+                ← Prev
               </button>
               <button
-                onClick={() => setIsPlaying(!isPlaying)}
-                className={`px-3 py-1 rounded transition-colors text-sm ${
-                  isPlaying
-                    ? 'bg-red-600 hover:bg-red-700'
-                    : 'bg-tgteal text-black hover:bg-tgteal/80'
-                }`}
+                onClick={() => setPreviewIndex((prev) => (prev + 1) % scenes.length)}
+                className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 transition-colors text-sm"
               >
-                {isPlaying ? '⏸ Pause' : '▶ Play'}
+                Next →
               </button>
             </div>
           </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => setPreviewIndex((prev) => (prev - 1 + scenes.length) % scenes.length)}
-              className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 transition-colors text-sm"
+
+          {/* Live Preview - Scaled */}
+          <div className="flex-1 relative bg-black overflow-hidden flex items-center justify-center p-4">
+            <div
+              className="relative bg-black shadow-2xl"
+              style={{
+                width: '100%',
+                paddingBottom: '56.25%', // 16:9 aspect ratio
+                maxWidth: '100%',
+                maxHeight: '100%'
+              }}
             >
-              ← Prev
-            </button>
-            <button
-              onClick={() => setPreviewIndex((prev) => (prev + 1) % scenes.length)}
-              className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 transition-colors text-sm"
-            >
-              Next →
-            </button>
+              <div
+                className="absolute inset-0"
+                style={{
+                  transform: 'scale(1)',
+                  transformOrigin: 'center center'
+                }}
+              >
+                <AnimatePresence mode="wait">
+                  <Scene key={previewIndex} scene={scenes[previewIndex]} isActive={true} />
+                </AnimatePresence>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Live Preview */}
-        <div className="flex-1 relative bg-black overflow-hidden">
-          <AnimatePresence mode="wait">
-            <Scene key={previewIndex} scene={scenes[previewIndex]} isActive={true} />
-          </AnimatePresence>
+        {/* Horizontal Resize Handle */}
+        <div
+          className="h-1 bg-gray-700 hover:bg-tgteal cursor-row-resize transition-colors relative group"
+          onMouseDown={() => setIsDraggingHorizontal(true)}
+        >
+          <div className="absolute inset-x-0 -top-1 -bottom-1" />
+          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity bg-tgteal text-black px-2 py-1 rounded text-xs font-bold whitespace-nowrap pointer-events-none">
+            ⇕ Resize
+          </div>
         </div>
 
-        {/* Edit Form */}
-        <div className="h-2/5 overflow-y-auto p-4 bg-gray-800 border-t border-gray-700">
+        {/* Slide Details Section */}
+        <div
+          className="overflow-y-auto p-4 bg-gray-800"
+          style={{ height: `${100 - topPanelHeight}%` }}
+        >
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Edit Slide {selectedIndex + 1}</h3>
             <div className="flex gap-2">
