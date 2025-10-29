@@ -14,6 +14,13 @@ export default function Editor() {
   const [history, setHistory] = useState([scenesData]);
   const [historyIndex, setHistoryIndex] = useState(0);
 
+  // Multi-editor conflict detection
+  const [lastSavedHash, setLastSavedHash] = useState(null);
+  const [showConflictWarning, setShowConflictWarning] = useState(false);
+
+  // Image upload state
+  const [uploadingImage, setUploadingImage] = useState(false);
+
   // Save to history when scenes change
   const saveToHistory = (newScenes) => {
     const newHistory = history.slice(0, historyIndex + 1);
@@ -121,21 +128,108 @@ export default function Editor() {
     setSelectedIndex(scenes.length);
   };
 
+  // Generate a simple hash for conflict detection
+  const generateHash = (data) => {
+    const str = JSON.stringify(data);
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      const char = str.charCodeAt(i);
+      hash = ((hash << 5) - hash) + char;
+      hash = hash & hash;
+    }
+    return hash.toString(36);
+  };
+
   const downloadJSON = () => {
+    const hash = generateHash(scenes);
     const dataStr = JSON.stringify(scenes, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = 'scenes.json';
+    const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+    link.download = `scenes-${timestamp}.json`;
     link.click();
     URL.revokeObjectURL(url);
+
+    // Store hash and save to localStorage for conflict detection
+    setLastSavedHash(hash);
+    localStorage.setItem('scenesHash', hash);
+    localStorage.setItem('scenesData', dataStr);
+    localStorage.setItem('scenesTimestamp', new Date().toISOString());
+  };
+
+  // Check for conflicts on load and periodically
+  useEffect(() => {
+    const storedHash = localStorage.getItem('scenesHash');
+    const storedData = localStorage.getItem('scenesData');
+    const currentHash = generateHash(scenes);
+
+    if (storedHash && storedData && storedHash !== currentHash) {
+      const storedScenes = JSON.parse(storedData);
+      const currentScenes = JSON.stringify(scenes);
+      const stored = JSON.stringify(storedScenes);
+
+      // Only show warning if the stored data is actually different
+      if (currentScenes !== stored) {
+        setShowConflictWarning(true);
+      }
+    }
+
+    setLastSavedHash(storedHash);
+  }, []);
+
+  const resolveConflict = (useStored) => {
+    if (useStored) {
+      const storedData = localStorage.getItem('scenesData');
+      if (storedData) {
+        const storedScenes = JSON.parse(storedData);
+        saveToHistory(storedScenes);
+      }
+    } else {
+      // Keep current changes and update localStorage
+      const hash = generateHash(scenes);
+      localStorage.setItem('scenesHash', hash);
+      localStorage.setItem('scenesData', JSON.stringify(scenes, null, 2));
+      setLastSavedHash(hash);
+    }
+    setShowConflictWarning(false);
   };
 
   const selectedScene = scenes[selectedIndex];
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
+      {/* Conflict Warning Banner */}
+      {showConflictWarning && (
+        <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-600 text-black p-4 flex items-center justify-between shadow-lg">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">⚠️</span>
+            <div>
+              <div className="font-bold">Changes Detected from Another Session</div>
+              <div className="text-sm">
+                There are saved changes in localStorage that differ from the current state.
+                This may be from another browser tab or a previous session.
+              </div>
+            </div>
+          </div>
+          <div className="flex gap-2">
+            <button
+              onClick={() => resolveConflict(true)}
+              className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors font-medium"
+            >
+              Load Saved Version
+            </button>
+            <button
+              onClick={() => resolveConflict(false)}
+              className="px-4 py-2 bg-white text-black rounded hover:bg-gray-200 transition-colors font-medium"
+            >
+              Keep Current Changes
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Editor Panel */}
       <div className="w-1/2 flex flex-col border-r border-gray-700">
         {/* Header */}
@@ -166,8 +260,9 @@ export default function Editor() {
               <button
                 onClick={downloadJSON}
                 className="px-4 py-2 bg-tgteal text-black rounded-lg hover:bg-tgteal/80 transition-colors font-semibold"
+                title="Downloads with timestamp and saves to localStorage for conflict detection"
               >
-                Download JSON
+                💾 Save & Download
               </button>
               <a
                 href="/"
@@ -475,30 +570,50 @@ export default function Editor() {
               <label className="block text-sm font-medium mb-1">Background Image</label>
               <div className="flex gap-2">
                 <select
-                  value={selectedScene.image || ''}
-                  onChange={(e) => updateScene(selectedIndex, { image: e.target.value })}
+                  value={selectedScene.image?.startsWith('data:') ? 'custom' : selectedScene.image || ''}
+                  onChange={(e) => {
+                    if (e.target.value !== 'custom') {
+                      updateScene(selectedIndex, { image: e.target.value });
+                    }
+                  }}
                   className="flex-1 bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
                 >
+                  {selectedScene.image?.startsWith('data:') && (
+                    <option value="custom">🖼️ Custom Upload</option>
+                  )}
+                  <option value="">None</option>
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
                     <option key={n} value={`/assets/placeholder-0${n}.svg`}>
                       Placeholder {n}
                     </option>
                   ))}
                 </select>
-                <label className="px-4 py-2 bg-gray-700 rounded hover:bg-gray-600 transition-colors cursor-pointer text-sm whitespace-nowrap">
-                  📁 Upload
+                <label className={`px-4 py-2 rounded transition-colors cursor-pointer text-sm whitespace-nowrap ${
+                  uploadingImage ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'
+                }`}>
+                  {uploadingImage ? '⏳ Uploading...' : '📁 Upload'}
                   <input
                     type="file"
                     accept="image/*"
                     className="hidden"
+                    disabled={uploadingImage}
                     onChange={(e) => {
                       const file = e.target.files?.[0];
                       if (file) {
+                        setUploadingImage(true);
                         // Create a data URL for the image
                         const reader = new FileReader();
                         reader.onload = (event) => {
                           const dataUrl = event.target?.result;
                           updateScene(selectedIndex, { image: dataUrl });
+                          setUploadingImage(false);
+                          // Clear the input so the same file can be selected again
+                          e.target.value = '';
+                        };
+                        reader.onerror = () => {
+                          alert('Failed to read image file');
+                          setUploadingImage(false);
+                          e.target.value = '';
                         };
                         reader.readAsDataURL(file);
                       }
@@ -506,8 +621,33 @@ export default function Editor() {
                   />
                 </label>
               </div>
+              {/* Image Preview */}
+              {selectedScene.image && (
+                <div className="mt-3 p-2 bg-gray-800 rounded border border-gray-700">
+                  <div className="text-xs text-gray-400 mb-2">Preview:</div>
+                  <div className="relative w-full h-32 bg-gray-900 rounded overflow-hidden">
+                    <img
+                      src={selectedScene.image}
+                      alt="Background preview"
+                      className="w-full h-full object-cover"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'flex';
+                      }}
+                    />
+                    <div className="hidden w-full h-full items-center justify-center text-gray-500 text-sm">
+                      Failed to load image
+                    </div>
+                  </div>
+                  {selectedScene.image.startsWith('data:') && (
+                    <div className="mt-2 text-xs text-yellow-400">
+                      ⚠️ Custom upload ({(selectedScene.image.length / 1024).toFixed(0)}KB) - Large images may affect performance
+                    </div>
+                  )}
+                </div>
+              )}
               <div className="mt-2 text-xs text-gray-400">
-                Upload custom images or use placeholders
+                Upload custom images (converted to data URLs for portability)
               </div>
             </div>
 
