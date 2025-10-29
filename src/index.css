@@ -35,3 +35,16 @@
     transform-style: preserve-3d;
   }
 }
+
+/* Prevent awkward word breaking */
+body {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  hyphens: none;
+}
+
+/* Better text wrapping for slides */
+h1, h2, h3, h4, h5, h6, p {
+  word-break: keep-all;
+  overflow-wrap: break-word;
+}

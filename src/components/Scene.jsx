@@ -5,6 +5,7 @@ import TestimonialSlide from './TestimonialSlide.jsx'
 import LogoGridSlide from './LogoGridSlide.jsx'
 import ServiceCardSlide from './ServiceCardSlide.jsx'
 import SplitContentSlide from './SplitContentSlide.jsx'
+import { parseFormatting } from '../utils/formatText.js'
 import cx from 'classnames'
 
 // Default/Hero slide layout
@@ -57,14 +58,13 @@ function DefaultSlide({ scene }) {
       <div className="relative z-10 max-w-6xl px-6 text-center">
         <KineticText text={scene.title} className="text-6xl md:text-7xl font-extrabold text-white drop-shadow-[0_0_20px_rgba(0,212,255,0.35)]" />
         {scene.subtitle && (
-          <motion.p
-            className="mt-6 text-xl md:text-2xl text-white/90 leading-relaxed"
+          <motion.div
+            className="mt-6 text-2xl md:text-3xl text-white/90 leading-relaxed"
             initial={{ opacity: 0, y: 12, filter: 'blur(6px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ delay: 0.6, duration: 0.8 }}
-          >
-            {scene.subtitle}
-          </motion.p>
+            dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
+          />
         )}
         {scene.cta && (
           <motion.div

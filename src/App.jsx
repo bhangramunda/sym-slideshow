@@ -1,12 +1,42 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import Scene from './components/Scene.jsx'
+import Editor from './components/Editor.jsx'
 import scenesData from './scenes.json'
 
 const FPS_SAFE_DELAY = 50 // ms safety delay between scenes
 
-export default function App() {
-  const scenes = useMemo(() => scenesData, [])
+function Slideshow() {
+  // Build an expanded scene list with featured slides sprinkled in
+  const scenes = useMemo(() => {
+    const featuredScenes = scenesData.filter(s => s.featured)
+    const normalScenes = scenesData.filter(s => !s.featured)
+
+    // If no featured slides, return original
+    if (featuredScenes.length === 0) return scenesData
+
+    // Sprinkle featured slides throughout
+    const result = []
+    const interval = Math.max(3, Math.floor(normalScenes.length / (featuredScenes.length + 1)))
+
+    let featuredIndex = 0
+    normalScenes.forEach((scene, i) => {
+      result.push(scene)
+
+      // Insert a featured slide every 'interval' slides
+      if ((i + 1) % interval === 0 && featuredIndex < featuredScenes.length) {
+        const featuredSlide = featuredScenes[featuredIndex % featuredScenes.length]
+        // Only add if it's not the same as the last slide added
+        if (result[result.length - 1] !== featuredSlide) {
+          result.push(featuredSlide)
+          featuredIndex++
+        }
+      }
+    })
+
+    return result
+  }, [])
+
   const [index, setIndex] = useState(0)
 
   useEffect(() => {
@@ -20,7 +50,7 @@ export default function App() {
     }
     scheduleNext(index)
     return () => clearTimeout(timeoutId)
-  }, [scenes])
+  }, [scenes, index])
 
   // Prevent accidental interaction / keep fullscreen feel
   useEffect(() => {
@@ -31,6 +61,15 @@ export default function App() {
 
   return (
     <div className="w-screen h-screen relative overflow-hidden">
+      {/* Secret Editor Access - Press 'e' key */}
+      <div className="absolute top-4 right-4 z-50">
+        <a
+          href="/editor"
+          className="text-white/30 hover:text-white/80 text-xs"
+        >
+          Edit
+        </a>
+      </div>
       <AnimatePresence mode="wait">
         {scenes.map((scene, i) => (
           i === index && <Scene key={i} scene={scene} isActive={true} />
@@ -38,4 +77,11 @@ export default function App() {
       </AnimatePresence>
     </div>
   )
+}
+
+export default function App() {
+  // Simple client-side routing
+  const isEditor = window.location.pathname === '/editor'
+
+  return isEditor ? <Editor /> : <Slideshow />
 }
