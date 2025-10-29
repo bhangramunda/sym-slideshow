@@ -171,6 +171,36 @@ export default function Editor() {
     localStorage.setItem('scenesTimestamp', new Date().toISOString());
   };
 
+  const uploadJSON = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        const json = JSON.parse(e.target.result);
+        if (Array.isArray(json) && json.length > 0) {
+          saveToHistory(json);
+          const hash = generateHash(json);
+          localStorage.setItem('scenesHash', hash);
+          localStorage.setItem('scenesData', JSON.stringify(json, null, 2));
+          localStorage.setItem('scenesTimestamp', new Date().toISOString());
+          alert(`Successfully loaded ${json.length} slides!`);
+        } else {
+          alert('Invalid JSON format. Expected an array of slides.');
+        }
+      } catch (err) {
+        alert('Failed to parse JSON file: ' + err.message);
+      }
+    };
+    reader.onerror = () => {
+      alert('Failed to read file');
+    };
+    reader.readAsText(file);
+    // Clear the input so the same file can be selected again
+    event.target.value = '';
+  };
+
   // Check for conflicts on load and periodically
   useEffect(() => {
     const storedHash = localStorage.getItem('scenesHash');
@@ -338,6 +368,15 @@ export default function Editor() {
               </div>
             </div>
             <div className="flex gap-2">
+              <label className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold cursor-pointer flex items-center gap-2">
+                📤 Load JSON
+                <input
+                  type="file"
+                  accept=".json,application/json"
+                  onChange={uploadJSON}
+                  className="hidden"
+                />
+              </label>
               <button
                 onClick={downloadJSON}
                 className="px-4 py-2 bg-tgteal text-black rounded-lg hover:bg-tgteal/80 transition-colors font-semibold"
