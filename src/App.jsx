@@ -49,7 +49,10 @@ function Slideshow() {
 
           // Load transition mode from settings
           if (data.settings?.transitionMode) {
+            console.log('[Slideshow] Transition mode from settings:', data.settings.transitionMode)
             setTransitionMode(data.settings.transitionMode)
+          } else {
+            console.log('[Slideshow] No transition mode in settings, using default:', transitionMode)
           }
         } else {
           console.warn('[Slideshow] No data in response, using fallback')
@@ -80,6 +83,7 @@ function Slideshow() {
             setRawScenes(payload.new.slides)
           }
           if (payload.new && payload.new.settings?.transitionMode) {
+            console.log('[Slideshow] Real-time update: Transition mode changed to:', payload.new.settings.transitionMode)
             setTransitionMode(payload.new.settings.transitionMode)
           }
         }
@@ -182,6 +186,10 @@ function Slideshow() {
         >
           Edit
         </a>
+      </div>
+      {/* Debug: Show current transition mode */}
+      <div className="absolute bottom-4 left-4 z-50 text-white/20 text-xs">
+        Mode: {transitionMode}
       </div>
       <AnimatePresence mode={transitionMode}>
         {scenes.map((scene, i) => (
