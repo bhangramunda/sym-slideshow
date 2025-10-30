@@ -225,6 +225,16 @@ export default function Editor() {
       return file; // No resize needed
     }
 
+    // GIFs (especially animated ones) cannot be resized using canvas without losing animation
+    // Reject files that are too large instead of silently failing
+    if (file.type === 'image/gif') {
+      throw new Error(
+        `GIF file is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). ` +
+        `Maximum size is ${MAX_SIZE / 1024 / 1024}MB. ` +
+        `Please use a smaller GIF or a different image format.`
+      );
+    }
+
     console.log(`[Editor] Image is ${(file.size / 1024 / 1024).toFixed(2)}MB, resizing...`);
 
     return new Promise((resolve, reject) => {
@@ -253,6 +263,8 @@ export default function Editor() {
         ctx.drawImage(img, 0, 0, width, height);
 
         // Convert to blob with quality adjustment
+        // Use JPEG for better compression (PNG for transparency)
+        const outputType = file.type === 'image/png' ? 'image/png' : 'image/jpeg';
         canvas.toBlob(
           (blob) => {
             if (blob) {
@@ -261,7 +273,7 @@ export default function Editor() {
 
               // Create new File object with same name
               const resizedFile = new File([blob], file.name, {
-                type: file.type,
+                type: outputType,
                 lastModified: Date.now(),
               });
               resolve(resizedFile);
@@ -269,8 +281,8 @@ export default function Editor() {
               reject(new Error('Failed to create blob'));
             }
           },
-          file.type,
-          0.85 // JPEG quality
+          outputType,
+          0.85 // Quality for JPEG/PNG
         );
       };
 
