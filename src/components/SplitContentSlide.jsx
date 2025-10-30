@@ -6,11 +6,7 @@ export default function SplitContentSlide({ scene }) {
   const isLeftImage = scene.layout === 'image-left';
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
+    <div
       className="relative w-screen h-screen overflow-hidden bg-black"
     >
       {/* Background Gradient */}
@@ -150,6 +146,6 @@ export default function SplitContentSlide({ scene }) {
 
       {/* Vignette */}
       <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_120px_rgba(0,0,0,0.9)]" />
-    </motion.div>
+    </div>
   );
 }

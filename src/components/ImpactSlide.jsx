@@ -3,11 +3,7 @@ import { parseFormatting } from '../utils/formatText';
 
 export default function ImpactSlide({ scene }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
+    <div
       className="relative w-screen h-screen overflow-hidden bg-black"
     >
       {/* Background Gradient */}
@@ -227,6 +223,6 @@ export default function ImpactSlide({ scene }) {
           ease: 'easeInOut',
         }}
       />
-    </motion.div>
+    </div>
   );
 }

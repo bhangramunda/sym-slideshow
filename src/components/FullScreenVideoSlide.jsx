@@ -34,11 +34,7 @@ export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
   }, [onVideoEnd]);
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
+    <div
       className="relative w-screen h-screen overflow-hidden bg-black"
     >
       {/* Full-screen video - centered and cropped proportionally */}
@@ -96,6 +92,6 @@ export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
           </svg>
         </motion.div>
       )}
-    </motion.div>
+    </div>
   );
 }

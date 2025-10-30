@@ -4,11 +4,7 @@ import { parseFormatting } from '../utils/formatText';
 
 export default function LogoGridSlide({ scene }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
+    <div
       className="relative w-screen h-screen overflow-hidden bg-black flex flex-col items-center justify-center"
     >
       {/* Background Gradient */}
@@ -144,6 +140,6 @@ export default function LogoGridSlide({ scene }) {
 
       {/* Vignette */}
       <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]" />
-    </motion.div>
+    </div>
   );
 }

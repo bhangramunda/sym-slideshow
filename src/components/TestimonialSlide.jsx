@@ -30,11 +30,7 @@ export default function TestimonialSlide({ scene }) {
   const quoteFontSize = getDynamicFontSize(scene.quote, 5, 3.5, 7); // base 5rem (text-5xl)
   const authorFontSize = getDynamicFontSize(scene.author, 1.5, 1.25, 2.5); // base 1.5rem (text-2xl)
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
+    <div
       className="relative w-screen h-screen overflow-hidden bg-black flex items-center justify-center"
     >
       {/* Background Gradient */}
@@ -165,6 +161,6 @@ export default function TestimonialSlide({ scene }) {
 
       {/* Vignette */}
       <div className="absolute inset-0 pointer-events-none shadow-[inset_0_0_100px_rgba(0,0,0,0.8)]" />
-    </motion.div>
+    </div>
   );
 }

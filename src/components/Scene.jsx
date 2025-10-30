@@ -107,13 +107,8 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
-      className="relative w-screen h-screen overflow-hidden bg-black flex items-center justify-center"
-    >
+    <div className="relative w-screen h-screen overflow-hidden bg-black flex items-center justify-center">
+
       {/* Background gradient */}
       <div className='absolute inset-0 gradient-bg animate-gradientShift' />
 
@@ -185,7 +180,7 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
       {/* Vignette */}
       <div className="absolute inset-0 pointer-events-none"
            style={{ boxShadow: 'inset 0 0 250px rgba(0,0,0,0.55)' }} />
-    </motion.div>
+    </div>
   )
 }
 

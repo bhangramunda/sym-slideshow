@@ -3,11 +3,7 @@ import { parseFormatting } from '../utils/formatText';
 
 export default function FullScreenImageSlide({ scene }) {
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      transition={{ duration: 0.8, ease: 'easeInOut' }}
+    <div
       className="relative w-screen h-screen overflow-hidden bg-black"
     >
       {/* Full-screen image - centered and cropped proportionally */}
@@ -50,6 +46,6 @@ export default function FullScreenImageSlide({ scene }) {
           )}
         </motion.div>
       )}
-    </motion.div>
+    </div>
   );
 }
