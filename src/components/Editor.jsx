@@ -132,8 +132,10 @@ export default function Editor() {
   }, [previewIndex, isPlaying, scenes]);
 
   const updateScene = (index, updates) => {
+    console.log('[Editor] Updating scene', index, 'with:', updates);
     const newScenes = [...scenes];
     newScenes[index] = { ...newScenes[index], ...updates };
+    console.log('[Editor] Updated scene:', newScenes[index]);
     saveToHistory(newScenes);
   };
 
