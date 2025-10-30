@@ -38,6 +38,41 @@ export default function Editor() {
   });
   const [isDraggingVertical, setIsDraggingVertical] = useState(false);
   const [isDraggingHorizontal, setIsDraggingHorizontal] = useState(false);
+  const [previewScale, setPreviewScale] = useState(1);
+
+  // Update preview scale when window or panels resize
+  useEffect(() => {
+    const updatePreviewScale = () => {
+      const previewContainer = document.querySelector('.preview-container');
+      if (!previewContainer) return;
+
+      const containerWidth = previewContainer.offsetWidth;
+      const containerHeight = previewContainer.offsetHeight;
+
+      // Calculate scale to fit 1920x1080 content in container
+      const scaleX = containerWidth / 1920;
+      const scaleY = containerHeight / 1080;
+      const scale = Math.min(scaleX, scaleY, 1); // Don't scale up beyond 100%
+
+      setPreviewScale(scale);
+      document.documentElement.style.setProperty('--preview-scale', scale.toString());
+    };
+
+    updatePreviewScale();
+    window.addEventListener('resize', updatePreviewScale);
+
+    // Update scale when panels resize
+    const observer = new ResizeObserver(updatePreviewScale);
+    const previewContainer = document.querySelector('.preview-container');
+    if (previewContainer) {
+      observer.observe(previewContainer);
+    }
+
+    return () => {
+      window.removeEventListener('resize', updatePreviewScale);
+      observer.disconnect();
+    };
+  }, [leftPanelWidth, topPanelHeight]);
 
   // Save to history when scenes change
   const saveToHistory = (newScenes) => {
@@ -573,20 +608,19 @@ export default function Editor() {
           </div>
 
           {/* Live Preview - Scaled */}
-          <div className="flex-1 relative bg-black overflow-hidden flex items-center justify-center p-4">
+          <div className="flex-1 relative bg-black overflow-hidden flex items-center justify-center p-4 preview-container">
             <div
-              className="relative bg-black shadow-2xl"
+              className="relative bg-black shadow-2xl w-full h-full"
               style={{
-                width: '100%',
-                paddingBottom: '56.25%', // 16:9 aspect ratio
-                maxWidth: '100%',
-                maxHeight: '100%'
+                aspectRatio: '16/9'
               }}
             >
               <div
-                className="absolute inset-0"
+                className="absolute inset-0 origin-center"
                 style={{
-                  transform: 'scale(1)',
+                  width: '1920px',
+                  height: '1080px',
+                  transform: 'scale(var(--preview-scale))',
                   transformOrigin: 'center center'
                 }}
               >
