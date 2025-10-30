@@ -26,6 +26,20 @@ function Slideshow() {
 
         if (error) {
           console.error('[Slideshow] Supabase load failed:', error)
+          // Try again without settings column (backwards compatibility)
+          const { data: fallbackData, error: fallbackError } = await supabase
+            .from('slideshow_data')
+            .select('slides')
+            .eq('project_name', PROJECT_NAME)
+            .single()
+
+          if (!fallbackError && fallbackData && fallbackData.slides) {
+            console.log('[Slideshow] Loaded', fallbackData.slides.length, 'slides from Supabase (without settings)')
+            setRawScenes(fallbackData.slides)
+            setIsLoading(false)
+            return
+          }
+
           console.log('[Slideshow] Using fallback scenes.json')
           // Use fallback scenesData
         } else if (data && data.slides) {
