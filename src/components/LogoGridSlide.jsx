@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import KineticText from './KineticText';
+import { parseFormatting } from '../utils/formatText';
 
 export default function LogoGridSlide({ scene }) {
   return (
@@ -67,9 +68,8 @@ export default function LogoGridSlide({ scene }) {
             animate={{ opacity: 1, filter: 'blur(0px)' }}
             transition={{ duration: 0.8, delay: 0.6 }}
             className="text-xl md:text-2xl text-white/80 mb-16 max-w-3xl mx-auto break-words hyphens-none"
-          >
-            {scene.subtitle}
-          </motion.div>
+            dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
+          />
         )}
 
         {/* Logo Grid */}

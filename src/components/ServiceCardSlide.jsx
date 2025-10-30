@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import KineticText from './KineticText';
+import { parseFormatting } from '../utils/formatText';
 
 export default function ServiceCardSlide({ scene }) {
   return (
@@ -66,9 +67,8 @@ export default function ServiceCardSlide({ scene }) {
               animate={{ opacity: 1, filter: 'blur(0px)' }}
               transition={{ duration: 0.8, delay: 0.6 }}
               className="text-2xl text-white/80 break-words hyphens-none"
-            >
-              {scene.subtitle}
-            </motion.div>
+              dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
+            />
           )}
         </div>
 
