@@ -109,25 +109,25 @@ export default function ServiceCardSlide({ scene }) {
                         type: 'spring',
                         stiffness: 200,
                       }}
-                      className="text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"
+                      className="text-7xl mb-8 group-hover:scale-110 transition-transform duration-300"
                     >
                       {service.icon}
                     </motion.div>
                   )}
 
                   {/* Title */}
-                  <h3 className="text-3xl font-bold text-white mb-4 group-hover:text-tgteal transition-colors duration-300 break-words hyphens-none">
+                  <h3 className="text-4xl font-bold text-white mb-6 group-hover:text-tgteal transition-colors duration-300 break-words hyphens-none">
                     {service.name}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-lg text-white/70 leading-relaxed mb-6 break-words hyphens-none">
+                  <p className="text-xl text-white/70 leading-relaxed mb-8 break-words hyphens-none">
                     {service.description}
                   </p>
 
                   {/* Features List */}
                   {service.features && (
-                    <ul className="space-y-3">
+                    <ul className="space-y-4">
                       {service.features.map((feature, fIndex) => (
                         <motion.li
                           key={fIndex}
@@ -137,9 +137,9 @@ export default function ServiceCardSlide({ scene }) {
                             duration: 0.5,
                             delay: 1.3 + index * 0.2 + fIndex * 0.1,
                           }}
-                          className="flex items-center gap-3 text-white/80"
+                          className="flex items-center gap-3 text-white/80 text-lg"
                         >
-                          <span className="text-tgteal text-xl leading-none flex-shrink-0">✓</span>
+                          <span className="text-tgteal text-2xl leading-none flex-shrink-0">✓</span>
                           <span className="break-words hyphens-none leading-tight">{feature}</span>
                         </motion.li>
                       ))}
