@@ -108,12 +108,27 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
     setSaveStatus('saving');
 
     try {
+      // Clean slides by removing internal properties like _slideId
+      const cleanedSlides = scenesToSave.map(scene => {
+        const { _slideId, ...cleanScene } = scene;
+        return cleanScene;
+      });
+
+      // Log payload size for debugging
+      const payloadSize = JSON.stringify(cleanedSlides).length;
+      console.log(`[Supabase] Saving ${cleanedSlides.length} slides, payload size: ${(payloadSize / 1024).toFixed(2)} KB`);
+
+      // Warn if payload is very large (might cause timeout)
+      if (payloadSize > 500000) { // 500KB
+        console.warn('[Supabase] Large payload detected! Consider optimizing images.');
+      }
+
       const { data, error } = await supabase
         .from('slideshow_data')
         .upsert(
           {
             project_name: PROJECT_NAME,
-            slides: scenesToSave,
+            slides: cleanedSlides,
             updated_by: 'editor',
           },
           {

@@ -50,7 +50,12 @@ function DefaultSlide({ scene }) {
               opacity: [0.2, 0.8, 0.2],
               scale: [0.9, 1.1, 0.9]
             }}
-            transition={{ duration: 6 + (i % 5), repeat: Infinity, ease: 'easeInOut' }}
+            transition={{
+              duration: 6 + (i % 5),
+              repeat: Infinity,
+              ease: 'easeInOut',
+              repeatType: 'loop'
+            }}
           />
         ))}
       </div>

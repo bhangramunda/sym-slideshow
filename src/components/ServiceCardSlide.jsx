@@ -46,6 +46,7 @@ export default function ServiceCardSlide({ scene }) {
             transition={{
               duration: 6 + (i % 5),
               repeat: Infinity,
+              repeatType: 'loop',
               ease: 'easeInOut',
             }}
           />
@@ -167,6 +168,7 @@ export default function ServiceCardSlide({ scene }) {
                   transition={{
                     duration: 4,
                     repeat: Infinity,
+                    repeatType: 'loop',
                     delay: index * 0.5,
                   }}
                 />

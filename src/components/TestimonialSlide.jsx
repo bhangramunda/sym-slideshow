@@ -46,6 +46,7 @@ export default function TestimonialSlide({ scene }) {
             transition={{
               duration: 7 + (i % 4),
               repeat: Infinity,
+              repeatType: 'loop',
               ease: 'easeInOut',
             }}
           />

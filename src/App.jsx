@@ -73,15 +73,16 @@ function Slideshow() {
     const featuredScenes = rawScenes.filter(s => s.featured)
 
     console.log('[Slideshow] Total slides:', rawScenes.length, 'Featured slides:', featuredScenes.length)
+    console.log('[Slideshow] Featured slide titles:', featuredScenes.map(s => s.title?.substring(0, 30)))
 
-    // If no featured slides, return original order
+    // If no featured slides, return original order with unique IDs
     if (featuredScenes.length === 0) {
       console.log('[Slideshow] No featured slides, using original order')
-      return rawScenes
+      return rawScenes.map((scene, i) => ({ ...scene, _slideId: `slide-${i}` }))
     }
 
-    // Start with all slides in original order
-    const result = [...rawScenes]
+    // Start with all slides in original order, add unique IDs
+    const result = rawScenes.map((scene, i) => ({ ...scene, _slideId: `slide-${i}` }))
 
     // Calculate how many times to repeat each featured slide
     // and where to insert them to space them evenly
@@ -93,18 +94,22 @@ function Slideshow() {
 
     // Insert duplicates of featured slides at calculated intervals
     let insertOffset = 0
-    featuredScenes.forEach(featuredSlide => {
+    featuredScenes.forEach((featuredSlide, featIndex) => {
       for (let i = 0; i < repeatsPerFeatured; i++) {
         const insertPos = interval * (i + 1) + insertOffset
-        if (insertPos < result.length) {
-          result.splice(insertPos, 0, { ...featuredSlide })
+        if (insertPos <= result.length) {
+          result.splice(insertPos, 0, {
+            ...featuredSlide,
+            _slideId: `featured-${featIndex}-copy-${i}`
+          })
           insertOffset++
         }
       }
     })
 
     console.log('[Slideshow] Final deck:', result.length, 'slides (', rawScenes.length, 'original +', result.length - rawScenes.length, 'featured duplicates)')
-    console.log('[Slideshow] First slide:', result[0]?.type, result[0]?.title?.substring(0, 50))
+    console.log('[Slideshow] First 5 slides:', result.slice(0, 5).map(s => s.title?.substring(0, 30)))
+    console.log('[Slideshow] Full slide order:', result.map(s => s.title?.substring(0, 20)))
     return result
   }, [rawScenes])
 
@@ -152,7 +157,7 @@ function Slideshow() {
       </div>
       <AnimatePresence mode="wait">
         {scenes.map((scene, i) => (
-          i === index && <Scene key={i} scene={scene} isActive={true} />
+          i === index && <Scene key={scene._slideId || i} scene={scene} isActive={true} />
         ))}
       </AnimatePresence>
     </div>

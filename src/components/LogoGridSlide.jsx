@@ -46,6 +46,7 @@ export default function LogoGridSlide({ scene }) {
             transition={{
               duration: 8 + (i % 3),
               repeat: Infinity,
+              repeatType: 'loop',
               ease: 'easeInOut',
             }}
           />
@@ -112,6 +113,7 @@ export default function LogoGridSlide({ scene }) {
                 transition={{
                   duration: 3,
                   repeat: Infinity,
+                  repeatType: 'loop',
                   delay: index * 0.2,
                 }}
               />

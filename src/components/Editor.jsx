@@ -5,6 +5,7 @@ import RichTextArea from './RichTextArea';
 import scenesData from '../scenes.json';
 import { useSupabaseSync } from '../hooks/useSupabaseSync';
 import { TRANSITIONS, TRANSITION_OPTIONS } from './SlideTransition';
+import { supabase } from '../lib/supabase';
 
 export default function Editor() {
   const [scenes, setScenes] = useState(scenesData);
@@ -421,23 +422,85 @@ export default function Editor() {
                 </button>
               </div>
             </div>
-            <div className="flex gap-2">
-              <label className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-semibold cursor-pointer flex items-center gap-2">
-                📤 Load JSON
-                <input
-                  type="file"
-                  accept=".json,application/json"
-                  onChange={uploadJSON}
-                  className="hidden"
-                />
-              </label>
+            <div className="flex gap-2 items-center">
+              {/* Save Status - more prominent */}
+              <div className="px-4 py-2 bg-gray-800 rounded-lg border border-gray-700 min-w-[140px]">
+                {saveStatus === 'saving' && (
+                  <div className="flex items-center gap-2 text-blue-400">
+                    <div className="animate-spin h-4 w-4 border-2 border-blue-400 border-t-transparent rounded-full"></div>
+                    <span className="text-sm font-medium">Saving...</span>
+                  </div>
+                )}
+                {saveStatus === 'saved' && (
+                  <div className="flex items-center gap-2 text-green-400">
+                    <span>✓</span>
+                    <span className="text-sm font-medium">Auto-saved</span>
+                  </div>
+                )}
+                {saveStatus === 'pending' && (
+                  <div className="flex items-center gap-2 text-yellow-400">
+                    <span>○</span>
+                    <span className="text-sm font-medium">Saving in 2s...</span>
+                  </div>
+                )}
+                {saveStatus === 'error' && (
+                  <div className="flex items-center gap-2 text-red-400">
+                    <span>✕</span>
+                    <span className="text-sm font-medium">Save failed</span>
+                  </div>
+                )}
+                {saveStatus === 'idle' && (
+                  <div className="flex items-center gap-2 text-gray-400">
+                    <span>✓</span>
+                    <span className="text-sm font-medium">All saved</span>
+                  </div>
+                )}
+              </div>
+
+              {/* Save Now Button */}
               <button
-                onClick={downloadJSON}
-                className="px-4 py-2 bg-tgteal text-black rounded-lg hover:bg-tgteal/80 transition-colors font-semibold"
-                title="Downloads with timestamp and saves to localStorage for conflict detection"
+                onClick={forceSave}
+                disabled={saveStatus === 'saving'}
+                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+                title="Force save to database now"
               >
-                💾 Save & Download
+                💾 Save Now
               </button>
+
+              {/* Settings Menu */}
+              <div className="relative group">
+                <button className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors font-semibold">
+                  ⚙️ Settings
+                </button>
+                <div className="absolute right-0 top-full mt-2 w-56 bg-gray-800 rounded-lg shadow-xl border border-gray-700 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                  {/* Backup Section */}
+                  <div className="px-4 py-2 border-b border-gray-700">
+                    <div className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Backup</div>
+                  </div>
+                  <label className="block px-4 py-3 hover:bg-gray-700 cursor-pointer transition-colors border-b border-gray-700">
+                    <span className="text-sm">📤 Import from JSON</span>
+                    <input
+                      type="file"
+                      accept=".json,application/json"
+                      onChange={uploadJSON}
+                      className="hidden"
+                    />
+                  </label>
+                  <button
+                    onClick={downloadJSON}
+                    className="block w-full text-left px-4 py-3 hover:bg-gray-700 transition-colors text-sm"
+                    title="Download backup JSON file"
+                  >
+                    💾 Export to JSON
+                  </button>
+
+                  {/* Future settings can be added here */}
+                  {/* <div className="px-4 py-2 border-t border-gray-700">
+                    <div className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Display</div>
+                  </div> */}
+                </div>
+              </div>
+
               <a
                 href="/"
                 className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors"
@@ -450,38 +513,11 @@ export default function Editor() {
             <div className="text-gray-400">
               {scenes.length} slides • Total duration: {scenes.reduce((acc, s) => acc + s.durationSec, 0)}s
             </div>
-            {/* Save Status Indicator */}
-            <div className="flex items-center gap-2">
-              {saveStatus === 'saving' && (
-                <div className="flex items-center gap-2 text-blue-400">
-                  <div className="animate-spin h-4 w-4 border-2 border-blue-400 border-t-transparent rounded-full"></div>
-                  <span>Saving...</span>
-                </div>
-              )}
-              {saveStatus === 'saved' && (
-                <div className="flex items-center gap-2 text-green-400">
-                  <span>✓</span>
-                  <span>Saved</span>
-                </div>
-              )}
-              {saveStatus === 'pending' && (
-                <div className="flex items-center gap-2 text-yellow-400">
-                  <span>○</span>
-                  <span>Unsaved changes</span>
-                </div>
-              )}
-              {saveStatus === 'error' && (
-                <div className="flex items-center gap-2 text-red-400">
-                  <span>✗</span>
-                  <span>Save failed</span>
-                </div>
-              )}
-              {lastSaved && saveStatus === 'idle' && (
-                <div className="text-gray-500 text-xs">
-                  Last saved: {lastSaved.toLocaleTimeString()}
-                </div>
-              )}
-            </div>
+            {lastSaved && (
+              <div className="text-gray-500 text-xs">
+                Last saved: {lastSaved.toLocaleTimeString()}
+              </div>
+            )}
           </div>
         </div>
 
@@ -843,7 +879,11 @@ export default function Editor() {
               <label className="block text-sm font-medium mb-1">Background Image</label>
               <div className="flex gap-2">
                 <select
-                  value={selectedScene.image?.startsWith('data:') ? 'custom' : selectedScene.image || ''}
+                  value={
+                    selectedScene.image?.startsWith('data:') || selectedScene.image?.startsWith('https://')
+                      ? 'custom'
+                      : selectedScene.image || ''
+                  }
                   onChange={(e) => {
                     if (e.target.value !== 'custom') {
                       updateScene(selectedIndex, { image: e.target.value });
@@ -851,8 +891,10 @@ export default function Editor() {
                   }}
                   className="flex-1 bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
                 >
-                  {selectedScene.image?.startsWith('data:') && (
-                    <option value="custom">🖼️ Custom Upload</option>
+                  {(selectedScene.image?.startsWith('data:') || selectedScene.image?.startsWith('https://')) && (
+                    <option value="custom">
+                      🖼️ {selectedScene.imageName || 'Custom Upload'}
+                    </option>
                   )}
                   <option value="">None</option>
                   {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
@@ -870,25 +912,45 @@ export default function Editor() {
                     accept="image/*"
                     className="hidden"
                     disabled={uploadingImage}
-                    onChange={(e) => {
+                    onChange={async (e) => {
                       const file = e.target.files?.[0];
                       if (file) {
                         setUploadingImage(true);
-                        // Create a data URL for the image
-                        const reader = new FileReader();
-                        reader.onload = (event) => {
-                          const dataUrl = event.target?.result;
-                          updateScene(selectedIndex, { image: dataUrl });
+                        try {
+                          // Upload to Supabase Storage
+                          const fileExt = file.name.split('.').pop();
+                          const originalName = file.name.replace(/\.[^/.]+$/, ''); // Remove extension
+                          const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+                          const filePath = `slides/${fileName}`;
+
+                          const { data, error } = await supabase.storage
+                            .from('slideshow-images')
+                            .upload(filePath, file, {
+                              cacheControl: '3600',
+                              upsert: false
+                            });
+
+                          if (error) throw error;
+
+                          // Get public URL
+                          const { data: { publicUrl } } = supabase.storage
+                            .from('slideshow-images')
+                            .getPublicUrl(filePath);
+
+                          // Store both URL and original filename
+                          updateScene(selectedIndex, {
+                            image: publicUrl,
+                            imageName: originalName
+                          });
                           setUploadingImage(false);
-                          // Clear the input so the same file can be selected again
                           e.target.value = '';
-                        };
-                        reader.onerror = () => {
-                          alert('Failed to read image file');
+                        } catch (error) {
+                          console.error('Error uploading image:', error);
+                          console.error('Error details:', error.message, error.code, error.statusCode);
+                          alert('Failed to upload image: ' + error.message + '\n\nCheck console for details.');
                           setUploadingImage(false);
                           e.target.value = '';
-                        };
-                        reader.readAsDataURL(file);
+                        }
                       }
                     }}
                   />

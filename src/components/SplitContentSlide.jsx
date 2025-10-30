@@ -36,6 +36,7 @@ export default function SplitContentSlide({ scene }) {
             transition={{
               duration: 7.5 + (i % 4),
               repeat: Infinity,
+              repeatType: 'loop',
               ease: 'easeInOut',
             }}
           />
@@ -123,6 +124,7 @@ export default function SplitContentSlide({ scene }) {
                         duration: 2,
                         delay: 1.2 + index * 0.15,
                         repeat: Infinity,
+                        repeatType: 'loop',
                         repeatDelay: 3,
                       }}
                     >

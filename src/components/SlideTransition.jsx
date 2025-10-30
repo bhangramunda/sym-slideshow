@@ -57,19 +57,6 @@ export const TRANSITIONS = {
       x: 0,
       skewX: 0,
       filter: 'hue-rotate(0deg) saturate(1)',
-      transition: {
-        duration: 0.6,
-        ease: 'easeOut',
-        opacity: { duration: 0.3 },
-        x: {
-          duration: 0.6,
-          ease: [0.87, 0, 0.13, 1]
-        },
-        skewX: {
-          duration: 0.4,
-          ease: 'easeOut'
-        }
-      }
     },
     exit: {
       opacity: 0,
@@ -77,7 +64,19 @@ export const TRANSITIONS = {
       skewX: -20,
       filter: 'hue-rotate(180deg) saturate(3)',
     },
-    transition: { duration: 0.4 }
+    transition: {
+      duration: 0.6,
+      ease: 'easeOut',
+      opacity: { duration: 0.3 },
+      x: {
+        duration: 0.6,
+        ease: [0.87, 0, 0.13, 1]
+      },
+      skewX: {
+        duration: 0.4,
+        ease: 'easeOut'
+      }
+    }
   },
 
   spiral: {
