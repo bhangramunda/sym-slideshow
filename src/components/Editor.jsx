@@ -29,6 +29,9 @@ export default function Editor() {
   // Image upload state
   const [uploadingImage, setUploadingImage] = useState(false);
 
+  // Video upload state
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+
   // Supabase autosave
   const { saveStatus, lastSaved, forceSave, isLoading } = useSupabaseSync(
     scenes,
@@ -976,6 +979,7 @@ export default function Editor() {
                 <option value="service-card">Service Card</option>
                 <option value="split-content">Split Content</option>
                 <option value="fullscreen-image">Full Screen Image</option>
+                <option value="fullscreen-video">Full Screen Video</option>
               </select>
             </div>
 
@@ -1275,6 +1279,136 @@ export default function Editor() {
                 Upload custom images (converted to data URLs for portability)
               </div>
             </div>
+
+            {/* Video (for fullscreen-video type) */}
+            {selectedScene.type === 'fullscreen-video' && (
+              <div>
+                <label className="block text-sm font-medium mb-1">Video</label>
+                <div className="flex gap-2">
+                  {selectedScene.video ? (
+                    <div className="flex-1 bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white flex items-center justify-between">
+                      <span className="text-sm">🎬 {selectedScene.videoName || 'Uploaded Video'}</span>
+                      <button
+                        onClick={() => updateScene(selectedIndex, { video: null, videoName: null })}
+                        className="ml-2 text-red-400 hover:text-red-300"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="flex-1 bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white text-gray-400">
+                      No video uploaded
+                    </div>
+                  )}
+                  <label className={`px-4 py-2 rounded transition-colors cursor-pointer text-sm whitespace-nowrap ${
+                    uploadingVideo ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'
+                  }`}>
+                    {uploadingVideo ? '⏳ Uploading...' : '📁 Upload'}
+                    <input
+                      type="file"
+                      accept="video/*"
+                      className="hidden"
+                      disabled={uploadingVideo}
+                      onChange={async (e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setUploadingVideo(true);
+                          try {
+                            // Check file size (limit to 100MB)
+                            const MAX_SIZE = 100 * 1024 * 1024;
+                            if (file.size > MAX_SIZE) {
+                              throw new Error(
+                                `Video file is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). ` +
+                                `Maximum size is ${MAX_SIZE / 1024 / 1024}MB.`
+                              );
+                            }
+
+                            // Upload to Supabase Storage
+                            const fileExt = file.name.split('.').pop();
+                            const originalName = file.name.replace(/\.[^/.]+$/, '');
+                            const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+                            const filePath = `videos/${fileName}`;
+
+                            const { data, error } = await supabase.storage
+                              .from('slideshow-videos')
+                              .upload(filePath, file, {
+                                cacheControl: '3600',
+                                upsert: false
+                              });
+
+                            if (error) throw error;
+
+                            // Get public URL
+                            const { data: { publicUrl } } = supabase.storage
+                              .from('slideshow-videos')
+                              .getPublicUrl(filePath);
+
+                            // Store both URL and original filename
+                            updateScene(selectedIndex, {
+                              video: publicUrl,
+                              videoName: originalName
+                            });
+                            setUploadingVideo(false);
+                            e.target.value = '';
+                          } catch (error) {
+                            console.error('Error uploading video:', error);
+                            console.error('Error details:', error.message, error.code, error.statusCode);
+                            alert('Failed to upload video: ' + error.message + '\n\nCheck console for details.');
+                            setUploadingVideo(false);
+                            e.target.value = '';
+                          }
+                        }
+                      }}
+                    />
+                  </label>
+                </div>
+                {/* Video Preview */}
+                {selectedScene.video && (
+                  <div className="mt-3 p-2 bg-gray-800 rounded border border-gray-700">
+                    <div className="text-xs text-gray-400 mb-2">Preview:</div>
+                    <div className="relative w-full h-32 bg-gray-900 rounded overflow-hidden">
+                      <video
+                        src={selectedScene.video}
+                        className="w-full h-full object-cover"
+                        controls
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                          e.target.nextSibling.style.display = 'flex';
+                        }}
+                      />
+                      <div className="hidden w-full h-full items-center justify-center text-gray-500 text-sm">
+                        Failed to load video
+                      </div>
+                    </div>
+                  </div>
+                )}
+                <div className="mt-2 text-xs text-gray-400">
+                  Upload videos (max 100MB) - stored in Supabase
+                </div>
+
+                {/* Video Options */}
+                <div className="mt-4 space-y-3">
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedScene.loop !== true}
+                      onChange={(e) => updateScene(selectedIndex, { loop: !e.target.checked })}
+                      className="bg-gray-700 border border-gray-600 rounded"
+                    />
+                    <span className="text-sm text-gray-300">Auto-advance to next slide when done (no loop)</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input
+                      type="checkbox"
+                      checked={selectedScene.muted !== false}
+                      onChange={(e) => updateScene(selectedIndex, { muted: e.target.checked })}
+                      className="bg-gray-700 border border-gray-600 rounded"
+                    />
+                    <span className="text-sm text-gray-300">Mute video (required for autoplay)</span>
+                  </label>
+                </div>
+              </div>
+            )}
 
             {/* Split Content - Points Editor */}
             {selectedScene.type === 'split-content' && (
