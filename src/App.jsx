@@ -3,17 +3,71 @@ import { AnimatePresence } from 'framer-motion'
 import Scene from './components/Scene.jsx'
 import Editor from './components/Editor.jsx'
 import scenesData from './scenes.json'
+import { supabase } from './lib/supabase'
 
 const FPS_SAFE_DELAY = 50 // ms safety delay between scenes
+const PROJECT_NAME = 'default'
 
 function Slideshow() {
+  const [rawScenes, setRawScenes] = useState(scenesData)
+  const [isLoading, setIsLoading] = useState(true)
+
+  // Load slides from Supabase
+  useEffect(() => {
+    async function loadSlides() {
+      try {
+        const { data, error } = await supabase
+          .from('slideshow_data')
+          .select('slides')
+          .eq('project_name', PROJECT_NAME)
+          .single()
+
+        if (error) {
+          console.warn('Supabase load failed, using fallback:', error)
+          // Use fallback scenesData
+        } else if (data && data.slides) {
+          setRawScenes(data.slides)
+        }
+      } catch (err) {
+        console.warn('Supabase connection failed, using fallback:', err)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    loadSlides()
+
+    // Subscribe to real-time changes
+    const channel = supabase
+      .channel('slideshow-viewer')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'slideshow_data',
+          filter: `project_name=eq.${PROJECT_NAME}`,
+        },
+        (payload) => {
+          if (payload.new && payload.new.slides) {
+            setRawScenes(payload.new.slides)
+          }
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(channel)
+    }
+  }, [])
+
   // Build an expanded scene list with featured slides sprinkled in
   const scenes = useMemo(() => {
-    const featuredScenes = scenesData.filter(s => s.featured)
-    const normalScenes = scenesData.filter(s => !s.featured)
+    const featuredScenes = rawScenes.filter(s => s.featured)
+    const normalScenes = rawScenes.filter(s => !s.featured)
 
     // If no featured slides, return original
-    if (featuredScenes.length === 0) return scenesData
+    if (featuredScenes.length === 0) return rawScenes
 
     // Sprinkle featured slides throughout
     const result = []
@@ -35,7 +89,7 @@ function Slideshow() {
     })
 
     return result
-  }, [])
+  }, [rawScenes])
 
   const [index, setIndex] = useState(0)
 
@@ -58,6 +112,15 @@ function Slideshow() {
     window.addEventListener('contextmenu', handler)
     return () => window.removeEventListener('contextmenu', handler)
   }, [])
+
+  // Show loading while fetching from Supabase
+  if (isLoading) {
+    return (
+      <div className="w-screen h-screen flex items-center justify-center bg-black">
+        <div className="animate-spin h-12 w-12 border-4 border-tgteal border-t-transparent rounded-full"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="w-screen h-screen relative overflow-hidden">
