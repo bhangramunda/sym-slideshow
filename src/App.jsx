@@ -16,6 +16,7 @@ function Slideshow() {
   useEffect(() => {
     async function loadSlides() {
       try {
+        console.log('[Slideshow] Loading from Supabase...')
         const { data, error } = await supabase
           .from('slideshow_data')
           .select('slides')
@@ -23,13 +24,19 @@ function Slideshow() {
           .single()
 
         if (error) {
-          console.warn('Supabase load failed, using fallback:', error)
+          console.error('[Slideshow] Supabase load failed:', error)
+          console.log('[Slideshow] Using fallback scenes.json')
           // Use fallback scenesData
         } else if (data && data.slides) {
+          console.log('[Slideshow] Loaded', data.slides.length, 'slides from Supabase')
+          console.log('[Slideshow] First slide:', data.slides[0]?.type, data.slides[0]?.title?.substring(0, 50))
           setRawScenes(data.slides)
+        } else {
+          console.warn('[Slideshow] No data in response, using fallback')
         }
       } catch (err) {
-        console.warn('Supabase connection failed, using fallback:', err)
+        console.error('[Slideshow] Supabase connection error:', err)
+        console.log('[Slideshow] Using fallback scenes.json')
       } finally {
         setIsLoading(false)
       }
