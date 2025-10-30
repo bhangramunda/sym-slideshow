@@ -22,7 +22,9 @@
       "Bash(curl:*)",
       "Bash(/dev/null)",
       "Bash(git commit:*)",
-      "Bash(git log:*)"
+      "Bash(git log:*)",
+      "Bash(vercel:*)",
+      "Bash(git reset:*)"
     ],
     "deny": [],
     "ask": []

@@ -975,6 +975,7 @@ export default function Editor() {
                 <option value="logo-grid">Logo Grid</option>
                 <option value="service-card">Service Card</option>
                 <option value="split-content">Split Content</option>
+                <option value="fullscreen-image">Full Screen Image</option>
               </select>
             </div>
 

@@ -5,6 +5,7 @@ import TestimonialSlide from './TestimonialSlide.jsx'
 import LogoGridSlide from './LogoGridSlide.jsx'
 import ServiceCardSlide from './ServiceCardSlide.jsx'
 import SplitContentSlide from './SplitContentSlide.jsx'
+import FullScreenImageSlide from './FullScreenImageSlide.jsx'
 import SlideTransition from './SlideTransition.jsx'
 import { AnimatedText, AnimatedTextChars } from './BuildAnimation.jsx'
 import { parseFormatting } from '../utils/formatText.js'
@@ -204,6 +205,9 @@ export default function Scene({ scene, isActive, buildScope, buildStyle }) {
       break
     case 'split-content':
       SlideContent = <SplitContentSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
+      break
+    case 'fullscreen-image':
+      SlideContent = <FullScreenImageSlide scene={scene} />
       break
     case 'hero':
     default:

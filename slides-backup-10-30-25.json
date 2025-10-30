@@ -1,0 +1,220 @@
+[
+  {
+    "id": "5954d37b-f747-4875-8586-c6aafbb2dd59",
+    "project_name": "default",
+    "slides": [
+      {
+        "role": "VP of Digital Experience",
+        "type": "testimonial",
+        "image": "/assets/placeholder-05.svg",
+        "quote": "We are so grateful for our partnership with TechGuilds and for their willingness to step in and support us. It has meant so much that they've been there for us and helped us get to 'go' more than once over this last year. Thank you.\n",
+        "author": "Sarah Mitchell",
+        "rating": 5,
+        "company": "Fortune 500 Retail Company",
+        "durationSec": 20
+      },
+      {
+        "cta": null,
+        "type": "hero",
+        "image": "/assets/placeholder-01.svg",
+        "title": "PRICE. QUALITY. SPEED.",
+        "subtitle": "For the first time in digital delivery… you can have all three.\nNow possible with Kajoo AI. Backed by TechGuilds' Sitecore expertise.",
+        "durationSec": 20
+      },
+      {
+        "cta": "See the Solution",
+        "type": "split-content",
+        "image": "/assets/placeholder-02.svg",
+        "title": "The Challenge",
+        "layout": "image-left",
+        "points": [
+          "Tight budgets with increasing demands",
+          "Talent shortages in specialized skills",
+          "Pressure to deliver faster than ever",
+          "Quality expectations that never compromise"
+        ],
+        "subtitle": "Today's Sitecore teams face impossible trade-offs.",
+        "durationSec": 25
+      },
+      {
+        "cta": "Live demo at the booth",
+        "type": "hero",
+        "image": "/assets/placeholder-03.svg",
+        "title": "Meet Kajoo AI — your new delivery pod.",
+        "subtitle": "An intelligent, always-on team of AI Agents — PM, Architect, Dev, QA — built for Sitecore.\nThey plan. They build. They verify. You deliver.",
+        "durationSec": 25
+      },
+      {
+        "cta": "Learn More About Super Care",
+        "type": "service-card",
+        "image": "/assets/placeholder-04.svg",
+        "title": "Super Care",
+        "services": [
+          {
+            "icon": "🚀",
+            "name": "24/7 Support",
+            "badge": "Most Popular",
+            "features": [
+              "Dedicated support team",
+              "15-minute response time",
+              "Proactive monitoring"
+            ],
+            "description": "Round-the-clock monitoring and immediate response to critical issues."
+          },
+          {
+            "icon": "⚡",
+            "name": "Performance Optimization",
+            "features": [
+              "Monthly performance audits",
+              "CDN optimization",
+              "Code review & refactoring"
+            ],
+            "description": "Continuous improvements to keep your site lightning-fast."
+          },
+          {
+            "icon": "🛡️",
+            "name": "Security & Compliance",
+            "features": [
+              "Security patches",
+              "Compliance monitoring",
+              "Penetration testing"
+            ],
+            "description": "Enterprise-grade security with regular audits and updates."
+          }
+        ],
+        "subtitle": "Premium support that keeps your digital experiences running flawlessly",
+        "durationSec": 30
+      },
+      {
+        "cta": "See It In Action",
+        "type": "split-content",
+        "image": "/assets/placeholder-06.svg",
+        "title": "Deliver Experiences — Not Just Content.",
+        "layout": "image-right",
+        "points": [
+          "Automated code generation and testing",
+          "Intelligent migration workflows",
+          "Built-in QA automation",
+          "One-click deployment pipelines"
+        ],
+        "subtitle": "While others use AI to write content, we use AI to deliver complete digital experiences.",
+        "durationSec": 25
+      },
+      {
+        "type": "logo-grid",
+        "image": "/assets/placeholder-07.svg",
+        "logos": [
+          {
+            "name": "Acme Corp"
+          },
+          {
+            "name": "GlobalTech"
+          },
+          {
+            "name": "InnovateCo"
+          },
+          {
+            "name": "FutureRetail"
+          },
+          {
+            "name": "DigitalFirst"
+          },
+          {
+            "name": "CloudScale"
+          },
+          {
+            "name": "DataDriven"
+          },
+          {
+            "name": "NextGen"
+          }
+        ],
+        "title": "Trusted By Industry Leaders",
+        "footer": "And many more organizations worldwide",
+        "subtitle": "Join hundreds of companies already accelerating with TechGuilds",
+        "durationSec": 20
+      },
+      {
+        "role": "CTO",
+        "type": "testimonial",
+        "image": "/assets/placeholder-01.svg",
+        "quote": "The Kajoo AI delivery pod feels like adding an entire experienced team overnight. Game-changing for our capacity.",
+        "author": "Michael Chen",
+        "rating": 5,
+        "company": "Leading Financial Services Firm",
+        "durationSec": 18
+      },
+      {
+        "cta": "Request a Demo",
+        "type": "service-card",
+        "image": "/assets/placeholder-02.svg",
+        "title": "AI-Powered Services",
+        "services": [
+          {
+            "icon": "🤖",
+            "name": "Kajoo AI Agents",
+            "badge": "New",
+            "features": [
+              "AI-powered development",
+              "Automated testing & QA",
+              "Continuous improvement"
+            ],
+            "description": "Your intelligent delivery team working 24/7 on your projects."
+          },
+          {
+            "icon": "🔄",
+            "name": "Migration Accelerator",
+            "features": [
+              "Automated content migration",
+              "Code modernization",
+              "Zero-downtime transitions"
+            ],
+            "description": "Move to the latest Sitecore versions 60% faster."
+          }
+        ],
+        "subtitle": "Revolutionary capabilities that transform how you build",
+        "durationSec": 28
+      },
+      {
+        "cta": null,
+        "type": "hero",
+        "image": "/assets/placeholder-03.svg",
+        "title": "Proven, Not Hype.",
+        "subtitle": "There's a lot of AI noise out there. We focus on what moves the needle:\n• Microsites in weeks, not months\n• 60% faster migrations\n• Built-in QA automation\n• Predictable costs and timelines",
+        "durationSec": 22
+      },
+      {
+        "role": "Head of Digital Transformation",
+        "type": "testimonial",
+        "image": "/assets/placeholder-04.svg",
+        "quote": "Finally, AI that actually delivers value. TechGuilds showed us the future of digital implementation.",
+        "author": "Jennifer Rodriguez",
+        "rating": 5,
+        "company": "Healthcare Innovation Leader",
+        "durationSec": 18
+      },
+      {
+        "cta": "Visit us for a live demo — Booth #___",
+        "type": "hero",
+        "image": "/assets/placeholder-05.svg",
+        "title": "Stop choosing. Start accelerating.",
+        "subtitle": "With TechGuilds + Kajoo AI, your next Sitecore success story starts here.",
+        "durationSec": 20
+      },
+      {
+        "cta": null,
+        "type": "hero",
+        "image": "/assets/placeholder-08.svg",
+        "title": "TechGuilds × Kajoo.ai",
+        "subtitle": "Proven Sitecore experts. AI-powered delivery pods.\nNext is Now.",
+        "durationSec": 15
+      }
+    ],
+    "updated_at": "2025-10-30 16:06:39.799215+00",
+    "updated_by": "editor",
+    "version": 159,
+    "settings": {
+      "transitionMode": "sync"
+    }
+  }
+]
