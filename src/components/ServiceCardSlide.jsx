@@ -53,8 +53,8 @@ export default function ServiceCardSlide({ scene }) {
         ))}
       </div>
 
-      {/* Content Container */}
-      <div className="relative z-10 max-w-7xl mx-auto px-8">
+      {/* Content Container - increased width to 75% of viewport */}
+      <div className="relative z-10 w-[75vw] mx-auto px-8">
         {/* Header */}
         <div className="text-center mb-16">
           <div className="text-6xl md:text-7xl font-bold text-white mb-4 break-words hyphens-none">

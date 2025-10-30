@@ -80,8 +80,8 @@ export default function TestimonialSlide({ scene }) {
         ))}
       </div>
 
-      {/* Testimonial Content */}
-      <div className="relative z-10 max-w-6xl mx-auto px-8 text-center">
+      {/* Testimonial Content - increased width to 75% of viewport */}
+      <div className="relative z-10 w-[75vw] mx-auto px-8 text-center">
         {/* Quote Icon */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
