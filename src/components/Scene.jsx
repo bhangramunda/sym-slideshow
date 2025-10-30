@@ -6,6 +6,7 @@ import LogoGridSlide from './LogoGridSlide.jsx'
 import ServiceCardSlide from './ServiceCardSlide.jsx'
 import SplitContentSlide from './SplitContentSlide.jsx'
 import SlideTransition from './SlideTransition.jsx'
+import { AnimatedText, AnimatedTextChars } from './BuildAnimation.jsx'
 import { parseFormatting } from '../utils/formatText.js'
 import cx from 'classnames'
 
@@ -33,10 +34,75 @@ const getDynamicFontSize = (text, baseSize, minSize, maxSize) => {
 };
 
 // Default/Hero slide layout
-function DefaultSlide({ scene }) {
+function DefaultSlide({ scene, buildScope, buildStyle }) {
   // Calculate dynamic sizes with much larger base for hero impact
   const titleFontSize = getDynamicFontSize(scene.title, 8, 6, 12); // base 8rem, up to 12rem for short titles
   const subtitleFontSize = getDynamicFontSize(scene.subtitle, 2.5, 2, 4); // base 2.5rem, up to 4rem
+
+  // Determine which build animation to use
+  const scope = scene.buildScope || buildScope || 'components'
+  const style = scene.buildStyle || buildStyle || 'classic'
+
+  // Choose the right title component based on scope/style
+  const TitleComponent = () => {
+    if (scope === 'off' || style === 'off') {
+      return (
+        <div
+          className="font-extrabold text-white drop-shadow-[0_0_20px_rgba(0,212,255,0.35)]"
+          style={{ fontSize: `${titleFontSize}rem` }}
+        >
+          {scene.title}
+        </div>
+      )
+    }
+
+    if (scope === 'elements' && style === 'typewriter') {
+      return (
+        <AnimatedTextChars
+          text={scene.title}
+          style={style}
+          className="font-extrabold text-white drop-shadow-[0_0_20px_rgba(0,212,255,0.35)]"
+          textStyle={{ fontSize: `${titleFontSize}rem` }}
+        />
+      )
+    }
+
+    if (scope === 'elements') {
+      return (
+        <AnimatedText
+          text={scene.title}
+          style={style}
+          className="font-extrabold text-white drop-shadow-[0_0_20px_rgba(0,212,255,0.35)]"
+          textStyle={{ fontSize: `${titleFontSize}rem` }}
+        />
+      )
+    }
+
+    // Default: components scope with KineticText (classic style) or simple animation
+    if (style === 'classic') {
+      return (
+        <KineticText
+          text={scene.title}
+          className="font-extrabold text-white drop-shadow-[0_0_20px_rgba(0,212,255,0.35)]"
+          style={{ fontSize: `${titleFontSize}rem` }}
+        />
+      )
+    }
+
+    // Component-level animation (non-classic)
+    return (
+      <motion.div
+        className="font-extrabold text-white drop-shadow-[0_0_20px_rgba(0,212,255,0.35)]"
+        style={{ fontSize: `${titleFontSize}rem` }}
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1, duration: 0.8 }}
+      >
+        {scene.title}
+      </motion.div>
+    )
+  }
+
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -88,11 +154,7 @@ function DefaultSlide({ scene }) {
 
       {/* Content */}
       <div className="relative z-10 max-w-6xl px-6 text-center">
-        <KineticText
-          text={scene.title}
-          className="font-extrabold text-white drop-shadow-[0_0_20px_rgba(0,212,255,0.35)]"
-          style={{ fontSize: `${titleFontSize}rem` }}
-        />
+        <TitleComponent />
         {scene.subtitle && (
           <motion.div
             className="mt-6 text-white/90 leading-relaxed"
@@ -125,27 +187,27 @@ function DefaultSlide({ scene }) {
 }
 
 // Main Scene component - routes to appropriate slide type with transition
-export default function Scene({ scene, isActive }) {
+export default function Scene({ scene, isActive, buildScope, buildStyle }) {
   if (!isActive) return null
 
   // Get slide content based on type
   let SlideContent
   switch (scene.type) {
     case 'testimonial':
-      SlideContent = <TestimonialSlide scene={scene} />
+      SlideContent = <TestimonialSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
       break
     case 'logo-grid':
-      SlideContent = <LogoGridSlide scene={scene} />
+      SlideContent = <LogoGridSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
       break
     case 'service-card':
-      SlideContent = <ServiceCardSlide scene={scene} />
+      SlideContent = <ServiceCardSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
       break
     case 'split-content':
-      SlideContent = <SplitContentSlide scene={scene} />
+      SlideContent = <SplitContentSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
       break
     case 'hero':
     default:
-      SlideContent = <DefaultSlide scene={scene} />
+      SlideContent = <DefaultSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
   }
 
   // Wrap with transition

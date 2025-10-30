@@ -11,7 +11,11 @@ const PROJECT_NAME = 'default'
 function Slideshow() {
   const [rawScenes, setRawScenes] = useState(scenesData)
   const [isLoading, setIsLoading] = useState(true)
-  const [transitionMode, setTransitionMode] = useState('sync') // 'sync' = crossfade, 'wait' = gap
+  const [settings, setSettings] = useState({
+    transitionMode: 'sync', // 'sync' = crossfade, 'wait' = gap
+    buildScope: 'components', // 'off', 'components', 'elements', 'sections'
+    buildStyle: 'classic' // 'off', 'classic', 'cascadingFade', 'scalingCascade', 'slideIn', 'blurFocus', 'typewriter'
+  })
 
   // Load slides from Supabase
   useEffect(() => {
@@ -47,12 +51,15 @@ function Slideshow() {
           console.log('[Slideshow] First slide:', data.slides[0]?.type, data.slides[0]?.title?.substring(0, 50))
           setRawScenes(data.slides)
 
-          // Load transition mode from settings
-          if (data.settings?.transitionMode) {
-            console.log('[Slideshow] Transition mode from settings:', data.settings.transitionMode)
-            setTransitionMode(data.settings.transitionMode)
+          // Load settings from database
+          if (data.settings) {
+            console.log('[Slideshow] Settings from database:', data.settings)
+            setSettings(prevSettings => ({
+              ...prevSettings,
+              ...data.settings
+            }))
           } else {
-            console.log('[Slideshow] No transition mode in settings, using default:', transitionMode)
+            console.log('[Slideshow] No settings in database, using defaults')
           }
         } else {
           console.warn('[Slideshow] No data in response, using fallback')
@@ -82,9 +89,12 @@ function Slideshow() {
           if (payload.new && payload.new.slides) {
             setRawScenes(payload.new.slides)
           }
-          if (payload.new && payload.new.settings?.transitionMode) {
-            console.log('[Slideshow] Real-time update: Transition mode changed to:', payload.new.settings.transitionMode)
-            setTransitionMode(payload.new.settings.transitionMode)
+          if (payload.new && payload.new.settings) {
+            console.log('[Slideshow] Real-time update: Settings changed to:', payload.new.settings)
+            setSettings(prevSettings => ({
+              ...prevSettings,
+              ...payload.new.settings
+            }))
           }
         }
       )
@@ -189,11 +199,19 @@ function Slideshow() {
       </div>
       {/* Debug: Show current transition mode */}
       <div className="absolute bottom-4 left-4 z-50 text-white/20 text-xs">
-        Mode: {transitionMode}
+        Mode: {settings.transitionMode}
       </div>
-      <AnimatePresence mode={transitionMode}>
+      <AnimatePresence mode={settings.transitionMode}>
         {scenes.map((scene, i) => (
-          i === index && <Scene key={scene._slideId || i} scene={scene} isActive={true} />
+          i === index && (
+            <Scene
+              key={scene._slideId || i}
+              scene={scene}
+              isActive={true}
+              buildScope={settings.buildScope}
+              buildStyle={settings.buildStyle}
+            />
+          )
         ))}
       </AnimatePresence>
     </div>

@@ -2,6 +2,14 @@ import { motion } from 'framer-motion';
 
 // Transition definitions - easily modifiable
 export const TRANSITIONS = {
+  none: {
+    name: 'None',
+    initial: { opacity: 1 },
+    animate: { opacity: 1 },
+    exit: { opacity: 1 },
+    transition: { duration: 0 }
+  },
+
   fade: {
     name: 'Fade',
     initial: { opacity: 0 },

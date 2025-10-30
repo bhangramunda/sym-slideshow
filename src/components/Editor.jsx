@@ -15,7 +15,9 @@ export default function Editor() {
 
   // Slideshow settings
   const [settings, setSettings] = useState({
-    transitionMode: 'sync' // 'sync' = crossfade, 'wait' = blank gap
+    transitionMode: 'sync', // 'sync' = crossfade, 'wait' = blank gap
+    buildScope: 'components', // 'off', 'components', 'elements', 'sections'
+    buildStyle: 'classic' // 'off', 'classic', 'cascadingFade', 'scalingCascade', 'slideIn', 'blurFocus', 'typewriter'
   });
 
   // Undo/Redo history
@@ -691,6 +693,47 @@ export default function Editor() {
                       <strong>Blank gap:</strong> Old fades out completely, then new fades in<br />
                       <span className="text-tgteal">Current: {settings.transitionMode === 'sync' ? 'Crossfade' : 'Blank gap'}</span>
                     </p>
+
+                    <div className="mt-4 pt-4 border-t border-gray-700">
+                      <label className="text-sm text-gray-300 font-medium">Build Animation Scope</label>
+                      <select
+                        value={settings.buildScope || 'components'}
+                        onChange={(e) => {
+                          console.log('[Editor] Build scope changed to:', e.target.value);
+                          setSettings({ ...settings, buildScope: e.target.value });
+                        }}
+                        className="w-full bg-gray-700 text-white rounded px-2 py-1 text-sm border border-gray-600 focus:border-tgteal focus:outline-none mt-1"
+                      >
+                        <option value="off">🚫 Off (no build animations)</option>
+                        <option value="components">📦 Components (title, subtitle, CTA)</option>
+                        <option value="elements">✨ Elements (words, items)</option>
+                        <option value="sections">📐 Sections (columns, blocks)</option>
+                      </select>
+                    </div>
+
+                    <div className="mt-3">
+                      <label className="text-sm text-gray-300 font-medium">Build Animation Style</label>
+                      <select
+                        value={settings.buildStyle || 'classic'}
+                        onChange={(e) => {
+                          console.log('[Editor] Build style changed to:', e.target.value);
+                          setSettings({ ...settings, buildStyle: e.target.value });
+                        }}
+                        className="w-full bg-gray-700 text-white rounded px-2 py-1 text-sm border border-gray-600 focus:border-tgteal focus:outline-none mt-1"
+                        disabled={settings.buildScope === 'off'}
+                      >
+                        <option value="off">🚫 Off</option>
+                        <option value="classic">⭐ Classic (word-by-word rise)</option>
+                        <option value="cascadingFade">💧 Cascading Fade</option>
+                        <option value="scalingCascade">🔍 Scaling Cascade</option>
+                        <option value="slideIn">➡️ Slide In</option>
+                        <option value="blurFocus">🎯 Blur Focus</option>
+                        <option value="typewriter">⌨️ Typewriter</option>
+                      </select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Animates elements within slides as they appear
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -951,6 +994,51 @@ export default function Editor() {
               </select>
               <div className="mt-1 text-xs text-gray-400">
                 Preview the transition by switching slides in the slideshow
+              </div>
+            </div>
+
+            {/* Build Animation Override */}
+            <div className="p-3 bg-blue-900/20 border border-blue-700/50 rounded space-y-2">
+              <div className="text-sm font-semibold text-blue-300">Build Animation Override</div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Build Scope</label>
+                <select
+                  value={selectedScene.buildScope || 'default'}
+                  onChange={(e) => {
+                    const value = e.target.value === 'default' ? undefined : e.target.value;
+                    updateScene(selectedIndex, { buildScope: value });
+                  }}
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm"
+                >
+                  <option value="default">🌐 Use Global ({settings.buildScope || 'components'})</option>
+                  <option value="off">🚫 Off</option>
+                  <option value="components">📦 Components</option>
+                  <option value="elements">✨ Elements</option>
+                  <option value="sections">📐 Sections</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-xs text-gray-400 mb-1">Build Style</label>
+                <select
+                  value={selectedScene.buildStyle || 'default'}
+                  onChange={(e) => {
+                    const value = e.target.value === 'default' ? undefined : e.target.value;
+                    updateScene(selectedIndex, { buildStyle: value });
+                  }}
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-2 py-1 text-white text-sm"
+                >
+                  <option value="default">🌐 Use Global ({settings.buildStyle || 'classic'})</option>
+                  <option value="off">🚫 Off</option>
+                  <option value="classic">⭐ Classic</option>
+                  <option value="cascadingFade">💧 Cascading Fade</option>
+                  <option value="scalingCascade">🔍 Scaling Cascade</option>
+                  <option value="slideIn">➡️ Slide In</option>
+                  <option value="blurFocus">🎯 Blur Focus</option>
+                  <option value="typewriter">⌨️ Typewriter</option>
+                </select>
+              </div>
+              <div className="text-xs text-gray-500">
+                Override global build animation settings for this slide only
               </div>
             </div>
 
