@@ -166,10 +166,38 @@ export default function Editor() {
 
   const updateScene = (index, updates) => {
     console.log('[Editor] Updating scene', index, 'with:', updates);
-    const newScenes = [...scenes];
-    newScenes[index] = { ...newScenes[index], ...updates };
-    console.log('[Editor] Updated scene:', newScenes[index]);
-    saveToHistory(newScenes);
+
+    // Use functional state update to avoid stale closure issues
+    setScenes(prevScenes => {
+      const newScenes = [...prevScenes];
+      newScenes[index] = { ...newScenes[index], ...updates };
+      console.log('[Editor] Updated scene:', newScenes[index]);
+
+      // Save to history with the new scenes (must be done synchronously)
+      setHistoryIndex(prevIndex => {
+        setHistory(prevHistory => {
+          const newHistory = prevHistory.slice(0, prevIndex + 1);
+          newHistory.push(newScenes);
+
+          // Limit history to 50 states
+          if (newHistory.length > 50) {
+            newHistory.shift();
+          }
+          return newHistory;
+        });
+
+        let newIndex = prevIndex + 1;
+
+        // Adjust index if we removed first item
+        if (prevIndex + 2 > 50) {
+          newIndex = prevIndex; // Don't increment if we're at the limit
+        }
+
+        return newIndex;
+      });
+
+      return newScenes;
+    });
   };
 
   // Resize image if larger than 3MB
