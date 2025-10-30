@@ -65,7 +65,7 @@ export default function TestimonialSlide({ scene }) {
         </motion.div>
 
         {/* Testimonial Quote */}
-        <div className="text-4xl md:text-5xl font-bold text-white leading-tight mb-12" style={{ wordBreak: 'normal', hyphens: 'none', overflowWrap: 'normal' }}>
+        <div className="text-4xl md:text-5xl font-bold text-white leading-tight mb-12" style={{ wordBreak: 'keep-all', hyphens: 'none', overflowWrap: 'break-word', whiteSpace: 'normal' }}>
           <KineticText text={scene.quote} />
         </div>
 
