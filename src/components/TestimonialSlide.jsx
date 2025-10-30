@@ -53,7 +53,7 @@ export default function TestimonialSlide({ scene }) {
       </div>
 
       {/* Testimonial Content */}
-      <div className="relative z-10 max-w-5xl mx-auto px-8 text-center">
+      <div className="relative z-10 max-w-6xl mx-auto px-8 text-center">
         {/* Quote Icon */}
         <motion.div
           initial={{ opacity: 0, scale: 0.8 }}
@@ -65,7 +65,7 @@ export default function TestimonialSlide({ scene }) {
         </motion.div>
 
         {/* Testimonial Quote */}
-        <div className="text-4xl md:text-5xl font-bold text-white leading-tight mb-12 break-words hyphens-none">
+        <div className="text-4xl md:text-5xl font-bold text-white leading-tight mb-12" style={{ wordBreak: 'normal', hyphens: 'none', overflowWrap: 'normal' }}>
           <KineticText text={scene.quote} />
         </div>
 
@@ -76,14 +76,14 @@ export default function TestimonialSlide({ scene }) {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="space-y-2"
         >
-          <div className="text-2xl font-semibold text-tgteal break-words hyphens-none">
+          <div className="text-2xl font-semibold text-tgteal" style={{ wordBreak: 'normal', hyphens: 'none' }}>
             {scene.author}
           </div>
-          <div className="text-xl text-white/70 break-words hyphens-none">
+          <div className="text-xl text-white/70" style={{ wordBreak: 'normal', hyphens: 'none' }}>
             {scene.role}
           </div>
           {scene.company && (
-            <div className="text-lg text-white/50 break-words hyphens-none">
+            <div className="text-lg text-white/50" style={{ wordBreak: 'normal', hyphens: 'none' }}>
               {scene.company}
             </div>
           )}
