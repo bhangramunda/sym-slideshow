@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { parseFormatting } from '../utils/formatText';
 
 export default function FullScreenImageSlide({ scene }) {
   return (
@@ -42,9 +43,10 @@ export default function FullScreenImageSlide({ scene }) {
             {scene.title}
           </h2>
           {scene.subtitle && (
-            <p className="text-xl md:text-2xl text-white/80 text-center mt-4">
-              {scene.subtitle}
-            </p>
+            <p
+              className="text-xl md:text-2xl text-white/80 text-center mt-4"
+              dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
+            />
           )}
         </motion.div>
       )}

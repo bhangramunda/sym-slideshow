@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import KineticText from './KineticText';
+import { parseFormatting } from '../utils/formatText';
 
 export default function SplitContentSlide({ scene }) {
   const isLeftImage = scene.layout === 'image-left';
@@ -84,14 +85,9 @@ export default function SplitContentSlide({ scene }) {
                 initial={{ opacity: 0, y: 20, filter: 'blur(4px)' }}
                 animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="text-2xl md:text-3xl text-white/80 leading-relaxed mb-10"
-              >
-                {scene.subtitle.split('\n').map((line, i) => (
-                  <p key={i} className={`${i > 0 ? 'mt-4' : ''} break-words hyphens-none`}>
-                    {line}
-                  </p>
-                ))}
-              </motion.div>
+                className="text-2xl md:text-3xl text-white/80 leading-relaxed mb-10 break-words hyphens-none"
+                dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
+              />
             )}
 
             {/* Bullet Points */}
