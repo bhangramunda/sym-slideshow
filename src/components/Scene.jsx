@@ -34,9 +34,9 @@ const getDynamicFontSize = (text, baseSize, minSize, maxSize) => {
 
 // Default/Hero slide layout
 function DefaultSlide({ scene }) {
-  // Calculate dynamic sizes
-  const titleFontSize = getDynamicFontSize(scene.title, 6, 4, 9); // base 6rem (text-6xl)
-  const subtitleFontSize = getDynamicFontSize(scene.subtitle, 2, 1.5, 3.5); // base 2rem (text-2xl)
+  // Calculate dynamic sizes with much larger base for hero impact
+  const titleFontSize = getDynamicFontSize(scene.title, 8, 6, 12); // base 8rem, up to 12rem for short titles
+  const subtitleFontSize = getDynamicFontSize(scene.subtitle, 2.5, 2, 4); // base 2.5rem, up to 4rem
   return (
     <motion.div
       initial={{ opacity: 0 }}

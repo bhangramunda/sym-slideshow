@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 
-export default function KineticText({ text, className = '' }) {
+export default function KineticText({ text, className = '', style = {} }) {
   // Split by words instead of characters to prevent mid-word breaks
   const words = text.split(' ')
   const container = {
@@ -29,6 +29,7 @@ export default function KineticText({ text, className = '' }) {
   return (
     <motion.div
       className={className}
+      style={style}
       variants={container}
       initial="hidden"
       animate="visible"
