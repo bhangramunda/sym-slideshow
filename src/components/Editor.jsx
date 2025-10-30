@@ -80,10 +80,15 @@ export default function Editor() {
       const containerWidth = previewContainer.offsetWidth;
       const containerHeight = previewContainer.offsetHeight;
 
-      // Calculate scale to fit 1920x1080 content in container, maximize use of space
-      const scaleX = containerWidth / 1920;
-      const scaleY = containerHeight / 1080;
-      const scale = Math.min(scaleX, scaleY); // Use all available space
+      // Add padding to prevent content from touching edges
+      const padding = 20; // 20px padding on all sides
+      const availableWidth = containerWidth - (padding * 2);
+      const availableHeight = containerHeight - (padding * 2);
+
+      // Calculate scale to fit 1920x1080 content in container
+      const scaleX = availableWidth / 1920;
+      const scaleY = availableHeight / 1080;
+      const scale = Math.min(scaleX, scaleY, 1); // Cap at 1 to avoid upscaling
 
       setPreviewScale(scale);
       document.documentElement.style.setProperty('--preview-scale', scale.toString());
@@ -92,6 +97,7 @@ export default function Editor() {
     // Initial scale calculation (with retry in case container not ready)
     updatePreviewScale();
     const retryTimeout = setTimeout(updatePreviewScale, 100);
+    const retryTimeout2 = setTimeout(updatePreviewScale, 300);
 
     window.addEventListener('resize', updatePreviewScale);
 
@@ -104,6 +110,7 @@ export default function Editor() {
 
     return () => {
       clearTimeout(retryTimeout);
+      clearTimeout(retryTimeout2);
       window.removeEventListener('resize', updatePreviewScale);
       observer.disconnect();
     };
