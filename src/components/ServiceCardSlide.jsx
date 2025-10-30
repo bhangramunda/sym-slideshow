@@ -137,10 +137,10 @@ export default function ServiceCardSlide({ scene }) {
                             duration: 0.5,
                             delay: 1.3 + index * 0.2 + fIndex * 0.1,
                           }}
-                          className="flex items-start gap-3 text-white/80"
+                          className="flex items-center gap-3 text-white/80"
                         >
-                          <span className="text-tgteal text-xl mt-1 flex-shrink-0">✓</span>
-                          <span className="break-words hyphens-none">{feature}</span>
+                          <span className="text-tgteal text-xl leading-none flex-shrink-0">✓</span>
+                          <span className="break-words hyphens-none leading-tight">{feature}</span>
                         </motion.li>
                       ))}
                     </ul>
