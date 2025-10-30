@@ -49,10 +49,10 @@ export default function Editor() {
       const containerWidth = previewContainer.offsetWidth;
       const containerHeight = previewContainer.offsetHeight;
 
-      // Calculate scale to fit 1920x1080 content in container
+      // Calculate scale to fit 1920x1080 content in container, maximize use of space
       const scaleX = containerWidth / 1920;
       const scaleY = containerHeight / 1080;
-      const scale = Math.min(scaleX, scaleY, 1); // Don't scale up beyond 100%
+      const scale = Math.min(scaleX, scaleY); // Use all available space
 
       setPreviewScale(scale);
       document.documentElement.style.setProperty('--preview-scale', scale.toString());
@@ -608,15 +608,10 @@ export default function Editor() {
           </div>
 
           {/* Live Preview - Scaled */}
-          <div className="flex-1 relative bg-black overflow-hidden flex items-center justify-center p-4 preview-container">
-            <div
-              className="relative bg-black shadow-2xl w-full h-full"
-              style={{
-                aspectRatio: '16/9'
-              }}
-            >
+          <div className="flex-1 relative bg-black overflow-hidden flex items-center justify-center preview-container">
+            <div className="relative w-full h-full flex items-center justify-center">
               <div
-                className="absolute inset-0 origin-center"
+                className="relative"
                 style={{
                   width: '1920px',
                   height: '1080px',
