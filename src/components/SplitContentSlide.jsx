@@ -73,9 +73,9 @@ export default function SplitContentSlide({ scene }) {
 
         {/* Content Side */}
         <div className="w-1/2 flex items-center justify-center p-16">
-          <div className="w-full px-8">
+          <div className="w-full pl-16 pr-8">
             {/* Title */}
-            <div className="text-7xl md:text-8xl font-bold text-white mb-10 leading-tight break-words hyphens-none">
+            <div className="text-8xl md:text-9xl font-bold text-white mb-12 leading-tight break-words hyphens-none">
               <KineticText text={scene.title} />
             </div>
 
@@ -85,7 +85,7 @@ export default function SplitContentSlide({ scene }) {
                 initial={{ opacity: 0, y: 20, filter: 'blur(4px)' }}
                 animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="text-3xl md:text-4xl text-white/80 leading-relaxed mb-12 break-words hyphens-none"
+                className="text-4xl md:text-5xl text-white/80 leading-relaxed mb-14 break-words hyphens-none"
                 dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
               />
             )}
@@ -96,7 +96,7 @@ export default function SplitContentSlide({ scene }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.9 }}
-                className="space-y-5 mb-10"
+                className="space-y-6 mb-10"
               >
                 {scene.points.map((point, index) => (
                   <motion.li
@@ -109,10 +109,10 @@ export default function SplitContentSlide({ scene }) {
                       type: 'spring',
                       stiffness: 200,
                     }}
-                    className="flex items-center gap-5 text-2xl md:text-3xl text-white/90"
+                    className="flex items-center gap-6 text-3xl md:text-4xl text-white/90"
                   >
                     <motion.span
-                      className="text-4xl text-tgteal flex-shrink-0 leading-none"
+                      className="text-5xl text-tgteal flex-shrink-0 leading-none"
                       animate={{
                         scale: [1, 1.2, 1],
                       }}
