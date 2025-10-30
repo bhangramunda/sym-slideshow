@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Scene from './Scene';
 import RichTextArea from './RichTextArea';
+import HelpModal from './HelpModal';
 import scenesData from '../scenes.json';
 import { useSupabaseSync } from '../hooks/useSupabaseSync';
 import { TRANSITIONS, TRANSITION_OPTIONS } from './SlideTransition';
@@ -40,6 +41,9 @@ export default function Editor() {
 
   // Video upload state
   const [uploadingVideo, setUploadingVideo] = useState(false);
+
+  // Help modal state
+  const [showHelp, setShowHelp] = useState(false);
 
   // Supabase autosave
   const { saveStatus, lastSaved, forceSave, isLoading } = useSupabaseSync(
@@ -629,80 +633,95 @@ export default function Editor() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-900 text-white">
-      {/* Editor Panel - Left Side */}
-      <div
-        className="flex flex-col border-r border-gray-700"
-        style={{ width: `${leftPanelWidth}%` }}
-      >
-        {/* Header */}
-        <div className="p-4 border-b border-gray-700 bg-gray-800">
-          <div className="flex items-center justify-between mb-4">
-            <div className="flex items-center gap-3">
-              <h1 className="text-2xl font-bold">Slide Editor</h1>
-              <div className="flex gap-1">
-                <button
-                  onClick={undo}
-                  disabled={historyIndex === 0}
-                  className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-sm"
-                  title="Undo (Ctrl+Z)"
-                >
-                  ↶ Undo
-                </button>
-                <button
-                  onClick={redo}
-                  disabled={historyIndex >= history.length - 1}
-                  className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-sm"
-                  title="Redo (Ctrl+Y)"
-                >
-                  ↷ Redo
-                </button>
+    <div className="flex flex-col h-screen bg-gray-900 text-white">
+      {/* Full-Width Save Status Bar */}
+      <div className="w-full bg-gray-800 border-b border-gray-700 px-6 py-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <h1 className="text-xl font-bold text-white">TechGuilds × Kajoo AI Slideshow Editor</h1>
+            {saveStatus === 'saving' && (
+              <div className="flex items-center gap-2 text-blue-400">
+                <div className="animate-spin h-4 w-4 border-2 border-blue-400 border-t-transparent rounded-full"></div>
+                <span className="text-sm font-medium">Saving...</span>
               </div>
-            </div>
-            <div className="flex gap-2 items-center">
-              {/* Save Status - more prominent */}
-              <div className="px-4 py-2 bg-gray-800 rounded-lg border border-gray-700 min-w-[140px]">
-                {saveStatus === 'saving' && (
-                  <div className="flex items-center gap-2 text-blue-400">
-                    <div className="animate-spin h-4 w-4 border-2 border-blue-400 border-t-transparent rounded-full"></div>
-                    <span className="text-sm font-medium">Saving...</span>
-                  </div>
-                )}
-                {saveStatus === 'saved' && (
-                  <div className="flex items-center gap-2 text-green-400">
-                    <span>✓</span>
-                    <span className="text-sm font-medium">Auto-saved</span>
-                  </div>
-                )}
-                {saveStatus === 'pending' && (
-                  <div className="flex items-center gap-2 text-yellow-400">
-                    <span>○</span>
-                    <span className="text-sm font-medium">Saving in 2s...</span>
-                  </div>
-                )}
-                {saveStatus === 'error' && (
-                  <div className="flex items-center gap-2 text-red-400">
-                    <span>✕</span>
-                    <span className="text-sm font-medium">Save failed</span>
-                  </div>
-                )}
-                {saveStatus === 'idle' && (
-                  <div className="flex items-center gap-2 text-gray-400">
-                    <span>✓</span>
-                    <span className="text-sm font-medium">All saved</span>
-                  </div>
-                )}
+            )}
+            {saveStatus === 'saved' && (
+              <div className="flex items-center gap-2 text-green-400">
+                <span>✓</span>
+                <span className="text-sm font-medium">Auto-saved</span>
               </div>
+            )}
+            {saveStatus === 'pending' && (
+              <div className="flex items-center gap-2 text-yellow-400">
+                <span>○</span>
+                <span className="text-sm font-medium">Saving in 2s...</span>
+              </div>
+            )}
+            {saveStatus === 'error' && (
+              <div className="flex items-center gap-2 text-red-400">
+                <span>✕</span>
+                <span className="text-sm font-medium">Save failed</span>
+              </div>
+            )}
+            {saveStatus === 'idle' && (
+              <div className="flex items-center gap-2 text-gray-400">
+                <span>✓</span>
+                <span className="text-sm font-medium">All saved</span>
+              </div>
+            )}
+          </div>
+          <div className="flex gap-2 items-center">
+            <button
+              onClick={() => setShowHelp(true)}
+              className="px-4 py-2 bg-gray-700 rounded-lg hover:bg-gray-600 transition-colors font-semibold"
+              title="Open help guide"
+            >
+              📚 Help
+            </button>
+            <button
+              onClick={forceSave}
+              disabled={saveStatus === 'saving'}
+              className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+              title="Force save to database now"
+            >
+              💾 Save Now
+            </button>
+          </div>
+        </div>
+      </div>
 
-              {/* Save Now Button */}
-              <button
-                onClick={forceSave}
-                disabled={saveStatus === 'saving'}
-                className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
-                title="Force save to database now"
-              >
-                💾 Save Now
-              </button>
+      {/* Main Editor Layout */}
+      <div className="flex flex-1 overflow-hidden">
+        {/* Editor Panel - Left Side */}
+        <div
+          className="flex flex-col border-r border-gray-700"
+          style={{ width: `${leftPanelWidth}%` }}
+        >
+          {/* Header */}
+          <div className="p-4 border-b border-gray-700 bg-gray-800">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <h2 className="text-lg font-bold">Slides</h2>
+                <div className="flex gap-1">
+                  <button
+                    onClick={undo}
+                    disabled={historyIndex === 0}
+                    className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-sm"
+                    title="Undo (Ctrl+Z)"
+                  >
+                    ↶ Undo
+                  </button>
+                  <button
+                    onClick={redo}
+                    disabled={historyIndex >= history.length - 1}
+                    className="px-3 py-1 bg-gray-700 rounded hover:bg-gray-600 transition-colors disabled:opacity-30 disabled:cursor-not-allowed text-sm"
+                    title="Redo (Ctrl+Y)"
+                  >
+                    ↷ Redo
+                  </button>
+                </div>
+              </div>
+              <div className="flex gap-2 items-center">
 
               {/* Settings Menu */}
               <div className="relative group">
@@ -1759,6 +1778,9 @@ export default function Editor() {
           </div>
         </div>
       </div>
+
+      {/* Help Modal */}
+      <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} />
     </div>
   );
 }
