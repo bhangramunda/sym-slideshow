@@ -36,6 +36,7 @@ export default function Editor() {
 
   // Image upload state
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [uploadedImages, setUploadedImages] = useState([]);
 
   // Video upload state
   const [uploadingVideo, setUploadingVideo] = useState(false);
@@ -128,6 +129,43 @@ export default function Editor() {
       observer.disconnect();
     };
   }, [leftPanelWidth, topPanelHeight, settings.aspectRatio]);
+
+  // Fetch all uploaded images from Supabase storage
+  useEffect(() => {
+    async function fetchUploadedImages() {
+      try {
+        const { data, error } = await supabase.storage
+          .from('slideshow-images')
+          .list('slides', {
+            limit: 100,
+            sortBy: { column: 'created_at', order: 'desc' }
+          });
+
+        if (error) throw error;
+
+        if (data) {
+          const imagesWithUrls = data.map(file => {
+            const { data: { publicUrl } } = supabase.storage
+              .from('slideshow-images')
+              .getPublicUrl(`slides/${file.name}`);
+
+            return {
+              name: file.name,
+              publicUrl,
+              displayName: file.name.replace(/^\d+-[a-z0-9]+\./, ''), // Remove timestamp prefix
+              createdAt: file.created_at
+            };
+          });
+
+          setUploadedImages(imagesWithUrls);
+        }
+      } catch (error) {
+        console.error('Error fetching uploaded images:', error);
+      }
+    }
+
+    fetchUploadedImages();
+  }, []);
 
   // Save to history when scenes change (using functional updates to prevent race conditions)
   // Can accept either new scenes array OR a function that receives prev scenes
@@ -1279,17 +1317,16 @@ export default function Editor() {
                   }}
                   className="flex-1 bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
                 >
-                  {(selectedScene.image?.startsWith('data:') || selectedScene.image?.startsWith('https://')) && (
-                    <option value="custom">
-                      🖼️ {selectedScene.imageName || 'Custom Upload'}
-                    </option>
-                  )}
                   <option value="">None</option>
-                  {[1, 2, 3, 4, 5, 6, 7, 8].map((n) => (
-                    <option key={n} value={`/assets/placeholder-0${n}.svg`}>
-                      Placeholder {n}
-                    </option>
-                  ))}
+                  {uploadedImages.length > 0 && (
+                    <optgroup label="📁 Uploaded Images">
+                      {uploadedImages.map((img) => (
+                        <option key={img.name} value={img.publicUrl}>
+                          {img.displayName}
+                        </option>
+                      ))}
+                    </optgroup>
+                  )}
                 </select>
                 <label className={`px-4 py-2 rounded transition-colors cursor-pointer text-sm whitespace-nowrap ${
                   uploadingImage ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'
@@ -1333,6 +1370,15 @@ export default function Editor() {
                             image: publicUrl,
                             imageName: originalName
                           });
+
+                          // Add to uploaded images list
+                          setUploadedImages(prev => [{
+                            name: fileName,
+                            publicUrl,
+                            displayName: originalName,
+                            createdAt: new Date().toISOString()
+                          }, ...prev]);
+
                           setUploadingImage(false);
                           e.target.value = '';
                         } catch (error) {
