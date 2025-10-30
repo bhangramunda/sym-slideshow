@@ -52,6 +52,10 @@ export default function Editor() {
   const [isDraggingHorizontal, setIsDraggingHorizontal] = useState(false);
   const [previewScale, setPreviewScale] = useState(1);
 
+  // Drag-and-drop state for slide reordering
+  const [draggedSlideIndex, setDraggedSlideIndex] = useState(null);
+  const [dragOverIndex, setDragOverIndex] = useState(null);
+
   // Update preview scale when window or panels resize
   useEffect(() => {
     const updatePreviewScale = () => {
@@ -70,7 +74,10 @@ export default function Editor() {
       document.documentElement.style.setProperty('--preview-scale', scale.toString());
     };
 
+    // Initial scale calculation (with retry in case container not ready)
     updatePreviewScale();
+    const retryTimeout = setTimeout(updatePreviewScale, 100);
+
     window.addEventListener('resize', updatePreviewScale);
 
     // Update scale when panels resize
@@ -81,6 +88,7 @@ export default function Editor() {
     }
 
     return () => {
+      clearTimeout(retryTimeout);
       window.removeEventListener('resize', updatePreviewScale);
       observer.disconnect();
     };
@@ -239,6 +247,47 @@ export default function Editor() {
     [newScenes[index], newScenes[targetIndex]] = [newScenes[targetIndex], newScenes[index]];
     saveToHistory(newScenes);
     setSelectedIndex(targetIndex);
+  };
+
+  // Drag-and-drop handlers for slide reordering
+  const handleDragStart = (e, index) => {
+    setDraggedSlideIndex(index);
+    e.dataTransfer.effectAllowed = 'move';
+    // Set a custom drag image if needed
+    e.dataTransfer.setData('text/html', e.currentTarget);
+  };
+
+  const handleDragOver = (e, index) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+
+    if (draggedSlideIndex !== null && draggedSlideIndex !== index) {
+      setDragOverIndex(index);
+    }
+  };
+
+  const handleDrop = (e, dropIndex) => {
+    e.preventDefault();
+
+    if (draggedSlideIndex === null || draggedSlideIndex === dropIndex) {
+      setDraggedSlideIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+
+    const newScenes = [...scenes];
+    const [draggedSlide] = newScenes.splice(draggedSlideIndex, 1);
+    newScenes.splice(dropIndex, 0, draggedSlide);
+
+    saveToHistory(newScenes);
+    setSelectedIndex(dropIndex);
+    setDraggedSlideIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDraggedSlideIndex(null);
+    setDragOverIndex(null);
   };
 
   const duplicateScene = (index) => {
@@ -543,18 +592,44 @@ export default function Editor() {
             <motion.div
               key={index}
               layout
-              className={`p-3 rounded-lg cursor-pointer transition-all ${
+              draggable
+              onDragStart={(e) => handleDragStart(e, index)}
+              onDragOver={(e) => handleDragOver(e, index)}
+              onDrop={(e) => handleDrop(e, index)}
+              onDragEnd={handleDragEnd}
+              className={`p-3 rounded-lg transition-all ${
+                draggedSlideIndex === index
+                  ? 'opacity-50'
+                  : dragOverIndex === index
+                  ? 'border-t-4 border-tgteal'
+                  : ''
+              } ${
                 selectedIndex === index
                   ? 'bg-tgteal/20 border-2 border-tgteal'
                   : 'bg-gray-800 border-2 border-transparent hover:border-gray-600'
               }`}
-              onClick={() => {
-                setSelectedIndex(index);
-                setPreviewIndex(index);
-              }}
             >
-              <div className="flex items-start justify-between gap-2">
-                <div className="flex-1 min-w-0">
+              <div className="flex items-start gap-2">
+                {/* Drag Handle */}
+                <div className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-tgteal transition-colors pt-1 flex-shrink-0">
+                  <svg width="16" height="24" viewBox="0 0 16 24" fill="currentColor">
+                    <circle cx="4" cy="6" r="2"/>
+                    <circle cx="12" cy="6" r="2"/>
+                    <circle cx="4" cy="12" r="2"/>
+                    <circle cx="12" cy="12" r="2"/>
+                    <circle cx="4" cy="18" r="2"/>
+                    <circle cx="12" cy="18" r="2"/>
+                  </svg>
+                </div>
+
+                {/* Slide Info */}
+                <div
+                  className="flex-1 min-w-0 cursor-pointer"
+                  onClick={() => {
+                    setSelectedIndex(index);
+                    setPreviewIndex(index);
+                  }}
+                >
                   <div className="flex items-center gap-2 mb-1">
                     <span className="text-xs font-mono bg-gray-700 px-2 py-0.5 rounded">
                       {index + 1}
@@ -575,28 +650,6 @@ export default function Editor() {
                       {scene.subtitle.substring(0, 60)}...
                     </div>
                   )}
-                </div>
-                <div className="flex flex-col gap-1">
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      moveScene(index, 'up');
-                    }}
-                    disabled={index === 0}
-                    className="p-1 text-xs hover:bg-gray-700 rounded disabled:opacity-30"
-                  >
-                    ▲
-                  </button>
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      moveScene(index, 'down');
-                    }}
-                    disabled={index === scenes.length - 1}
-                    className="p-1 text-xs hover:bg-gray-700 rounded disabled:opacity-30"
-                  >
-                    ▼
-                  </button>
                 </div>
               </div>
             </motion.div>
