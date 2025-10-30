@@ -826,17 +826,7 @@ export default function Editor() {
                 max="60"
                 value={selectedScene.durationSec}
                 onChange={(e) => {
-                  // Update without saving to history (for live preview)
-                  const newScenes = [...scenes];
-                  newScenes[selectedIndex] = { ...newScenes[selectedIndex], durationSec: parseInt(e.target.value) };
-                  setScenes(newScenes);
-                }}
-                onMouseUp={(e) => {
-                  // Save to history when user releases the slider
-                  updateScene(selectedIndex, { durationSec: parseInt(e.target.value) });
-                }}
-                onTouchEnd={(e) => {
-                  // Save to history for touch devices
+                  // Save to history on every change (autosave will debounce)
                   updateScene(selectedIndex, { durationSec: parseInt(e.target.value) });
                 }}
                 className="w-full"
