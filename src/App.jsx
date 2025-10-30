@@ -85,27 +85,32 @@ function Slideshow() {
     const result = rawScenes.map((scene, i) => ({ ...scene, _slideId: `slide-${i}` }))
 
     // Calculate how many times to repeat each featured slide
-    // and where to insert them to space them evenly
     const totalSlides = rawScenes.length
-    const repeatsPerFeatured = Math.max(1, Math.floor(totalSlides / featuredScenes.length))
-    const interval = Math.floor(totalSlides / (repeatsPerFeatured * featuredScenes.length + 1))
+    const totalFeatured = featuredScenes.length
 
-    console.log('[Slideshow] Will duplicate featured slides', repeatsPerFeatured, 'times, spacing them every', interval, 'slides')
+    // How many copies of each featured slide to insert (in addition to original)
+    const copiesPerFeatured = Math.min(3, Math.floor(totalSlides / totalFeatured))
 
-    // Insert duplicates of featured slides at calculated intervals
+    // Calculate spacing between featured slide insertions
+    const totalInsertions = copiesPerFeatured * totalFeatured
+    const interval = Math.max(1, Math.floor((totalSlides + totalInsertions) / (totalInsertions + 1)))
+
+    console.log('[Slideshow] Will insert', copiesPerFeatured, 'copies of each featured slide, spacing them every', interval, 'slides')
+
+    // Insert featured slide copies at calculated intervals
     let insertOffset = 0
-    featuredScenes.forEach((featuredSlide, featIndex) => {
-      for (let i = 0; i < repeatsPerFeatured; i++) {
-        const insertPos = interval * (i + 1) + insertOffset
+    for (let copyNum = 0; copyNum < copiesPerFeatured; copyNum++) {
+      featuredScenes.forEach((featuredSlide, featIndex) => {
+        const insertPos = interval * (copyNum * totalFeatured + featIndex + 1) + insertOffset
         if (insertPos <= result.length) {
           result.splice(insertPos, 0, {
             ...featuredSlide,
-            _slideId: `featured-${featIndex}-copy-${i}`
+            _slideId: `featured-${featIndex}-copy-${copyNum}`
           })
           insertOffset++
         }
-      }
-    })
+      })
+    }
 
     console.log('[Slideshow] Final deck:', result.length, 'slides (', rawScenes.length, 'original +', result.length - rawScenes.length, 'featured duplicates)')
     console.log('[Slideshow] First 5 slides:', result.slice(0, 5).map(s => s.title?.substring(0, 30)))
