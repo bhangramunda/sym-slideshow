@@ -11,6 +11,7 @@ const PROJECT_NAME = 'default'
 function Slideshow() {
   const [rawScenes, setRawScenes] = useState(scenesData)
   const [isLoading, setIsLoading] = useState(true)
+  const [transitionMode, setTransitionMode] = useState('sync') // 'sync' = crossfade, 'wait' = gap
 
   // Load slides from Supabase
   useEffect(() => {
@@ -19,7 +20,7 @@ function Slideshow() {
         console.log('[Slideshow] Loading from Supabase...')
         const { data, error } = await supabase
           .from('slideshow_data')
-          .select('slides')
+          .select('slides, settings')
           .eq('project_name', PROJECT_NAME)
           .single()
 
@@ -31,6 +32,11 @@ function Slideshow() {
           console.log('[Slideshow] Loaded', data.slides.length, 'slides from Supabase')
           console.log('[Slideshow] First slide:', data.slides[0]?.type, data.slides[0]?.title?.substring(0, 50))
           setRawScenes(data.slides)
+
+          // Load transition mode from settings
+          if (data.settings?.transitionMode) {
+            setTransitionMode(data.settings.transitionMode)
+          }
         } else {
           console.warn('[Slideshow] No data in response, using fallback')
         }
@@ -58,6 +64,9 @@ function Slideshow() {
         (payload) => {
           if (payload.new && payload.new.slides) {
             setRawScenes(payload.new.slides)
+          }
+          if (payload.new && payload.new.settings?.transitionMode) {
+            setTransitionMode(payload.new.settings.transitionMode)
           }
         }
       )
@@ -160,7 +169,7 @@ function Slideshow() {
           Edit
         </a>
       </div>
-      <AnimatePresence mode="wait">
+      <AnimatePresence mode={transitionMode}>
         {scenes.map((scene, i) => (
           i === index && <Scene key={scene._slideId || i} scene={scene} isActive={true} />
         ))}

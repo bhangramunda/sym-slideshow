@@ -4,7 +4,7 @@ import { supabase } from '../lib/supabase';
 const PROJECT_NAME = 'default';
 const AUTOSAVE_DELAY = 2000; // 2 seconds after last change
 
-export function useSupabaseSync(scenes, onScenesUpdate) {
+export function useSupabaseSync(scenes, settings, onScenesUpdate, onSettingsUpdate) {
   const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, saved, error
   const [lastSaved, setLastSaved] = useState(null);
   const [remoteVersion, setRemoteVersion] = useState(null);
@@ -40,7 +40,7 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
     };
   }, []);
 
-  // Autosave when scenes change
+  // Autosave when scenes or settings change
   useEffect(() => {
     if (isInitialLoad.current) {
       isInitialLoad.current = false;
@@ -57,7 +57,7 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
 
     // Schedule save
     saveTimeoutRef.current = setTimeout(() => {
-      saveToSupabase(scenes);
+      saveToSupabase(scenes, settings);
     }, AUTOSAVE_DELAY);
 
     return () => {
@@ -65,7 +65,7 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
         clearTimeout(saveTimeoutRef.current);
       }
     };
-  }, [scenes]);
+  }, [scenes, settings]);
 
   async function loadFromSupabase() {
     try {
@@ -78,7 +78,7 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
       if (error) {
         if (error.code === 'PGRST116') {
           // No data exists, create initial entry
-          await saveToSupabase(scenes, true);
+          await saveToSupabase(scenes, settings, true);
         } else {
           throw error;
         }
@@ -95,6 +95,11 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
           // Remote has different data, update local
           onScenesUpdate(remoteScenes);
         }
+
+        // Load settings if available
+        if (data.settings && onSettingsUpdate) {
+          onSettingsUpdate(data.settings);
+        }
       }
     } catch (error) {
       console.error('Error loading from Supabase:', error);
@@ -104,7 +109,7 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
     }
   }
 
-  async function saveToSupabase(scenesToSave, isInitial = false) {
+  async function saveToSupabase(scenesToSave, settingsToSave, isInitial = false) {
     setSaveStatus('saving');
 
     try {
@@ -129,6 +134,7 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
           {
             project_name: PROJECT_NAME,
             slides: cleanedSlides,
+            settings: settingsToSave,
             updated_by: 'editor',
           },
           {
@@ -165,6 +171,9 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
         setRemoteVersion(remoteData.version);
         setLastSaved(new Date(remoteData.updated_at));
         onScenesUpdate(remoteData.slides);
+        if (remoteData.settings && onSettingsUpdate) {
+          onSettingsUpdate(remoteData.settings);
+        }
       }
     }
   }
@@ -173,7 +182,7 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
     if (saveTimeoutRef.current) {
       clearTimeout(saveTimeoutRef.current);
     }
-    await saveToSupabase(scenes);
+    await saveToSupabase(scenes, settings);
   }
 
   return {

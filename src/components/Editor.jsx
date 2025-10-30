@@ -13,6 +13,11 @@ export default function Editor() {
   const [previewIndex, setPreviewIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
 
+  // Slideshow settings
+  const [settings, setSettings] = useState({
+    transitionMode: 'sync' // 'sync' = crossfade, 'wait' = blank gap
+  });
+
   // Undo/Redo history
   const [history, setHistory] = useState([scenesData]);
   const [historyIndex, setHistoryIndex] = useState(0);
@@ -23,9 +28,16 @@ export default function Editor() {
   const [uploadingImage, setUploadingImage] = useState(false);
 
   // Supabase autosave
-  const { saveStatus, lastSaved, forceSave, isLoading } = useSupabaseSync(scenes, (newScenes) => {
-    saveToHistory(newScenes);
-  });
+  const { saveStatus, lastSaved, forceSave, isLoading } = useSupabaseSync(
+    scenes,
+    settings,
+    (newScenes) => {
+      saveToHistory(newScenes);
+    },
+    (newSettings) => {
+      setSettings(newSettings);
+    }
+  );
 
   // Resizable panels state
   const [leftPanelWidth, setLeftPanelWidth] = useState(() => {
@@ -468,10 +480,25 @@ export default function Editor() {
                     💾 Export to JSON
                   </button>
 
-                  {/* Future settings can be added here */}
-                  {/* <div className="px-4 py-2 border-t border-gray-700">
-                    <div className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Display</div>
-                  </div> */}
+                  {/* Slideshow Settings */}
+                  <div className="px-4 py-2 border-t border-gray-700">
+                    <div className="text-xs text-gray-400 font-semibold uppercase tracking-wide">Slideshow</div>
+                  </div>
+                  <div className="px-4 py-3 space-y-2">
+                    <label className="text-sm text-gray-300 font-medium">Transition Style</label>
+                    <select
+                      value={settings.transitionMode}
+                      onChange={(e) => setSettings({ ...settings, transitionMode: e.target.value })}
+                      className="w-full bg-gray-700 text-white rounded px-2 py-1 text-sm border border-gray-600 focus:border-tgteal focus:outline-none"
+                    >
+                      <option value="sync">🔄 Crossfade (smooth)</option>
+                      <option value="wait">⏸️ Blank gap</option>
+                    </select>
+                    <p className="text-xs text-gray-500 mt-1">
+                      Crossfade: Slides overlap smoothly<br />
+                      Blank gap: Current behavior with pause
+                    </p>
+                  </div>
                 </div>
               </div>
 
