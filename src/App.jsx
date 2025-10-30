@@ -73,12 +73,18 @@ function Slideshow() {
     const featuredScenes = rawScenes.filter(s => s.featured)
     const normalScenes = rawScenes.filter(s => !s.featured)
 
-    // If no featured slides, return original
-    if (featuredScenes.length === 0) return rawScenes
+    console.log('[Slideshow] Featured slides:', featuredScenes.length, 'Normal slides:', normalScenes.length)
+
+    // If no featured slides, return original order
+    if (featuredScenes.length === 0) {
+      console.log('[Slideshow] No featured slides, using original order')
+      return rawScenes
+    }
 
     // Sprinkle featured slides throughout
     const result = []
     const interval = Math.max(3, Math.floor(normalScenes.length / (featuredScenes.length + 1)))
+    console.log('[Slideshow] Inserting featured slides every', interval, 'slides')
 
     let featuredIndex = 0
     normalScenes.forEach((scene, i) => {
@@ -95,6 +101,7 @@ function Slideshow() {
       }
     })
 
+    console.log('[Slideshow] Final order - First slide:', result[0]?.type, result[0]?.title?.substring(0, 50))
     return result
   }, [rawScenes])
 
