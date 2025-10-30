@@ -32,7 +32,17 @@ export default function Editor() {
     scenes,
     settings,
     (newScenes) => {
-      saveToHistory(newScenes);
+      // When receiving remote updates from real-time listener, update local state
+      setScenes(newScenes);
+      // Add to history so user can undo if needed
+      setHistory(prevHistory => {
+        const newHistory = [...prevHistory, newScenes];
+        if (newHistory.length > 50) {
+          newHistory.shift();
+        }
+        return newHistory;
+      });
+      setHistoryIndex(prevIndex => Math.min(prevIndex + 1, 49));
     },
     (newSettings) => {
       setSettings(newSettings);
@@ -95,32 +105,39 @@ export default function Editor() {
   }, [leftPanelWidth, topPanelHeight]);
 
   // Save to history when scenes change (using functional updates to prevent race conditions)
-  const saveToHistory = (newScenes) => {
-    setHistory(prevHistory => {
+  // Can accept either new scenes array OR a function that receives prev scenes
+  const saveToHistory = (newScenesOrUpdater) => {
+    setScenes(prevScenes => {
+      // Determine the new scenes value
+      const newScenes = typeof newScenesOrUpdater === 'function'
+        ? newScenesOrUpdater(prevScenes)
+        : newScenesOrUpdater;
+
+      // Update history with the new scenes
       setHistoryIndex(prevIndex => {
-        const newHistory = prevHistory.slice(0, prevIndex + 1);
-        newHistory.push(newScenes);
+        setHistory(prevHistory => {
+          const newHistory = prevHistory.slice(0, prevIndex + 1);
+          newHistory.push(newScenes);
+
+          // Limit history to 50 states
+          if (newHistory.length > 50) {
+            newHistory.shift();
+          }
+          return newHistory;
+        });
 
         let newIndex = prevIndex + 1;
 
-        // Limit history to 50 states
-        if (newHistory.length > 50) {
-          newHistory.shift();
-          newIndex = newIndex - 1; // Adjust index when removing first item
+        // Adjust index if we removed first item
+        if (prevIndex + 2 > 50) {
+          newIndex = prevIndex; // Don't increment if we're at the limit
         }
 
         return newIndex;
       });
 
-      const newHistory = prevHistory.slice(0, historyIndex + 1);
-      newHistory.push(newScenes);
-      if (newHistory.length > 50) {
-        newHistory.shift();
-      }
-      return newHistory;
+      return newScenes;
     });
-
-    setScenes(newScenes);
   };
 
   const undo = () => {
@@ -263,26 +280,53 @@ export default function Editor() {
   };
 
   const moveScene = (index, direction) => {
-    if (
-      (direction === 'up' && index === 0) ||
-      (direction === 'down' && index === scenes.length - 1)
-    ) {
-      return;
-    }
+    // Use updater function to avoid stale closure
+    saveToHistory(prevScenes => {
+      if (
+        (direction === 'up' && index === 0) ||
+        (direction === 'down' && index === prevScenes.length - 1)
+      ) {
+        return prevScenes; // No change
+      }
 
-    const newScenes = [...scenes];
-    const targetIndex = direction === 'up' ? index - 1 : index + 1;
-    [newScenes[index], newScenes[targetIndex]] = [newScenes[targetIndex], newScenes[index]];
-    saveToHistory(newScenes);
-    setSelectedIndex(targetIndex);
+      const newScenes = [...prevScenes];
+      const targetIndex = direction === 'up' ? index - 1 : index + 1;
+      [newScenes[index], newScenes[targetIndex]] = [newScenes[targetIndex], newScenes[index]];
+      setSelectedIndex(targetIndex);
+      return newScenes;
+    });
   };
 
   // Drag-and-drop handlers for slide reordering
   const handleDragStart = (e, index) => {
+    // Prevent drag from form inputs, textareas, and buttons
+    const target = e.target;
+    if (
+      target.tagName === 'INPUT' ||
+      target.tagName === 'TEXTAREA' ||
+      target.tagName === 'BUTTON' ||
+      target.tagName === 'SELECT' ||
+      target.isContentEditable ||
+      target.closest('input') ||
+      target.closest('textarea') ||
+      target.closest('button') ||
+      target.closest('select')
+    ) {
+      e.preventDefault();
+      return;
+    }
+
     setDraggedSlideIndex(index);
     e.dataTransfer.effectAllowed = 'move';
-    // Set a custom drag image if needed
-    e.dataTransfer.setData('text/html', e.currentTarget);
+
+    // Create a semi-transparent ghost image
+    const dragImage = e.currentTarget.cloneNode(true);
+    dragImage.style.opacity = '0.5';
+    dragImage.style.position = 'absolute';
+    dragImage.style.top = '-1000px';
+    document.body.appendChild(dragImage);
+    e.dataTransfer.setDragImage(dragImage, 0, 0);
+    setTimeout(() => document.body.removeChild(dragImage), 0);
   };
 
   const handleDragOver = (e, index) => {
@@ -290,24 +334,46 @@ export default function Editor() {
     e.dataTransfer.dropEffect = 'move';
 
     if (draggedSlideIndex !== null && draggedSlideIndex !== index) {
-      setDragOverIndex(index);
+      // Determine if we should show indicator above or below this slide
+      const rect = e.currentTarget.getBoundingClientRect();
+      const midpoint = rect.top + rect.height / 2;
+      const isAbove = e.clientY < midpoint;
+
+      // Set the drop index based on position
+      const targetIndex = isAbove ? index : index + 1;
+      setDragOverIndex(targetIndex);
     }
   };
 
-  const handleDrop = (e, dropIndex) => {
+  const handleDrop = (e, targetIndex) => {
     e.preventDefault();
 
-    if (draggedSlideIndex === null || draggedSlideIndex === dropIndex) {
+    if (draggedSlideIndex === null) {
+      setDragOverIndex(null);
+      return;
+    }
+
+    const draggedIndex = draggedSlideIndex;
+    let dropIndex = dragOverIndex !== null ? dragOverIndex : targetIndex;
+
+    // Adjust drop index if dragging down
+    if (draggedIndex < dropIndex) {
+      dropIndex = dropIndex - 1;
+    }
+
+    if (draggedIndex === dropIndex) {
       setDraggedSlideIndex(null);
       setDragOverIndex(null);
       return;
     }
 
-    const newScenes = [...scenes];
-    const [draggedSlide] = newScenes.splice(draggedSlideIndex, 1);
-    newScenes.splice(dropIndex, 0, draggedSlide);
+    saveToHistory(prevScenes => {
+      const newScenes = [...prevScenes];
+      const [draggedSlide] = newScenes.splice(draggedIndex, 1);
+      newScenes.splice(dropIndex, 0, draggedSlide);
+      return newScenes;
+    });
 
-    saveToHistory(newScenes);
     setSelectedIndex(dropIndex);
     setDraggedSlideIndex(null);
     setDragOverIndex(null);
@@ -318,22 +384,37 @@ export default function Editor() {
     setDragOverIndex(null);
   };
 
+  const handleDragLeave = (e) => {
+    // Only clear if we're leaving the slide list area
+    if (!e.currentTarget.contains(e.relatedTarget)) {
+      setDragOverIndex(null);
+    }
+  };
+
   const duplicateScene = (index) => {
-    const newScenes = [...scenes];
-    newScenes.splice(index + 1, 0, { ...scenes[index] });
-    saveToHistory(newScenes);
+    saveToHistory(prevScenes => {
+      const newScenes = [...prevScenes];
+      newScenes.splice(index + 1, 0, { ...prevScenes[index] });
+      return newScenes;
+    });
   };
 
   const deleteScene = (index) => {
-    if (scenes.length <= 1) {
-      alert('Cannot delete the last slide!');
-      return;
-    }
-    const newScenes = scenes.filter((_, i) => i !== index);
-    saveToHistory(newScenes);
-    if (selectedIndex >= newScenes.length) {
-      setSelectedIndex(newScenes.length - 1);
-    }
+    saveToHistory(prevScenes => {
+      if (prevScenes.length <= 1) {
+        alert('Cannot delete the last slide!');
+        return prevScenes; // No change
+      }
+
+      const newScenes = prevScenes.filter((_, i) => i !== index);
+
+      // Update selected index if needed
+      if (selectedIndex >= newScenes.length) {
+        setSelectedIndex(newScenes.length - 1);
+      }
+
+      return newScenes;
+    });
   };
 
   const addNewScene = () => {
@@ -345,8 +426,11 @@ export default function Editor() {
       image: '/assets/placeholder-01.svg',
       durationSec: 20,
     };
-    saveToHistory([...scenes, newScene]);
-    setSelectedIndex(scenes.length);
+
+    saveToHistory(prevScenes => {
+      setSelectedIndex(prevScenes.length); // Select the new slide
+      return [...prevScenes, newScene];
+    });
   };
 
   const downloadJSON = () => {
@@ -580,15 +664,20 @@ export default function Editor() {
                     <label className="text-sm text-gray-300 font-medium">Transition Style</label>
                     <select
                       value={settings.transitionMode}
-                      onChange={(e) => setSettings({ ...settings, transitionMode: e.target.value })}
+                      onChange={(e) => {
+                        const newMode = e.target.value;
+                        console.log('[Editor] Transition mode changed to:', newMode);
+                        setSettings({ ...settings, transitionMode: newMode });
+                      }}
                       className="w-full bg-gray-700 text-white rounded px-2 py-1 text-sm border border-gray-600 focus:border-tgteal focus:outline-none"
                     >
-                      <option value="sync">🔄 Crossfade (smooth)</option>
-                      <option value="wait">⏸️ Blank gap</option>
+                      <option value="sync">🔄 Crossfade (smooth overlap)</option>
+                      <option value="wait">⏸️ Blank gap (fade out then in)</option>
                     </select>
                     <p className="text-xs text-gray-500 mt-1">
-                      Crossfade: Slides overlap smoothly<br />
-                      Blank gap: Current behavior with pause
+                      <strong>Crossfade:</strong> New slide fades in while old fades out<br />
+                      <strong>Blank gap:</strong> Old fades out completely, then new fades in<br />
+                      <span className="text-tgteal">Current: {settings.transitionMode === 'sync' ? 'Crossfade' : 'Blank gap'}</span>
                     </p>
                   </div>
                 </div>
@@ -617,29 +706,32 @@ export default function Editor() {
         {/* Slide List */}
         <div className="flex-1 overflow-y-auto p-4 space-y-2">
           {scenes.map((scene, index) => (
-            <motion.div
-              key={index}
-              layout
-              draggable
-              onDragStart={(e) => handleDragStart(e, index)}
-              onDragOver={(e) => handleDragOver(e, index)}
-              onDrop={(e) => handleDrop(e, index)}
-              onDragEnd={handleDragEnd}
-              className={`p-3 rounded-lg transition-all ${
-                draggedSlideIndex === index
-                  ? 'opacity-50'
-                  : dragOverIndex === index
-                  ? 'border-t-4 border-tgteal'
-                  : ''
-              } ${
-                selectedIndex === index
-                  ? 'bg-tgteal/20 border-2 border-tgteal'
-                  : 'bg-gray-800 border-2 border-transparent hover:border-gray-600'
-              }`}
-            >
-              <div className="flex items-start gap-2">
-                {/* Drag Handle */}
-                <div className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-tgteal transition-colors pt-1 flex-shrink-0">
+            <div key={index} className="relative">
+              {/* Drop indicator - shows BEFORE this slide */}
+              {dragOverIndex === index && draggedSlideIndex !== null && (
+                <div className="absolute -top-2 left-0 right-0 h-1 bg-tgteal shadow-[0_0_8px_rgba(0,212,255,0.6)] rounded-full z-10" />
+              )}
+
+              <motion.div
+                layout
+                draggable
+                onDragStart={(e) => handleDragStart(e, index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDrop={(e) => handleDrop(e, index)}
+                onDragEnd={handleDragEnd}
+                className={`p-3 rounded-lg transition-all ${
+                  draggedSlideIndex === index
+                    ? 'opacity-40 cursor-grabbing scale-95'
+                    : 'cursor-grab'
+                } ${
+                  selectedIndex === index
+                    ? 'bg-tgteal/20 border-2 border-tgteal'
+                    : 'bg-gray-800 border-2 border-transparent hover:border-gray-600'
+                }`}
+              >
+                <div className="flex items-start gap-2">
+                  {/* Drag Handle */}
+                  <div className="cursor-grab active:cursor-grabbing text-gray-500 hover:text-tgteal transition-colors pt-1 flex-shrink-0">
                   <svg width="16" height="24" viewBox="0 0 16 24" fill="currentColor">
                     <circle cx="4" cy="6" r="2"/>
                     <circle cx="12" cy="6" r="2"/>
@@ -681,7 +773,14 @@ export default function Editor() {
                 </div>
               </div>
             </motion.div>
+          </div>
           ))}
+
+          {/* Drop indicator - shows AFTER last slide */}
+          {dragOverIndex === scenes.length && draggedSlideIndex !== null && (
+            <div className="relative h-1 bg-tgteal shadow-[0_0_8px_rgba(0,212,255,0.6)] rounded-full mb-2" />
+          )}
+
           <button
             onClick={addNewScene}
             className="w-full p-4 border-2 border-dashed border-gray-600 rounded-lg hover:border-tgteal hover:bg-tgteal/5 transition-all"

@@ -12,7 +12,7 @@ export function useSupabaseSync(scenes, settings, onScenesUpdate, onSettingsUpda
   const saveTimeoutRef = useRef(null);
   const isInitialLoad = useRef(true);
 
-  // Load initial data from Supabase
+  // Load initial data from Supabase (ONLY on mount)
   useEffect(() => {
     async function loadFromSupabase() {
       try {
@@ -40,6 +40,7 @@ export function useSupabaseSync(scenes, settings, onScenesUpdate, onSettingsUpda
 
           if (localScenes !== remote) {
             // Remote has different data, update local
+            console.log('[Supabase] Loading remote data on mount');
             onScenesUpdate(remoteScenes);
           }
 
@@ -57,7 +58,8 @@ export function useSupabaseSync(scenes, settings, onScenesUpdate, onSettingsUpda
     }
 
     loadFromSupabase();
-  }, [scenes, settings]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []); // Empty deps - only run on mount!
 
   // Subscribe to real-time changes
   useEffect(() => {
