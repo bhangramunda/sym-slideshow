@@ -21,7 +21,8 @@
       "Bash(git push:*)",
       "Bash(curl:*)",
       "Bash(/dev/null)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(git log:*)"
     ],
     "deny": [],
     "ask": []

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Scene from './Scene';
 import RichTextArea from './RichTextArea';
 import scenesData from '../scenes.json';
+import { useSupabaseSync } from '../hooks/useSupabaseSync';
 
 export default function Editor() {
   const [scenes, setScenes] = useState(scenesData);
@@ -20,6 +21,11 @@ export default function Editor() {
 
   // Image upload state
   const [uploadingImage, setUploadingImage] = useState(false);
+
+  // Supabase autosave
+  const { saveStatus, lastSaved, forceSave } = useSupabaseSync(scenes, (newScenes) => {
+    saveToHistory(newScenes);
+  });
 
   // Resizable panels state
   const [leftPanelWidth, setLeftPanelWidth] = useState(() => {
@@ -392,8 +398,42 @@ export default function Editor() {
               </a>
             </div>
           </div>
-          <div className="text-sm text-gray-400">
-            {scenes.length} slides • Total duration: {scenes.reduce((acc, s) => acc + s.durationSec, 0)}s
+          <div className="flex items-center justify-between text-sm">
+            <div className="text-gray-400">
+              {scenes.length} slides • Total duration: {scenes.reduce((acc, s) => acc + s.durationSec, 0)}s
+            </div>
+            {/* Save Status Indicator */}
+            <div className="flex items-center gap-2">
+              {saveStatus === 'saving' && (
+                <div className="flex items-center gap-2 text-blue-400">
+                  <div className="animate-spin h-4 w-4 border-2 border-blue-400 border-t-transparent rounded-full"></div>
+                  <span>Saving...</span>
+                </div>
+              )}
+              {saveStatus === 'saved' && (
+                <div className="flex items-center gap-2 text-green-400">
+                  <span>✓</span>
+                  <span>Saved</span>
+                </div>
+              )}
+              {saveStatus === 'pending' && (
+                <div className="flex items-center gap-2 text-yellow-400">
+                  <span>○</span>
+                  <span>Unsaved changes</span>
+                </div>
+              )}
+              {saveStatus === 'error' && (
+                <div className="flex items-center gap-2 text-red-400">
+                  <span>✗</span>
+                  <span>Save failed</span>
+                </div>
+              )}
+              {lastSaved && saveStatus === 'idle' && (
+                <div className="text-gray-500 text-xs">
+                  Last saved: {lastSaved.toLocaleTimeString()}
+                </div>
+              )}
+            </div>
           </div>
         </div>
 
