@@ -1018,6 +1018,7 @@ export default function Editor() {
                 className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
               >
                 <option value="hero">Hero</option>
+                <option value="impact">💥 Impact / ROI</option>
                 <option value="testimonial">Testimonial</option>
                 <option value="logo-grid">Logo Grid</option>
                 <option value="service-card">Service Card</option>
@@ -1156,6 +1157,47 @@ export default function Editor() {
                 onChange={(value) => updateScene(selectedIndex, { subtitle: value })}
                 rows={4}
               />
+            )}
+
+            {/* Impact Number (for impact slides) */}
+            {selectedScene.type === 'impact' && (
+              <>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Impact Number</label>
+                  <input
+                    type="text"
+                    value={selectedScene.impactNumber || ''}
+                    onChange={(e) => updateScene(selectedIndex, { impactNumber: e.target.value })}
+                    placeholder="e.g., $500K, 7x, 99%"
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
+                  />
+                  <p className="text-xs text-gray-400 mt-1">The big number to display (e.g., $500K, 7x, 99%)</p>
+                </div>
+                <RichTextArea
+                  label="Description"
+                  value={selectedScene.description || ''}
+                  onChange={(value) => updateScene(selectedIndex, { description: value })}
+                  rows={2}
+                  placeholder="e.g., Saved by using Kajoo.ai"
+                />
+                <RichTextArea
+                  label="Subtitle (optional)"
+                  value={selectedScene.subtitle || ''}
+                  onChange={(value) => updateScene(selectedIndex, { subtitle: value })}
+                  rows={2}
+                  placeholder="Additional context or details"
+                />
+                <div>
+                  <label className="block text-sm font-medium mb-1">Badge (optional)</label>
+                  <input
+                    type="text"
+                    value={selectedScene.badge || ''}
+                    onChange={(e) => updateScene(selectedIndex, { badge: e.target.value })}
+                    placeholder="e.g., ROI Proven, Industry Leading"
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
+                  />
+                </div>
+              </>
             )}
 
             {/* Quote (for testimonials) */}

@@ -7,6 +7,7 @@ import ServiceCardSlide from './ServiceCardSlide.jsx'
 import SplitContentSlide from './SplitContentSlide.jsx'
 import FullScreenImageSlide from './FullScreenImageSlide.jsx'
 import FullScreenVideoSlide from './FullScreenVideoSlide.jsx'
+import ImpactSlide from './ImpactSlide.jsx'
 import SlideTransition from './SlideTransition.jsx'
 import { AnimatedText, AnimatedTextChars } from './BuildAnimation.jsx'
 import { parseFormatting } from '../utils/formatText.js'
@@ -212,6 +213,9 @@ export default function Scene({ scene, isActive, buildScope, buildStyle, onVideo
       break
     case 'fullscreen-video':
       SlideContent = <FullScreenVideoSlide scene={scene} onVideoEnd={onVideoEnd} />
+      break
+    case 'impact':
+      SlideContent = <ImpactSlide scene={scene} />
       break
     case 'hero':
     default:
