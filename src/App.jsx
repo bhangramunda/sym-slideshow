@@ -68,12 +68,11 @@ function Slideshow() {
     }
   }, [])
 
-  // Build an expanded scene list with featured slides sprinkled in
+  // Build an expanded scene list with featured slides duplicated and sprinkled in
   const scenes = useMemo(() => {
     const featuredScenes = rawScenes.filter(s => s.featured)
-    const normalScenes = rawScenes.filter(s => !s.featured)
 
-    console.log('[Slideshow] Featured slides:', featuredScenes.length, 'Normal slides:', normalScenes.length)
+    console.log('[Slideshow] Total slides:', rawScenes.length, 'Featured slides:', featuredScenes.length)
 
     // If no featured slides, return original order
     if (featuredScenes.length === 0) {
@@ -81,27 +80,31 @@ function Slideshow() {
       return rawScenes
     }
 
-    // Sprinkle featured slides throughout
-    const result = []
-    const interval = Math.max(3, Math.floor(normalScenes.length / (featuredScenes.length + 1)))
-    console.log('[Slideshow] Inserting featured slides every', interval, 'slides')
+    // Start with all slides in original order
+    const result = [...rawScenes]
 
-    let featuredIndex = 0
-    normalScenes.forEach((scene, i) => {
-      result.push(scene)
+    // Calculate how many times to repeat each featured slide
+    // and where to insert them to space them evenly
+    const totalSlides = rawScenes.length
+    const repeatsPerFeatured = Math.max(1, Math.floor(totalSlides / featuredScenes.length))
+    const interval = Math.floor(totalSlides / (repeatsPerFeatured * featuredScenes.length + 1))
 
-      // Insert a featured slide every 'interval' slides
-      if ((i + 1) % interval === 0 && featuredIndex < featuredScenes.length) {
-        const featuredSlide = featuredScenes[featuredIndex % featuredScenes.length]
-        // Only add if it's not the same as the last slide added
-        if (result[result.length - 1] !== featuredSlide) {
-          result.push(featuredSlide)
-          featuredIndex++
+    console.log('[Slideshow] Will duplicate featured slides', repeatsPerFeatured, 'times, spacing them every', interval, 'slides')
+
+    // Insert duplicates of featured slides at calculated intervals
+    let insertOffset = 0
+    featuredScenes.forEach(featuredSlide => {
+      for (let i = 0; i < repeatsPerFeatured; i++) {
+        const insertPos = interval * (i + 1) + insertOffset
+        if (insertPos < result.length) {
+          result.splice(insertPos, 0, { ...featuredSlide })
+          insertOffset++
         }
       }
     })
 
-    console.log('[Slideshow] Final order - First slide:', result[0]?.type, result[0]?.title?.substring(0, 50))
+    console.log('[Slideshow] Final deck:', result.length, 'slides (', rawScenes.length, 'original +', result.length - rawScenes.length, 'featured duplicates)')
+    console.log('[Slideshow] First slide:', result[0]?.type, result[0]?.title?.substring(0, 50))
     return result
   }, [rawScenes])
 
