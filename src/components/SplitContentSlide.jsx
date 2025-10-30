@@ -74,7 +74,7 @@ export default function SplitContentSlide({ scene }) {
         <div className="w-1/2 flex items-center justify-center p-16">
           <div className="max-w-2xl">
             {/* Title */}
-            <div className="text-5xl md:text-6xl font-bold text-white mb-8 leading-tight break-words hyphens-none">
+            <div className="text-6xl md:text-7xl font-bold text-white mb-8 leading-tight break-words hyphens-none">
               <KineticText text={scene.title} />
             </div>
 
@@ -84,7 +84,7 @@ export default function SplitContentSlide({ scene }) {
                 initial={{ opacity: 0, y: 20, filter: 'blur(4px)' }}
                 animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
                 transition={{ duration: 0.8, delay: 0.6 }}
-                className="text-xl md:text-2xl text-white/80 leading-relaxed mb-8"
+                className="text-2xl md:text-3xl text-white/80 leading-relaxed mb-10"
               >
                 {scene.subtitle.split('\n').map((line, i) => (
                   <p key={i} className={`${i > 0 ? 'mt-4' : ''} break-words hyphens-none`}>
@@ -100,7 +100,7 @@ export default function SplitContentSlide({ scene }) {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.6, delay: 0.9 }}
-                className="space-y-4 mb-10"
+                className="space-y-5 mb-10"
               >
                 {scene.points.map((point, index) => (
                   <motion.li
@@ -113,10 +113,10 @@ export default function SplitContentSlide({ scene }) {
                       type: 'spring',
                       stiffness: 200,
                     }}
-                    className="flex items-start gap-4 text-lg text-white/90"
+                    className="flex items-center gap-5 text-xl md:text-2xl text-white/90"
                   >
                     <motion.span
-                      className="text-2xl text-tgteal flex-shrink-0 mt-1"
+                      className="text-3xl text-tgteal flex-shrink-0 leading-none"
                       animate={{
                         scale: [1, 1.2, 1],
                       }}
@@ -130,7 +130,7 @@ export default function SplitContentSlide({ scene }) {
                     >
                       •
                     </motion.span>
-                    <span className="break-words hyphens-none">{point}</span>
+                    <span className="break-words hyphens-none leading-tight">{point}</span>
                   </motion.li>
                 ))}
               </motion.ul>
