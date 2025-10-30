@@ -4,6 +4,7 @@ import Scene from './Scene';
 import RichTextArea from './RichTextArea';
 import scenesData from '../scenes.json';
 import { useSupabaseSync } from '../hooks/useSupabaseSync';
+import { TRANSITIONS, TRANSITION_OPTIONS } from './SlideTransition';
 
 export default function Editor() {
   const [scenes, setScenes] = useState(scenesData);
@@ -688,6 +689,25 @@ export default function Editor() {
                 <option value="service-card">Service Card</option>
                 <option value="split-content">Split Content</option>
               </select>
+            </div>
+
+            {/* Transition Effect */}
+            <div>
+              <label className="block text-sm font-medium mb-1">Transition Effect</label>
+              <select
+                value={selectedScene.transition || 'fade'}
+                onChange={(e) => updateScene(selectedIndex, { transition: e.target.value })}
+                className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
+              >
+                {TRANSITION_OPTIONS.map(key => (
+                  <option key={key} value={key}>
+                    {TRANSITIONS[key].name}
+                  </option>
+                ))}
+              </select>
+              <div className="mt-1 text-xs text-gray-400">
+                Preview the transition by switching slides in the slideshow
+              </div>
             </div>
 
             {/* Duration */}

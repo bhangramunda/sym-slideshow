@@ -5,6 +5,7 @@ import TestimonialSlide from './TestimonialSlide.jsx'
 import LogoGridSlide from './LogoGridSlide.jsx'
 import ServiceCardSlide from './ServiceCardSlide.jsx'
 import SplitContentSlide from './SplitContentSlide.jsx'
+import SlideTransition from './SlideTransition.jsx'
 import { parseFormatting } from '../utils/formatText.js'
 import cx from 'classnames'
 
@@ -87,22 +88,34 @@ function DefaultSlide({ scene }) {
   )
 }
 
-// Main Scene component - routes to appropriate slide type
+// Main Scene component - routes to appropriate slide type with transition
 export default function Scene({ scene, isActive }) {
   if (!isActive) return null
 
-  // Route to appropriate slide type based on scene.type
+  // Get slide content based on type
+  let SlideContent
   switch (scene.type) {
     case 'testimonial':
-      return <TestimonialSlide scene={scene} />
+      SlideContent = <TestimonialSlide scene={scene} />
+      break
     case 'logo-grid':
-      return <LogoGridSlide scene={scene} />
+      SlideContent = <LogoGridSlide scene={scene} />
+      break
     case 'service-card':
-      return <ServiceCardSlide scene={scene} />
+      SlideContent = <ServiceCardSlide scene={scene} />
+      break
     case 'split-content':
-      return <SplitContentSlide scene={scene} />
+      SlideContent = <SplitContentSlide scene={scene} />
+      break
     case 'hero':
     default:
-      return <DefaultSlide scene={scene} />
+      SlideContent = <DefaultSlide scene={scene} />
   }
+
+  // Wrap with transition
+  return (
+    <SlideTransition transition={scene.transition}>
+      {SlideContent}
+    </SlideTransition>
+  )
 }
