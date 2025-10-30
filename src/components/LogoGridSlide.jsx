@@ -73,7 +73,7 @@ export default function LogoGridSlide({ scene }) {
         )}
 
         {/* Logo Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8 md:gap-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 gap-8 md:gap-12">
           {scene.logos.map((logo, index) => (
             <motion.div
               key={index}
