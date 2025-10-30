@@ -156,6 +156,7 @@ function Slideshow() {
   }, [rawScenes])
 
   const [index, setIndex] = useState(0)
+  const [jumpToInput, setJumpToInput] = useState('')
 
   useEffect(() => {
     let timeoutId
@@ -169,6 +170,38 @@ function Slideshow() {
     scheduleNext(index)
     return () => clearTimeout(timeoutId)
   }, [scenes, index])
+
+  // Keyboard navigation: type number and press Enter to jump to slide
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Check if it's a number key (0-9)
+      if (e.key >= '0' && e.key <= '9') {
+        setJumpToInput(prev => prev + e.key)
+      }
+      // Press Enter to jump to the slide
+      else if (e.key === 'Enter' && jumpToInput) {
+        const targetSlide = parseInt(jumpToInput, 10) - 1 // Convert to 0-indexed
+        if (targetSlide >= 0 && targetSlide < scenes.length) {
+          setIndex(targetSlide)
+        }
+        setJumpToInput('') // Clear input
+      }
+      // Press Escape to clear input
+      else if (e.key === 'Escape') {
+        setJumpToInput('')
+      }
+      // Arrow keys for next/previous
+      else if (e.key === 'ArrowRight' || e.key === ' ') {
+        setIndex(prev => (prev + 1) % scenes.length)
+      }
+      else if (e.key === 'ArrowLeft') {
+        setIndex(prev => (prev - 1 + scenes.length) % scenes.length)
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [jumpToInput, scenes.length])
 
   // Prevent accidental interaction / keep fullscreen feel
   useEffect(() => {
@@ -200,6 +233,17 @@ function Slideshow() {
       {/* Debug: Show current transition mode */}
       <div className="absolute bottom-4 left-4 z-50 text-white/20 text-xs">
         Mode: {settings.transitionMode}
+      </div>
+
+      {/* Slide counter and jump-to indicator */}
+      <div className="absolute bottom-4 right-4 z-50 text-white/40 text-sm">
+        Slide {index + 1} / {scenes.length}
+        {jumpToInput && (
+          <div className="mt-2 bg-black/80 backdrop-blur border border-white/30 rounded px-4 py-2 text-white text-lg">
+            Jump to: {jumpToInput}_
+            <div className="text-xs text-white/60 mt-1">Press Enter to go, Esc to cancel</div>
+          </div>
+        )}
       </div>
       <AnimatePresence mode={settings.transitionMode}>
         {scenes.map((scene, i) => (
