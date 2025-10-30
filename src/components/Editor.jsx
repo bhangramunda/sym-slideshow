@@ -7,6 +7,13 @@ import { useSupabaseSync } from '../hooks/useSupabaseSync';
 import { TRANSITIONS, TRANSITION_OPTIONS } from './SlideTransition';
 import { supabase } from '../lib/supabase';
 
+// Aspect ratio configurations
+const ASPECT_RATIOS = {
+  '16:9': { width: 1920, height: 1080, label: '16:9 (Standard HD)' },
+  '21:9': { width: 2560, height: 1080, label: '21:9 (Ultrawide)' },
+  '4:3': { width: 1440, height: 1080, label: '4:3 (Classic)' }
+};
+
 export default function Editor() {
   const [scenes, setScenes] = useState(scenesData);
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -17,7 +24,8 @@ export default function Editor() {
   const [settings, setSettings] = useState({
     transitionMode: 'sync', // 'sync' = crossfade, 'wait' = blank gap
     buildScope: 'components', // 'off', 'components', 'elements', 'sections'
-    buildStyle: 'classic' // 'off', 'classic', 'cascadingFade', 'scalingCascade', 'slideIn', 'blurFocus', 'typewriter'
+    buildStyle: 'classic', // 'off', 'classic', 'cascadingFade', 'scalingCascade', 'slideIn', 'blurFocus', 'typewriter'
+    aspectRatio: '16:9' // '16:9', '21:9', '4:3'
   });
 
   // Undo/Redo history
@@ -85,9 +93,14 @@ export default function Editor() {
       const availableWidth = containerWidth - (padding * 2);
       const availableHeight = containerHeight - (padding * 2);
 
-      // Calculate scale to fit 1920x1080 content in container
-      const scaleX = availableWidth / 1920;
-      const scaleY = availableHeight / 1080;
+      // Get selected aspect ratio dimensions
+      const aspectRatioConfig = ASPECT_RATIOS[settings.aspectRatio] || ASPECT_RATIOS['16:9'];
+      const targetWidth = aspectRatioConfig.width;
+      const targetHeight = aspectRatioConfig.height;
+
+      // Calculate scale to fit content in container
+      const scaleX = availableWidth / targetWidth;
+      const scaleY = availableHeight / targetHeight;
       const scale = Math.min(scaleX, scaleY, 1); // Cap at 1 to avoid upscaling
 
       setPreviewScale(scale);
@@ -114,7 +127,7 @@ export default function Editor() {
       window.removeEventListener('resize', updatePreviewScale);
       observer.disconnect();
     };
-  }, [leftPanelWidth, topPanelHeight]);
+  }, [leftPanelWidth, topPanelHeight, settings.aspectRatio]);
 
   // Save to history when scenes change (using functional updates to prevent race conditions)
   // Can accept either new scenes array OR a function that receives prev scenes
@@ -744,6 +757,25 @@ export default function Editor() {
                         Animates elements within slides as they appear
                       </p>
                     </div>
+
+                    <div className="mt-3">
+                      <label className="text-sm text-gray-300 font-medium">Aspect Ratio</label>
+                      <select
+                        value={settings.aspectRatio || '16:9'}
+                        onChange={(e) => {
+                          console.log('[Editor] Aspect ratio changed to:', e.target.value);
+                          setSettings({ ...settings, aspectRatio: e.target.value });
+                        }}
+                        className="w-full bg-gray-700 text-white rounded px-2 py-1 text-sm border border-gray-600 focus:border-tgteal focus:outline-none mt-1"
+                      >
+                        <option value="16:9">📺 16:9 (Standard HD)</option>
+                        <option value="21:9">🖥️ 21:9 (Ultrawide)</option>
+                        <option value="4:3">🔲 4:3 (Classic)</option>
+                      </select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Choose the aspect ratio for your display. Ensures slides look great on different screens.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -923,14 +955,19 @@ export default function Editor() {
               <div
                 className="relative"
                 style={{
-                  width: '1920px',
-                  height: '1080px',
+                  width: `${ASPECT_RATIOS[settings.aspectRatio]?.width || 1920}px`,
+                  height: `${ASPECT_RATIOS[settings.aspectRatio]?.height || 1080}px`,
                   transform: 'scale(var(--preview-scale))',
                   transformOrigin: 'center center'
                 }}
               >
                 <AnimatePresence mode="wait">
-                  <Scene key={previewIndex} scene={scenes[previewIndex]} isActive={true} />
+                  <Scene
+                    key={previewIndex}
+                    scene={scenes[previewIndex]}
+                    isActive={true}
+                    aspectRatio={ASPECT_RATIOS[settings.aspectRatio]}
+                  />
                 </AnimatePresence>
               </div>
             </div>

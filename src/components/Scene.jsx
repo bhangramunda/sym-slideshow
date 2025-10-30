@@ -189,7 +189,7 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
 }
 
 // Main Scene component - routes to appropriate slide type with transition
-export default function Scene({ scene, isActive, buildScope, buildStyle, onVideoEnd }) {
+export default function Scene({ scene, isActive, buildScope, buildStyle, onVideoEnd, aspectRatio }) {
   if (!isActive) return null
 
   // Get slide content based on type

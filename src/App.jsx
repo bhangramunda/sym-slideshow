@@ -8,13 +8,21 @@ import { supabase } from './lib/supabase'
 const FPS_SAFE_DELAY = 50 // ms safety delay between scenes
 const PROJECT_NAME = 'default'
 
+// Aspect ratio configurations
+const ASPECT_RATIOS = {
+  '16:9': { width: 1920, height: 1080, label: '16:9 (Standard HD)' },
+  '21:9': { width: 2560, height: 1080, label: '21:9 (Ultrawide)' },
+  '4:3': { width: 1440, height: 1080, label: '4:3 (Classic)' }
+}
+
 function Slideshow() {
   const [rawScenes, setRawScenes] = useState(scenesData)
   const [isLoading, setIsLoading] = useState(true)
   const [settings, setSettings] = useState({
     transitionMode: 'sync', // 'sync' = crossfade, 'wait' = gap
     buildScope: 'components', // 'off', 'components', 'elements', 'sections'
-    buildStyle: 'classic' // 'off', 'classic', 'cascadingFade', 'scalingCascade', 'slideIn', 'blurFocus', 'typewriter'
+    buildStyle: 'classic', // 'off', 'classic', 'cascadingFade', 'scalingCascade', 'slideIn', 'blurFocus', 'typewriter'
+    aspectRatio: '16:9' // '16:9', '21:9', '4:3', 'custom'
   })
 
   // Load slides from Supabase
@@ -295,6 +303,7 @@ function Slideshow() {
               isActive={true}
               buildScope={settings.buildScope}
               buildStyle={settings.buildStyle}
+              aspectRatio={ASPECT_RATIOS[settings.aspectRatio]}
               onVideoEnd={() => {
                 console.log('[App] Video ended, advancing to next slide');
                 setIndex(prev => (prev + 1) % scenes.length);
