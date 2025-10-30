@@ -73,7 +73,7 @@ export default function SplitContentSlide({ scene }) {
         <div className="w-1/2 flex items-center justify-center p-16">
           <div className="max-w-2xl">
             {/* Title */}
-            <div className="text-5xl md:text-6xl font-bold text-white mb-8 leading-tight">
+            <div className="text-5xl md:text-6xl font-bold text-white mb-8 leading-tight break-words hyphens-none">
               <KineticText text={scene.title} />
             </div>
 
@@ -86,7 +86,7 @@ export default function SplitContentSlide({ scene }) {
                 className="text-xl md:text-2xl text-white/80 leading-relaxed mb-8"
               >
                 {scene.subtitle.split('\n').map((line, i) => (
-                  <p key={i} className={i > 0 ? 'mt-4' : ''}>
+                  <p key={i} className={`${i > 0 ? 'mt-4' : ''} break-words hyphens-none`}>
                     {line}
                   </p>
                 ))}
@@ -128,7 +128,7 @@ export default function SplitContentSlide({ scene }) {
                     >
                       •
                     </motion.span>
-                    <span>{point}</span>
+                    <span className="break-words hyphens-none">{point}</span>
                   </motion.li>
                 ))}
               </motion.ul>

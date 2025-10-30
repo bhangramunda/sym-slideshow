@@ -55,7 +55,7 @@ export default function LogoGridSlide({ scene }) {
       {/* Content Container */}
       <div className="relative z-10 max-w-7xl mx-auto px-8 text-center">
         {/* Title */}
-        <div className="text-5xl md:text-6xl font-bold text-white mb-4">
+        <div className="text-5xl md:text-6xl font-bold text-white mb-4 break-words hyphens-none">
           <KineticText text={scene.title} />
         </div>
 
@@ -65,7 +65,7 @@ export default function LogoGridSlide({ scene }) {
             initial={{ opacity: 0, filter: 'blur(4px)' }}
             animate={{ opacity: 1, filter: 'blur(0px)' }}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-xl md:text-2xl text-white/80 mb-16 max-w-3xl mx-auto"
+            className="text-xl md:text-2xl text-white/80 mb-16 max-w-3xl mx-auto break-words hyphens-none"
           >
             {scene.subtitle}
           </motion.div>
@@ -98,7 +98,7 @@ export default function LogoGridSlide({ scene }) {
                 />
 
                 {/* Logo - Using text as placeholder, replace with actual images */}
-                <div className="relative z-10 text-2xl font-bold text-white/90 group-hover:text-white transition-colors">
+                <div className="relative z-10 text-2xl font-bold text-white/90 group-hover:text-white transition-colors break-words hyphens-none">
                   {logo.name}
                 </div>
               </div>

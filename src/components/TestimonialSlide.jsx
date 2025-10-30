@@ -65,7 +65,7 @@ export default function TestimonialSlide({ scene }) {
         </motion.div>
 
         {/* Testimonial Quote */}
-        <div className="text-4xl md:text-5xl font-bold text-white leading-tight mb-12">
+        <div className="text-4xl md:text-5xl font-bold text-white leading-tight mb-12 break-words hyphens-none">
           <KineticText text={scene.quote} />
         </div>
 
@@ -76,14 +76,14 @@ export default function TestimonialSlide({ scene }) {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="space-y-2"
         >
-          <div className="text-2xl font-semibold text-tgteal">
+          <div className="text-2xl font-semibold text-tgteal break-words hyphens-none">
             {scene.author}
           </div>
-          <div className="text-xl text-white/70">
+          <div className="text-xl text-white/70 break-words hyphens-none">
             {scene.role}
           </div>
           {scene.company && (
-            <div className="text-lg text-white/50">
+            <div className="text-lg text-white/50 break-words hyphens-none">
               {scene.company}
             </div>
           )}

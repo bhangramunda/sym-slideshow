@@ -56,7 +56,7 @@ export default function ServiceCardSlide({ scene }) {
       <div className="relative z-10 max-w-7xl mx-auto px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="text-6xl md:text-7xl font-bold text-white mb-4">
+          <div className="text-6xl md:text-7xl font-bold text-white mb-4 break-words hyphens-none">
             <KineticText text={scene.title} />
           </div>
           {scene.subtitle && (
@@ -64,7 +64,7 @@ export default function ServiceCardSlide({ scene }) {
               initial={{ opacity: 0, filter: 'blur(4px)' }}
               animate={{ opacity: 1, filter: 'blur(0px)' }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-2xl text-white/80"
+              className="text-2xl text-white/80 break-words hyphens-none"
             >
               {scene.subtitle}
             </motion.div>
@@ -115,12 +115,12 @@ export default function ServiceCardSlide({ scene }) {
                   )}
 
                   {/* Title */}
-                  <h3 className="text-3xl font-bold text-white mb-4 group-hover:text-tgteal transition-colors duration-300">
+                  <h3 className="text-3xl font-bold text-white mb-4 group-hover:text-tgteal transition-colors duration-300 break-words hyphens-none">
                     {service.name}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-lg text-white/70 leading-relaxed mb-6">
+                  <p className="text-lg text-white/70 leading-relaxed mb-6 break-words hyphens-none">
                     {service.description}
                   </p>
 
@@ -139,7 +139,7 @@ export default function ServiceCardSlide({ scene }) {
                           className="flex items-start gap-3 text-white/80"
                         >
                           <span className="text-tgteal text-xl mt-1 flex-shrink-0">✓</span>
-                          <span>{feature}</span>
+                          <span className="break-words hyphens-none">{feature}</span>
                         </motion.li>
                       ))}
                     </ul>
