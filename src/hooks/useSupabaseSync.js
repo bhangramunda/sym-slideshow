@@ -8,6 +8,7 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
   const [saveStatus, setSaveStatus] = useState('idle'); // idle, saving, saved, error
   const [lastSaved, setLastSaved] = useState(null);
   const [remoteVersion, setRemoteVersion] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
   const saveTimeoutRef = useRef(null);
   const isInitialLoad = useRef(true);
 
@@ -98,6 +99,8 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
     } catch (error) {
       console.error('Error loading from Supabase:', error);
       setSaveStatus('error');
+    } finally {
+      setIsLoading(false);
     }
   }
 
@@ -162,5 +165,6 @@ export function useSupabaseSync(scenes, onScenesUpdate) {
     saveStatus,
     lastSaved,
     forceSave,
+    isLoading,
   };
 }

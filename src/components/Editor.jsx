@@ -23,7 +23,7 @@ export default function Editor() {
   const [uploadingImage, setUploadingImage] = useState(false);
 
   // Supabase autosave
-  const { saveStatus, lastSaved, forceSave } = useSupabaseSync(scenes, (newScenes) => {
+  const { saveStatus, lastSaved, forceSave, isLoading } = useSupabaseSync(scenes, (newScenes) => {
     saveToHistory(newScenes);
   });
 
@@ -346,6 +346,18 @@ export default function Editor() {
   }, [isDraggingHorizontal, topPanelHeight]);
 
   const selectedScene = scenes[selectedIndex];
+
+  // Show loading state while fetching from Supabase
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
+        <div className="text-center">
+          <div className="animate-spin h-12 w-12 border-4 border-tgteal border-t-transparent rounded-full mx-auto mb-4"></div>
+          <div className="text-xl text-gray-400">Loading slides...</div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
