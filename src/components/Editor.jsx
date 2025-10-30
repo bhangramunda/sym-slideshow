@@ -1047,23 +1047,34 @@ export default function Editor() {
               </div>
             </div>
 
-            {/* Duration */}
-            <div>
-              <label className="block text-sm font-medium mb-1">
-                Duration: {selectedScene.durationSec}s
-              </label>
-              <input
-                type="range"
-                min="5"
-                max="60"
-                value={selectedScene.durationSec}
-                onChange={(e) => {
-                  // Save to history on every change (autosave will debounce)
-                  updateScene(selectedIndex, { durationSec: parseInt(e.target.value) });
-                }}
-                className="w-full"
-              />
-            </div>
+            {/* Duration (hidden for fullscreen-video with auto-advance) */}
+            {!(selectedScene.type === 'fullscreen-video' && selectedScene.loop !== true) && (
+              <div>
+                <label className="block text-sm font-medium mb-1">
+                  Duration: {selectedScene.durationSec}s
+                </label>
+                <input
+                  type="range"
+                  min="5"
+                  max="60"
+                  value={selectedScene.durationSec}
+                  onChange={(e) => {
+                    // Save to history on every change (autosave will debounce)
+                    updateScene(selectedIndex, { durationSec: parseInt(e.target.value) });
+                  }}
+                  className="w-full"
+                />
+              </div>
+            )}
+
+            {/* Show info message for auto-advancing videos */}
+            {selectedScene.type === 'fullscreen-video' && selectedScene.loop !== true && (
+              <div className="p-3 bg-blue-900/20 border border-blue-700/50 rounded">
+                <div className="text-sm text-blue-200">
+                  ℹ️ Video will auto-advance when playback completes (duration setting not used)
+                </div>
+              </div>
+            )}
 
             {/* Featured Slide */}
             <div className="flex items-center gap-3 p-3 bg-yellow-900/20 border border-yellow-700/50 rounded">
