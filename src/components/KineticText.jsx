@@ -2,12 +2,13 @@ import React from 'react'
 import { motion } from 'framer-motion'
 
 export default function KineticText({ text, className = '' }) {
-  const letters = Array.from(text)
+  // Split by words instead of characters to prevent mid-word breaks
+  const words = text.split(' ')
   const container = {
     hidden: { opacity: 0 },
     visible: (i = 1) => ({
       opacity: 1,
-      transition: { staggerChildren: 0.025, delayChildren: 0.05 * i }
+      transition: { staggerChildren: 0.015, delayChildren: 0.05 * i }
     })
   }
   const child = {
@@ -32,9 +33,13 @@ export default function KineticText({ text, className = '' }) {
       initial="hidden"
       animate="visible"
     >
-      {letters.map((char, i) => (
-        <motion.span key={i} variants={child} style={{ display: 'inline-block', whiteSpace: 'pre' }}>
-          {char}
+      {words.map((word, i) => (
+        <motion.span
+          key={i}
+          variants={child}
+          style={{ display: 'inline-block', whiteSpace: 'nowrap', marginRight: '0.25em' }}
+        >
+          {word}
         </motion.span>
       ))}
     </motion.div>
