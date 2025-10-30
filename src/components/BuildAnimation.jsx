@@ -208,7 +208,14 @@ export function AnimatedText({ text, style = 'classic', className = '', textStyl
   return (
     <motion.div
       className={className}
-      style={textStyle}
+      style={{
+        ...textStyle,
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%'
+      }}
       variants={animation.container}
       initial="hidden"
       animate="visible"
@@ -217,7 +224,12 @@ export function AnimatedText({ text, style = 'classic', className = '', textStyl
         <motion.span
           key={i}
           variants={animation.item}
-          style={{ display: 'inline-block', whiteSpace: 'nowrap', marginRight: '0.25em' }}
+          style={{
+            display: 'inline-block',
+            whiteSpace: 'nowrap',
+            marginRight: '0.25em',
+            willChange: 'transform, opacity'
+          }}
         >
           {word}
         </motion.span>
@@ -234,7 +246,14 @@ export function AnimatedTextChars({ text, style = 'typewriter', className = '', 
   return (
     <motion.div
       className={className}
-      style={textStyle}
+      style={{
+        ...textStyle,
+        display: 'flex',
+        flexWrap: 'wrap',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%'
+      }}
       variants={animation.container}
       initial="hidden"
       animate="visible"
@@ -243,7 +262,11 @@ export function AnimatedTextChars({ text, style = 'typewriter', className = '', 
         <motion.span
           key={i}
           variants={animation.item}
-          style={{ display: 'inline-block', whiteSpace: char === ' ' ? 'pre' : 'normal' }}
+          style={{
+            display: 'inline-block',
+            whiteSpace: char === ' ' ? 'pre' : 'normal',
+            willChange: 'transform, opacity'
+          }}
         >
           {char}
         </motion.span>
