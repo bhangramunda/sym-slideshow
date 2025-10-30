@@ -1778,6 +1778,7 @@ export default function Editor() {
           </div>
         </div>
       </div>
+      </div>
 
       {/* Help Modal */}
       <HelpModal isOpen={showHelp} onClose={() => setShowHelp(false)} />
