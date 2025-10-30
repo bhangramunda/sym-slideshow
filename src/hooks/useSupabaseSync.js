@@ -14,8 +14,50 @@ export function useSupabaseSync(scenes, settings, onScenesUpdate, onSettingsUpda
 
   // Load initial data from Supabase
   useEffect(() => {
+    async function loadFromSupabase() {
+      try {
+        const { data, error } = await supabase
+          .from('slideshow_data')
+          .select('*')
+          .eq('project_name', PROJECT_NAME)
+          .single();
+
+        if (error) {
+          if (error.code === 'PGRST116') {
+            // No data exists, create initial entry with current scenes/settings
+            await saveToSupabase(scenes, settings, true);
+          } else {
+            throw error;
+          }
+        } else if (data && data.slides) {
+          setRemoteVersion(data.version);
+          setLastSaved(new Date(data.updated_at));
+
+          // Check if remote data is different from local
+          const remoteScenes = data.slides;
+          const localScenes = JSON.stringify(scenes);
+          const remote = JSON.stringify(remoteScenes);
+
+          if (localScenes !== remote) {
+            // Remote has different data, update local
+            onScenesUpdate(remoteScenes);
+          }
+
+          // Load settings if available
+          if (data.settings && onSettingsUpdate) {
+            onSettingsUpdate(data.settings);
+          }
+        }
+      } catch (error) {
+        console.error('Error loading from Supabase:', error);
+        setSaveStatus('error');
+      } finally {
+        setIsLoading(false);
+      }
+    }
+
     loadFromSupabase();
-  }, []);
+  }, [scenes, settings]);
 
   // Subscribe to real-time changes
   useEffect(() => {
@@ -30,7 +72,21 @@ export function useSupabaseSync(scenes, settings, onScenesUpdate, onSettingsUpda
           filter: `project_name=eq.${PROJECT_NAME}`,
         },
         (payload) => {
-          handleRemoteUpdate(payload.new);
+          // Use latest remoteVersion via comparison with payload
+          if (payload.new && payload.new.version > remoteVersion) {
+            const shouldUpdate = confirm(
+              'Newer changes detected from another session. Load them? (Your unsaved changes will be lost)'
+            );
+
+            if (shouldUpdate) {
+              setRemoteVersion(payload.new.version);
+              setLastSaved(new Date(payload.new.updated_at));
+              onScenesUpdate(payload.new.slides);
+              if (payload.new.settings && onSettingsUpdate) {
+                onSettingsUpdate(payload.new.settings);
+              }
+            }
+          }
         }
       )
       .subscribe();
@@ -38,7 +94,7 @@ export function useSupabaseSync(scenes, settings, onScenesUpdate, onSettingsUpda
     return () => {
       supabase.removeChannel(channel);
     };
-  }, []);
+  }, [remoteVersion, onScenesUpdate, onSettingsUpdate]);
 
   // Autosave when scenes or settings change
   useEffect(() => {
@@ -66,48 +122,6 @@ export function useSupabaseSync(scenes, settings, onScenesUpdate, onSettingsUpda
       }
     };
   }, [scenes, settings]);
-
-  async function loadFromSupabase() {
-    try {
-      const { data, error } = await supabase
-        .from('slideshow_data')
-        .select('*')
-        .eq('project_name', PROJECT_NAME)
-        .single();
-
-      if (error) {
-        if (error.code === 'PGRST116') {
-          // No data exists, create initial entry
-          await saveToSupabase(scenes, settings, true);
-        } else {
-          throw error;
-        }
-      } else if (data && data.slides) {
-        setRemoteVersion(data.version);
-        setLastSaved(new Date(data.updated_at));
-
-        // Check if remote data is different from local
-        const remoteScenes = data.slides;
-        const localScenes = JSON.stringify(scenes);
-        const remote = JSON.stringify(remoteScenes);
-
-        if (localScenes !== remote) {
-          // Remote has different data, update local
-          onScenesUpdate(remoteScenes);
-        }
-
-        // Load settings if available
-        if (data.settings && onSettingsUpdate) {
-          onSettingsUpdate(data.settings);
-        }
-      }
-    } catch (error) {
-      console.error('Error loading from Supabase:', error);
-      setSaveStatus('error');
-    } finally {
-      setIsLoading(false);
-    }
-  }
 
   async function saveToSupabase(scenesToSave, settingsToSave, isInitial = false) {
     setSaveStatus('saving');
@@ -157,24 +171,6 @@ export function useSupabaseSync(scenes, settings, onScenesUpdate, onSettingsUpda
     } catch (error) {
       console.error('Error saving to Supabase:', error);
       setSaveStatus('error');
-    }
-  }
-
-  function handleRemoteUpdate(remoteData) {
-    if (remoteData.version > remoteVersion) {
-      // Remote is newer, prompt user
-      const shouldUpdate = confirm(
-        'Newer changes detected from another session. Load them? (Your unsaved changes will be lost)'
-      );
-
-      if (shouldUpdate) {
-        setRemoteVersion(remoteData.version);
-        setLastSaved(new Date(remoteData.updated_at));
-        onScenesUpdate(remoteData.slides);
-        if (remoteData.settings && onSettingsUpdate) {
-          onSettingsUpdate(remoteData.settings);
-        }
-      }
     }
   }
 

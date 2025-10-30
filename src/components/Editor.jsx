@@ -86,17 +86,32 @@ export default function Editor() {
     };
   }, [leftPanelWidth, topPanelHeight]);
 
-  // Save to history when scenes change
+  // Save to history when scenes change (using functional updates to prevent race conditions)
   const saveToHistory = (newScenes) => {
-    const newHistory = history.slice(0, historyIndex + 1);
-    newHistory.push(newScenes);
-    // Limit history to 50 states
-    if (newHistory.length > 50) {
-      newHistory.shift();
-    } else {
-      setHistoryIndex(historyIndex + 1);
-    }
-    setHistory(newHistory);
+    setHistory(prevHistory => {
+      setHistoryIndex(prevIndex => {
+        const newHistory = prevHistory.slice(0, prevIndex + 1);
+        newHistory.push(newScenes);
+
+        let newIndex = prevIndex + 1;
+
+        // Limit history to 50 states
+        if (newHistory.length > 50) {
+          newHistory.shift();
+          newIndex = newIndex - 1; // Adjust index when removing first item
+        }
+
+        return newIndex;
+      });
+
+      const newHistory = prevHistory.slice(0, historyIndex + 1);
+      newHistory.push(newScenes);
+      if (newHistory.length > 50) {
+        newHistory.shift();
+      }
+      return newHistory;
+    });
+
     setScenes(newScenes);
   };
 
