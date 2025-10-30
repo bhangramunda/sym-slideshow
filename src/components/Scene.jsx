@@ -9,8 +9,34 @@ import SlideTransition from './SlideTransition.jsx'
 import { parseFormatting } from '../utils/formatText.js'
 import cx from 'classnames'
 
+// Calculate dynamic font size based on text length
+const getDynamicFontSize = (text, baseSize, minSize, maxSize) => {
+  if (!text) return baseSize;
+  const length = text.length;
+
+  // Scale factor: shorter text = larger font
+  let scale = 1.0;
+
+  if (length < 30) {
+    // Very short text: increase up to 1.5x
+    scale = 1.0 + (30 - length) / 30 * 0.5;
+  } else if (length < 60) {
+    // Short text: slightly increase
+    scale = 1.0 + (60 - length) / 60 * 0.3;
+  } else if (length > 100) {
+    // Long text: slightly decrease
+    scale = 1.0 - (length - 100) / 200 * 0.3;
+  }
+
+  const calculatedSize = baseSize * scale;
+  return Math.max(minSize, Math.min(maxSize, calculatedSize));
+};
+
 // Default/Hero slide layout
 function DefaultSlide({ scene }) {
+  // Calculate dynamic sizes
+  const titleFontSize = getDynamicFontSize(scene.title, 6, 4, 9); // base 6rem (text-6xl)
+  const subtitleFontSize = getDynamicFontSize(scene.subtitle, 2, 1.5, 3.5); // base 2rem (text-2xl)
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -62,10 +88,15 @@ function DefaultSlide({ scene }) {
 
       {/* Content */}
       <div className="relative z-10 max-w-6xl px-6 text-center">
-        <KineticText text={scene.title} className="text-6xl md:text-7xl font-extrabold text-white drop-shadow-[0_0_20px_rgba(0,212,255,0.35)]" />
+        <KineticText
+          text={scene.title}
+          className="font-extrabold text-white drop-shadow-[0_0_20px_rgba(0,212,255,0.35)]"
+          style={{ fontSize: `${titleFontSize}rem` }}
+        />
         {scene.subtitle && (
           <motion.div
-            className="mt-6 text-2xl md:text-3xl text-white/90 leading-relaxed"
+            className="mt-6 text-white/90 leading-relaxed"
+            style={{ fontSize: `${subtitleFontSize}rem` }}
             initial={{ opacity: 0, y: 12, filter: 'blur(6px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
             transition={{ delay: 0.6, duration: 0.8 }}

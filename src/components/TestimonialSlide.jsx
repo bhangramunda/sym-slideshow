@@ -1,7 +1,34 @@
 import { motion } from 'framer-motion';
 import KineticText from './KineticText';
 
+// Calculate dynamic font size based on text length
+const getDynamicFontSize = (text, baseSize, minSize, maxSize) => {
+  if (!text) return baseSize;
+  const length = text.length;
+
+  // Scale factor: shorter text = larger font
+  // Target: ~40-60 chars per line at base size
+  let scale = 1.0;
+
+  if (length < 40) {
+    // Very short text: increase up to 1.5x
+    scale = 1.0 + (40 - length) / 40 * 0.5;
+  } else if (length < 80) {
+    // Short text: slightly increase
+    scale = 1.0 + (80 - length) / 80 * 0.3;
+  } else if (length > 150) {
+    // Long text: slightly decrease
+    scale = 1.0 - (length - 150) / 300 * 0.3;
+  }
+
+  const calculatedSize = baseSize * scale;
+  return Math.max(minSize, Math.min(maxSize, calculatedSize));
+};
+
 export default function TestimonialSlide({ scene }) {
+  // Calculate dynamic sizes based on content length
+  const quoteFontSize = getDynamicFontSize(scene.quote, 5, 3.5, 7); // base 5rem (text-5xl)
+  const authorFontSize = getDynamicFontSize(scene.author, 1.5, 1.25, 2.5); // base 1.5rem (text-2xl)
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -66,7 +93,16 @@ export default function TestimonialSlide({ scene }) {
         </motion.div>
 
         {/* Testimonial Quote */}
-        <div className="text-4xl md:text-5xl font-bold text-white leading-tight mb-12" style={{ wordBreak: 'keep-all', hyphens: 'none', overflowWrap: 'break-word', whiteSpace: 'normal' }}>
+        <div
+          className="font-bold text-white leading-tight mb-12"
+          style={{
+            fontSize: `${quoteFontSize}rem`,
+            wordBreak: 'keep-all',
+            hyphens: 'none',
+            overflowWrap: 'break-word',
+            whiteSpace: 'normal'
+          }}
+        >
           <KineticText text={scene.quote} />
         </div>
 
@@ -77,7 +113,14 @@ export default function TestimonialSlide({ scene }) {
           transition={{ duration: 0.8, delay: 0.8 }}
           className="space-y-2"
         >
-          <div className="text-2xl font-semibold text-tgteal" style={{ wordBreak: 'normal', hyphens: 'none' }}>
+          <div
+            className="font-semibold text-tgteal"
+            style={{
+              fontSize: `${authorFontSize}rem`,
+              wordBreak: 'normal',
+              hyphens: 'none'
+            }}
+          >
             {scene.author}
           </div>
           <div className="text-xl text-white/70" style={{ wordBreak: 'normal', hyphens: 'none' }}>
