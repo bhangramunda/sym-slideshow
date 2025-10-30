@@ -157,6 +157,7 @@ function Slideshow() {
 
   const [index, setIndex] = useState(0)
   const [jumpToInput, setJumpToInput] = useState('')
+  const [showControls, setShowControls] = useState(true)
 
   useEffect(() => {
     let timeoutId
@@ -203,6 +204,34 @@ function Slideshow() {
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [jumpToInput, scenes.length])
 
+  // Auto-hide controls after 500ms of inactivity
+  useEffect(() => {
+    let hideTimeout
+
+    const showControlsTemporarily = () => {
+      setShowControls(true)
+      clearTimeout(hideTimeout)
+      hideTimeout = setTimeout(() => {
+        setShowControls(false)
+      }, 500)
+    }
+
+    // Show controls on any mouse or keyboard activity
+    window.addEventListener('mousemove', showControlsTemporarily)
+    window.addEventListener('keydown', showControlsTemporarily)
+
+    // Initial timeout
+    hideTimeout = setTimeout(() => {
+      setShowControls(false)
+    }, 500)
+
+    return () => {
+      clearTimeout(hideTimeout)
+      window.removeEventListener('mousemove', showControlsTemporarily)
+      window.removeEventListener('keydown', showControlsTemporarily)
+    }
+  }, [])
+
   // Prevent accidental interaction / keep fullscreen feel
   useEffect(() => {
     const handler = e => e.preventDefault()
@@ -222,7 +251,10 @@ function Slideshow() {
   return (
     <div className="w-screen h-screen relative overflow-hidden">
       {/* Secret Editor Access - Press 'e' key */}
-      <div className="absolute top-4 right-4 z-50">
+      <div
+        className="absolute top-4 right-4 z-50 transition-opacity duration-300"
+        style={{ opacity: showControls ? 1 : 0 }}
+      >
         <a
           href="/editor"
           className="text-white/30 hover:text-white/80 text-xs"
@@ -231,12 +263,18 @@ function Slideshow() {
         </a>
       </div>
       {/* Debug: Show current transition mode */}
-      <div className="absolute bottom-4 left-4 z-50 text-white/20 text-xs">
+      <div
+        className="absolute bottom-4 left-4 z-50 text-white/20 text-xs transition-opacity duration-300"
+        style={{ opacity: showControls ? 1 : 0 }}
+      >
         Mode: {settings.transitionMode}
       </div>
 
       {/* Slide counter and jump-to indicator */}
-      <div className="absolute bottom-4 right-4 z-50 text-white/40 text-sm">
+      <div
+        className="absolute bottom-4 right-4 z-50 text-white/40 text-sm transition-opacity duration-300"
+        style={{ opacity: showControls || jumpToInput ? 1 : 0 }}
+      >
         Slide {index + 1} / {scenes.length}
         {jumpToInput && (
           <div className="mt-2 bg-black/80 backdrop-blur border border-white/30 rounded px-4 py-2 text-white text-lg">
