@@ -137,6 +137,68 @@ export default function Editor() {
     saveToHistory(newScenes);
   };
 
+  // Resize image if larger than 3MB
+  const resizeImageIfNeeded = async (file) => {
+    const MAX_SIZE = 3 * 1024 * 1024; // 3MB
+
+    if (file.size <= MAX_SIZE) {
+      return file; // No resize needed
+    }
+
+    console.log(`[Editor] Image is ${(file.size / 1024 / 1024).toFixed(2)}MB, resizing...`);
+
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      const canvas = document.createElement('canvas');
+      const ctx = canvas.getContext('2d');
+
+      img.onload = () => {
+        // Calculate new dimensions to achieve target file size
+        // Start with 80% quality and adjust dimensions if needed
+        let width = img.width;
+        let height = img.height;
+        const aspectRatio = width / height;
+
+        // Estimate scaling factor based on file size ratio
+        const sizeRatio = MAX_SIZE / file.size;
+        const scaleFactor = Math.sqrt(sizeRatio) * 0.9; // Conservative estimate
+
+        width = Math.floor(width * scaleFactor);
+        height = Math.floor(height * scaleFactor);
+
+        canvas.width = width;
+        canvas.height = height;
+
+        // Draw resized image
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // Convert to blob with quality adjustment
+        canvas.toBlob(
+          (blob) => {
+            if (blob) {
+              console.log(`[Editor] Resized from ${(file.size / 1024 / 1024).toFixed(2)}MB to ${(blob.size / 1024 / 1024).toFixed(2)}MB`);
+              console.log(`[Editor] Dimensions: ${img.width}x${img.height} → ${width}x${height}`);
+
+              // Create new File object with same name
+              const resizedFile = new File([blob], file.name, {
+                type: file.type,
+                lastModified: Date.now(),
+              });
+              resolve(resizedFile);
+            } else {
+              reject(new Error('Failed to create blob'));
+            }
+          },
+          file.type,
+          0.85 // JPEG quality
+        );
+      };
+
+      img.onerror = () => reject(new Error('Failed to load image'));
+      img.src = URL.createObjectURL(file);
+    });
+  };
+
   const moveScene = (index, direction) => {
     if (
       (direction === 'up' && index === 0) ||
@@ -829,15 +891,18 @@ export default function Editor() {
                       if (file) {
                         setUploadingImage(true);
                         try {
+                          // Resize image if needed
+                          const fileToUpload = await resizeImageIfNeeded(file);
+
                           // Upload to Supabase Storage
-                          const fileExt = file.name.split('.').pop();
-                          const originalName = file.name.replace(/\.[^/.]+$/, ''); // Remove extension
+                          const fileExt = fileToUpload.name.split('.').pop();
+                          const originalName = fileToUpload.name.replace(/\.[^/.]+$/, ''); // Remove extension
                           const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
                           const filePath = `slides/${fileName}`;
 
                           const { data, error } = await supabase.storage
                             .from('slideshow-images')
-                            .upload(filePath, file, {
+                            .upload(filePath, fileToUpload, {
                               cacheControl: '3600',
                               upsert: false
                             });
