@@ -17,9 +17,7 @@ export default function Editor() {
   const [history, setHistory] = useState([scenesData]);
   const [historyIndex, setHistoryIndex] = useState(0);
 
-  // Multi-editor conflict detection
-  const [lastSavedHash, setLastSavedHash] = useState(null);
-  const [showConflictWarning, setShowConflictWarning] = useState(false);
+  // Removed localStorage conflict detection - using Supabase real-time sync
 
   // Image upload state
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -185,20 +183,7 @@ export default function Editor() {
     setSelectedIndex(scenes.length);
   };
 
-  // Generate a simple hash for conflict detection
-  const generateHash = (data) => {
-    const str = JSON.stringify(data);
-    let hash = 0;
-    for (let i = 0; i < str.length; i++) {
-      const char = str.charCodeAt(i);
-      hash = ((hash << 5) - hash) + char;
-      hash = hash & hash;
-    }
-    return hash.toString(36);
-  };
-
   const downloadJSON = () => {
-    const hash = generateHash(scenes);
     const dataStr = JSON.stringify(scenes, null, 2);
     const dataBlob = new Blob([dataStr], { type: 'application/json' });
     const url = URL.createObjectURL(dataBlob);
@@ -208,12 +193,6 @@ export default function Editor() {
     link.download = `scenes-${timestamp}.json`;
     link.click();
     URL.revokeObjectURL(url);
-
-    // Store hash and save to localStorage for conflict detection
-    setLastSavedHash(hash);
-    localStorage.setItem('scenesHash', hash);
-    localStorage.setItem('scenesData', dataStr);
-    localStorage.setItem('scenesTimestamp', new Date().toISOString());
   };
 
   const uploadJSON = (event) => {
@@ -226,10 +205,6 @@ export default function Editor() {
         const json = JSON.parse(e.target.result);
         if (Array.isArray(json) && json.length > 0) {
           saveToHistory(json);
-          const hash = generateHash(json);
-          localStorage.setItem('scenesHash', hash);
-          localStorage.setItem('scenesData', JSON.stringify(json, null, 2));
-          localStorage.setItem('scenesTimestamp', new Date().toISOString());
           alert(`Successfully loaded ${json.length} slides!`);
         } else {
           alert('Invalid JSON format. Expected an array of slides.');
@@ -246,42 +221,7 @@ export default function Editor() {
     event.target.value = '';
   };
 
-  // Check for conflicts on load and periodically
-  useEffect(() => {
-    const storedHash = localStorage.getItem('scenesHash');
-    const storedData = localStorage.getItem('scenesData');
-    const currentHash = generateHash(scenes);
-
-    if (storedHash && storedData && storedHash !== currentHash) {
-      const storedScenes = JSON.parse(storedData);
-      const currentScenes = JSON.stringify(scenes);
-      const stored = JSON.stringify(storedScenes);
-
-      // Only show warning if the stored data is actually different
-      if (currentScenes !== stored) {
-        setShowConflictWarning(true);
-      }
-    }
-
-    setLastSavedHash(storedHash);
-  }, []);
-
-  const resolveConflict = (useStored) => {
-    if (useStored) {
-      const storedData = localStorage.getItem('scenesData');
-      if (storedData) {
-        const storedScenes = JSON.parse(storedData);
-        saveToHistory(storedScenes);
-      }
-    } else {
-      // Keep current changes and update localStorage
-      const hash = generateHash(scenes);
-      localStorage.setItem('scenesHash', hash);
-      localStorage.setItem('scenesData', JSON.stringify(scenes, null, 2));
-      setLastSavedHash(hash);
-    }
-    setShowConflictWarning(false);
-  };
+  // localStorage conflict detection removed - using Supabase real-time sync instead
 
   // Handle vertical resize (left/right panels)
   useEffect(() => {
@@ -365,36 +305,6 @@ export default function Editor() {
 
   return (
     <div className="flex h-screen bg-gray-900 text-white">
-      {/* Conflict Warning Banner */}
-      {showConflictWarning && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-yellow-600 text-black p-4 flex items-center justify-between shadow-lg">
-          <div className="flex items-center gap-3">
-            <span className="text-2xl">⚠️</span>
-            <div>
-              <div className="font-bold">Changes Detected from Another Session</div>
-              <div className="text-sm">
-                There are saved changes in localStorage that differ from the current state.
-                This may be from another browser tab or a previous session.
-              </div>
-            </div>
-          </div>
-          <div className="flex gap-2">
-            <button
-              onClick={() => resolveConflict(true)}
-              className="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition-colors font-medium"
-            >
-              Load Saved Version
-            </button>
-            <button
-              onClick={() => resolveConflict(false)}
-              className="px-4 py-2 bg-white text-black rounded hover:bg-gray-200 transition-colors font-medium"
-            >
-              Keep Current Changes
-            </button>
-          </div>
-        </div>
-      )}
-
       {/* Editor Panel - Left Side */}
       <div
         className="flex flex-col border-r border-gray-700"
