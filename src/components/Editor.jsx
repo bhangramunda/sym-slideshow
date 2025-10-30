@@ -1071,7 +1071,16 @@ export default function Editor() {
               <label className="block text-sm font-medium mb-1">Slide Type</label>
               <select
                 value={selectedScene.type || 'hero'}
-                onChange={(e) => updateScene(selectedIndex, { type: e.target.value })}
+                onChange={(e) => {
+                  const newType = e.target.value;
+                  // Clear title/subtitle for fullscreen-image and fullscreen-video by default
+                  // (they can still be added back if user wants overlay text)
+                  if (newType === 'fullscreen-image' || newType === 'fullscreen-video') {
+                    updateScene(selectedIndex, { type: newType, title: '', subtitle: '' });
+                  } else {
+                    updateScene(selectedIndex, { type: newType });
+                  }
+                }}
                 className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
               >
                 <option value="hero">Hero</option>
