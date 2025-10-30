@@ -249,7 +249,10 @@ function Slideshow() {
   }
 
   return (
-    <div className="w-screen h-screen relative overflow-hidden">
+    <div
+      className="w-screen h-screen relative overflow-hidden transition-[cursor] duration-300"
+      style={{ cursor: showControls ? 'default' : 'none' }}
+    >
       {/* Secret Editor Access - Press 'e' key */}
       <div
         className="absolute top-4 right-4 z-50 transition-opacity duration-300"
