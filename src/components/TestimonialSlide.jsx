@@ -78,19 +78,31 @@ export default function TestimonialSlide({ scene }) {
 
       {/* Testimonial Content - increased width to 75% of viewport */}
       <div className="relative z-10 w-[75vw] mx-auto px-8 text-center">
-        {/* Quote Icon */}
+        {/* Opening Quote - Large decorative */}
         <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 0.3, scale: 1 }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-          className="text-8xl text-tgteal mb-8 leading-none"
+          initial={{ opacity: 0, scale: 0.5, x: -20 }}
+          animate={{ opacity: 0.15, scale: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2 }}
+          className="absolute left-0 top-0 text-[20rem] text-tgteal leading-none font-serif pointer-events-none"
+          style={{ transform: 'translateY(-30%)' }}
+        >
+          "
+        </motion.div>
+
+        {/* Closing Quote - Large decorative */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5, x: 20 }}
+          animate={{ opacity: 0.15, scale: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="absolute right-0 bottom-0 text-[20rem] text-tgteal leading-none font-serif pointer-events-none"
+          style={{ transform: 'translateY(30%) rotate(180deg)' }}
         >
           "
         </motion.div>
 
         {/* Testimonial Quote */}
         <div
-          className="font-bold text-white leading-tight mb-12"
+          className="relative font-bold text-white leading-tight mb-16"
           style={{
             fontSize: `${quoteFontSize}rem`,
             wordBreak: 'keep-all',
@@ -102,28 +114,28 @@ export default function TestimonialSlide({ scene }) {
           <KineticText text={scene.quote} />
         </div>
 
-        {/* Author Info */}
+        {/* Author Info - Enlarged */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="space-y-2"
+          className="space-y-3"
         >
           <div
             className="font-semibold text-tgteal"
             style={{
-              fontSize: `${authorFontSize}rem`,
+              fontSize: `${authorFontSize * 1.8}rem`,
               wordBreak: 'normal',
               hyphens: 'none'
             }}
           >
             {scene.author}
           </div>
-          <div className="text-xl text-white/70" style={{ wordBreak: 'normal', hyphens: 'none' }}>
+          <div className="text-4xl text-white/70" style={{ wordBreak: 'normal', hyphens: 'none' }}>
             {scene.role}
           </div>
           {scene.company && (
-            <div className="text-lg text-white/50" style={{ wordBreak: 'normal', hyphens: 'none' }}>
+            <div className="text-3xl text-white/50" style={{ wordBreak: 'normal', hyphens: 'none' }}>
               {scene.company}
             </div>
           )}

@@ -21,6 +21,21 @@ export default function ImpactSlide({ scene, fireworksIntensity }) {
 
   const fireworksCount = getFireworksCount();
 
+  // Calculate timing to ensure all fireworks complete before slide ends
+  // Fireworks cycle: delay (variable) + launch (0.8-2.2s) + explosion (2s) = variable
+  // Max launch duration: 2.2s, explosion: 2s = 4.2s for animation
+  // We want them to finish 1 second before the slide duration ends
+  const slideDuration = (scene.durationSec ?? 20); // seconds
+  const maxLaunchDuration = 2.2; // maximum launch time (background fireworks)
+  const explosionDuration = 2.0; // explosion animation duration
+  const maxAnimationTime = maxLaunchDuration + explosionDuration; // 4.2s
+  const safetyBuffer = 1.0; // finish 1 second before slide ends
+  const availableTime = slideDuration - safetyBuffer;
+
+  // Distribute fireworks evenly across the available time
+  // Last firework should start early enough to complete its full animation
+  const maxDelayTime = Math.max(0, availableTime - maxAnimationTime);
+
   return (
     <div
       className="relative w-screen h-screen overflow-hidden bg-black"
@@ -45,9 +60,46 @@ export default function ImpactSlide({ scene, fireworksIntensity }) {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Launch trails - rockets shooting up from bottom */}
         {Array.from({ length: fireworksCount }).map((_, i) => {
+          // Create depth layers: background (far), midground, foreground (close)
+          const depth = Math.random()
+          const isBackground = depth < 0.33
+          const isMidground = depth >= 0.33 && depth < 0.66
+          const isForeground = depth >= 0.66
+
           const launchX = 10 + Math.random() * 80; // Random position across width (10-90%)
-          const explodeY = 15 + Math.random() * 35; // Explode at different heights (15-50%)
-          const delay = Math.random() * 2; // Random delays (0-2s)
+
+          // Depth-based properties
+          let explodeY, launchDuration, particleCount, particleDistance, particleSize, flashSize
+
+          if (isBackground) {
+            // Far fireworks: high, slow, large
+            explodeY = 10 + Math.random() * 20; // 10-30% from top
+            launchDuration = 1.5 + Math.random() * 0.3; // 1.5-1.8s
+            particleCount = 24
+            particleDistance = 120 + Math.random() * 80; // 120-200px
+            particleSize = 4
+            flashSize = 200
+          } else if (isMidground) {
+            // Medium fireworks
+            explodeY = 25 + Math.random() * 20; // 25-45% from top
+            launchDuration = 1.0 + Math.random() * 0.3; // 1.0-1.3s
+            particleCount = 20
+            particleDistance = 90 + Math.random() * 60; // 90-150px
+            particleSize = 3
+            flashSize = 160
+          } else {
+            // Close fireworks: low, fast, smaller
+            explodeY = 40 + Math.random() * 25; // 40-65% from top
+            launchDuration = 0.7 + Math.random() * 0.2; // 0.7-0.9s
+            particleCount = 16
+            particleDistance = 70 + Math.random() * 40; // 70-110px
+            particleSize = 2.5
+            flashSize = 120
+          }
+
+          // Spread firework launches across the available time
+          const delay = Math.random() * Math.max(0, maxDelayTime);
+
           const colors = [
             'rgba(0, 212, 255, 0.9)',
             'rgba(106, 27, 154, 0.9)',
@@ -75,28 +127,27 @@ export default function ImpactSlide({ scene, fireworksIntensity }) {
                   scaleY: [0.5, 1, 0.8, 0],
                 }}
                 transition={{
-                  duration: 1.2,
+                  duration: launchDuration,
                   delay,
-                  repeat: Infinity,
-                  repeatDelay: 3,
                   ease: [0.4, 0.0, 0.2, 1],
                 }}
               />
 
               {/* Explosion burst - multiple particles radiating out */}
-              {Array.from({ length: 16 }).map((_, particleIdx) => {
-                const angle = (particleIdx / 16) * Math.PI * 2;
-                const distance = 80 + Math.random() * 60;
-                const offsetX = Math.cos(angle) * distance;
-                const offsetY = Math.sin(angle) * distance;
+              {Array.from({ length: particleCount }).map((_, particleIdx) => {
+                const angle = (particleIdx / particleCount) * Math.PI * 2;
+                const offsetX = Math.cos(angle) * particleDistance;
+                const offsetY = Math.sin(angle) * particleDistance;
 
                 return (
                   <motion.div
                     key={`particle-${i}-${particleIdx}`}
-                    className="absolute w-2 h-2 rounded-full"
+                    className="absolute rounded-full"
                     style={{
                       left: `${launchX}%`,
                       top: `${explodeY}%`,
+                      width: `${particleSize}px`,
+                      height: `${particleSize}px`,
                       background: color,
                       boxShadow: `0 0 12px ${color}`,
                     }}
@@ -108,9 +159,7 @@ export default function ImpactSlide({ scene, fireworksIntensity }) {
                     }}
                     transition={{
                       duration: 2,
-                      delay: delay + 1.2, // Explode after launch
-                      repeat: Infinity,
-                      repeatDelay: 3,
+                      delay: delay + launchDuration, // Explode after launch completes
                       ease: 'easeOut',
                     }}
                   />
@@ -123,10 +172,10 @@ export default function ImpactSlide({ scene, fireworksIntensity }) {
                 style={{
                   left: `${launchX}%`,
                   top: `${explodeY}%`,
-                  width: '120px',
-                  height: '120px',
-                  marginLeft: '-60px',
-                  marginTop: '-60px',
+                  width: `${flashSize}px`,
+                  height: `${flashSize}px`,
+                  marginLeft: `${-flashSize / 2}px`,
+                  marginTop: `${-flashSize / 2}px`,
                   background: `radial-gradient(circle, ${color}, transparent)`,
                   filter: 'blur(20px)',
                 }}
@@ -136,9 +185,7 @@ export default function ImpactSlide({ scene, fireworksIntensity }) {
                 }}
                 transition={{
                   duration: 1.5,
-                  delay: delay + 1.2,
-                  repeat: Infinity,
-                  repeatDelay: 3,
+                  delay: delay + launchDuration,
                   ease: 'easeOut',
                 }}
               />

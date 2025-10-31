@@ -39,8 +39,8 @@ const getDynamicFontSize = (text, baseSize, minSize, maxSize) => {
 // Default/Hero slide layout
 function DefaultSlide({ scene, buildScope, buildStyle }) {
   // Calculate dynamic sizes with much larger base for hero impact
-  const titleFontSize = getDynamicFontSize(scene.title, 8, 6, 12); // base 8rem, up to 12rem for short titles
-  const subtitleFontSize = getDynamicFontSize(scene.subtitle, 2.5, 2, 4); // base 2.5rem, up to 4rem
+  const titleFontSize = getDynamicFontSize(scene.title, 10, 7, 14); // base 10rem, up to 14rem for short titles
+  const subtitleFontSize = getDynamicFontSize(scene.subtitle, 5, 3.5, 7); // base 5rem, up to 7rem for short subtitles
 
   // Determine which build animation to use
   const scope = scene.buildScope || buildScope || 'components'
@@ -151,11 +151,11 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 max-w-6xl px-6 text-center">
+      <div className="relative z-10 w-[85vw] mx-auto px-6 text-center">
         <TitleComponent />
         {scene.subtitle && (
           <motion.div
-            className="mt-6 text-white/90 leading-relaxed"
+            className="mt-12 text-white/90 leading-relaxed"
             style={{ fontSize: `${subtitleFontSize}rem` }}
             initial={{ opacity: 0, y: 12, filter: 'blur(6px)' }}
             animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}

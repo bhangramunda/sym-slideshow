@@ -54,7 +54,7 @@ export default function ServiceCardSlide({ scene }) {
       <div className="relative z-10 w-[75vw] mx-auto px-8">
         {/* Header */}
         <div className="text-center mb-16">
-          <div className="text-6xl md:text-7xl font-bold text-white mb-4 break-words hyphens-none">
+          <div className="text-8xl md:text-9xl font-bold text-white mb-6 break-words hyphens-none">
             <KineticText text={scene.title} />
           </div>
           {scene.subtitle && (
@@ -62,7 +62,7 @@ export default function ServiceCardSlide({ scene }) {
               initial={{ opacity: 0, filter: 'blur(4px)' }}
               animate={{ opacity: 1, filter: 'blur(0px)' }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="text-2xl text-white/80 break-words hyphens-none"
+              className="text-4xl text-white/80 break-words hyphens-none"
               dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
             />
           )}
@@ -112,18 +112,18 @@ export default function ServiceCardSlide({ scene }) {
                   )}
 
                   {/* Title */}
-                  <h3 className="text-4xl font-bold text-white mb-6 group-hover:text-tgteal transition-colors duration-300 break-words hyphens-none">
+                  <h3 className="text-7xl font-bold text-white mb-6 group-hover:text-tgteal transition-colors duration-300 break-words hyphens-none leading-tight">
                     {service.name}
                   </h3>
 
                   {/* Description */}
-                  <p className="text-xl text-white/70 leading-relaxed mb-8 break-words hyphens-none">
+                  <p className="text-4xl text-white/70 leading-relaxed mb-8 break-words hyphens-none">
                     {service.description}
                   </p>
 
                   {/* Features List */}
                   {service.features && (
-                    <ul className="space-y-4">
+                    <ul className="space-y-6">
                       {service.features.map((feature, fIndex) => (
                         <motion.li
                           key={fIndex}
@@ -133,9 +133,9 @@ export default function ServiceCardSlide({ scene }) {
                             duration: 0.5,
                             delay: 1.3 + index * 0.2 + fIndex * 0.1,
                           }}
-                          className="flex items-center gap-3 text-white/80 text-lg"
+                          className="flex items-center gap-4 text-white/80 text-3xl"
                         >
-                          <span className="text-tgteal text-2xl leading-none flex-shrink-0">✓</span>
+                          <span className="text-tgteal text-4xl leading-none flex-shrink-0">✓</span>
                           <span className="break-words hyphens-none leading-tight">{feature}</span>
                         </motion.li>
                       ))}
