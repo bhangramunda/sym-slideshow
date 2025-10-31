@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Scene from './Scene';
 import RichTextArea from './RichTextArea';
@@ -89,6 +89,9 @@ export default function Editor() {
   const [draggedSlideIndex, setDraggedSlideIndex] = useState(null);
   const [dragOverIndex, setDragOverIndex] = useState(null);
 
+  // Ref for slide details panel to enable scroll-to-top on slide change
+  const slideDetailsRef = useRef(null);
+
   // Update preview scale when window or panels resize
   useEffect(() => {
     const updatePreviewScale = () => {
@@ -138,6 +141,13 @@ export default function Editor() {
       observer.disconnect();
     };
   }, [leftPanelWidth, topPanelHeight, settings.aspectRatio]);
+
+  // Scroll slide details panel to top when changing slides
+  useEffect(() => {
+    if (slideDetailsRef.current) {
+      slideDetailsRef.current.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [selectedIndex]);
 
   // Fetch all uploaded images from Supabase storage
   useEffect(() => {
@@ -1196,6 +1206,7 @@ export default function Editor() {
 
         {/* Slide Details Section */}
         <div
+          ref={slideDetailsRef}
           className="overflow-y-auto p-4 bg-gray-800"
           style={{ height: `${100 - topPanelHeight}%` }}
         >
@@ -1243,15 +1254,15 @@ export default function Editor() {
                 }}
                 className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
               >
-                <option value="hero">Hero</option>
-                <option value="impact">💥 Impact / ROI</option>
-                <option value="testimonial">Testimonial</option>
-                <option value="logo-grid">Logo Grid (Text)</option>
-                <option value="client-logos">🖼️ Client Logos (Images)</option>
-                <option value="service-card">Service Card</option>
-                <option value="split-content">Split Content</option>
+                <option value="client-logos">Client Logos (Images)</option>
                 <option value="fullscreen-image">Full Screen Image</option>
                 <option value="fullscreen-video">Full Screen Video</option>
+                <option value="hero">Hero</option>
+                <option value="impact">Impact / ROI</option>
+                <option value="logo-grid">Logo Grid (Text)</option>
+                <option value="service-card">Service Card</option>
+                <option value="split-content">Split Content</option>
+                <option value="testimonial">Testimonial</option>
               </select>
             </div>
 
@@ -1375,6 +1386,23 @@ export default function Editor() {
                 className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
               />
             </div>
+
+            {/* Featured Image (for hero slides only) */}
+            {selectedScene.type === 'hero' && (
+              <div>
+                <label className="block text-sm font-medium mb-1">Featured Image (optional)</label>
+                <input
+                  type="text"
+                  value={selectedScene.featuredImage || ''}
+                  onChange={(e) => updateScene(selectedIndex, { featuredImage: e.target.value })}
+                  placeholder="URL or path to SVG/image"
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
+                />
+                <p className="text-xs text-gray-400 mt-1">
+                  Displayed above title at 80% width max. Works great with SVG logos or illustrations.
+                </p>
+              </div>
+            )}
 
             {/* Subtitle/Description */}
             {['hero', 'split-content', 'logo-grid', 'service-card'].includes(selectedScene.type) && (

@@ -153,6 +153,21 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
 
       {/* Content */}
       <div className="relative z-10 w-[85vw] mx-auto px-6 text-center">
+        {/* Featured Image - displayed above title */}
+        {scene.featuredImage && (
+          <motion.div
+            className="mb-12 flex justify-center"
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ delay: 0.2, duration: 0.8 }}
+          >
+            <img
+              src={scene.featuredImage}
+              alt="Featured"
+              className="max-w-[80%] max-h-[40vh] object-contain drop-shadow-[0_0_30px_rgba(0,212,255,0.3)]"
+            />
+          </motion.div>
+        )}
         <TitleComponent />
         {scene.subtitle && (
           <motion.div
