@@ -185,7 +185,7 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
 }
 
 // Main Scene component - routes to appropriate slide type with transition
-export default function Scene({ scene, isActive, buildScope, buildStyle, onVideoEnd, aspectRatio }) {
+export default function Scene({ scene, isActive, buildScope, buildStyle, onVideoEnd, aspectRatio, fireworksIntensity }) {
   if (!isActive) return null
 
   // Get slide content based on type
@@ -210,7 +210,7 @@ export default function Scene({ scene, isActive, buildScope, buildStyle, onVideo
       SlideContent = <FullScreenVideoSlide scene={scene} onVideoEnd={onVideoEnd} />
       break
     case 'impact':
-      SlideContent = <ImpactSlide scene={scene} />
+      SlideContent = <ImpactSlide scene={scene} fireworksIntensity={fireworksIntensity} />
       break
     case 'hero':
     default:

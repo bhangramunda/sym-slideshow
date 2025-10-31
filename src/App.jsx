@@ -25,7 +25,8 @@ function Slideshow() {
     buildScope: 'components', // 'off', 'components', 'elements', 'sections'
     buildStyle: 'classic', // 'off', 'classic', 'cascadingFade', 'scalingCascade', 'slideIn', 'blurFocus', 'typewriter'
     aspectRatio: '16:9', // '16:9', '21:9', '4:3', 'custom'
-    featuredRepeats: 2 // How many additional copies of each featured slide (0-5)
+    featuredRepeats: 2, // How many additional copies of each featured slide (0-5)
+    fireworksIntensity: 'medium' // 'none', 'light', 'medium', 'heavy', 'random'
   })
 
   // Mobile detection
@@ -377,6 +378,7 @@ function Slideshow() {
               buildScope={settings.buildScope}
               buildStyle={settings.buildStyle}
               aspectRatio={ASPECT_RATIOS[settings.aspectRatio]}
+              fireworksIntensity={settings.fireworksIntensity}
               onVideoEnd={() => {
                 console.log('[App] Video ended, advancing to next slide');
                 setIndex(prev => (prev + 1) % scenes.length);

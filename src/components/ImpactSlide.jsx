@@ -1,7 +1,26 @@
 import { motion } from 'framer-motion';
 import { parseFormatting } from '../utils/formatText';
 
-export default function ImpactSlide({ scene }) {
+export default function ImpactSlide({ scene, fireworksIntensity }) {
+  // Determine fireworks count based on intensity setting
+  const getFireworksCount = () => {
+    // Check for per-slide override first
+    const intensity = scene.fireworks === 'default' || !scene.fireworks
+      ? fireworksIntensity
+      : scene.fireworks;
+
+    switch (intensity) {
+      case 'none': return 0;
+      case 'light': return 5;
+      case 'medium': return 8;
+      case 'heavy': return 15;
+      case 'random': return Math.floor(Math.random() * 8) + 8; // 8-15
+      default: return 8; // fallback to medium
+    }
+  };
+
+  const fireworksCount = getFireworksCount();
+
   return (
     <div
       className="relative w-screen h-screen overflow-hidden bg-black"
@@ -22,9 +41,10 @@ export default function ImpactSlide({ scene }) {
       )}
 
       {/* Enhanced Fireworks - Shooting from bottom with explosions */}
+      {fireworksCount > 0 && (
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Launch trails - rockets shooting up from bottom */}
-        {Array.from({ length: 8 }).map((_, i) => {
+        {Array.from({ length: fireworksCount }).map((_, i) => {
           const launchX = 10 + (i * 12) + Math.random() * 8; // Spread across width
           const explodeY = 15 + Math.random() * 35; // Explode at different heights
           const delay = i * 0.4; // Staggered launches
@@ -126,6 +146,7 @@ export default function ImpactSlide({ scene }) {
           );
         })}
       </div>
+      )}
 
       {/* Radial Glow Effect */}
       <div className="absolute inset-0 pointer-events-none">

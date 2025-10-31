@@ -27,7 +27,8 @@ export default function Editor() {
     buildScope: 'components', // 'off', 'components', 'elements', 'sections'
     buildStyle: 'classic', // 'off', 'classic', 'cascadingFade', 'scalingCascade', 'slideIn', 'blurFocus', 'typewriter'
     aspectRatio: '16:9', // '16:9', '21:9', '4:3'
-    featuredRepeats: 2 // How many additional copies of each featured slide (0-5)
+    featuredRepeats: 2, // How many additional copies of each featured slide (0-5)
+    fireworksIntensity: 'medium' // 'none', 'light', 'medium', 'heavy', 'random'
   });
 
   // Undo/Redo history
@@ -857,6 +858,27 @@ export default function Editor() {
                         How many extra copies of each featured slide to distribute throughout the deck. Higher values = more repetition.
                       </p>
                     </div>
+
+                    <div className="mt-3">
+                      <label className="text-sm text-gray-300 font-medium">Fireworks Intensity (Impact Slides)</label>
+                      <select
+                        value={settings.fireworksIntensity ?? 'medium'}
+                        onChange={(e) => {
+                          console.log('[Editor] Fireworks intensity changed to:', e.target.value);
+                          setSettings({ ...settings, fireworksIntensity: e.target.value });
+                        }}
+                        className="w-full bg-gray-700 text-white rounded px-2 py-1 text-sm border border-gray-600 focus:border-tgteal focus:outline-none mt-1"
+                      >
+                        <option value="none">🚫 None - No fireworks</option>
+                        <option value="light">✨ Light - 5 fireworks</option>
+                        <option value="medium">🎆 Medium - 8 fireworks (default)</option>
+                        <option value="heavy">🎇 Heavy - 15 fireworks</option>
+                        <option value="random">🎲 Random - 8-15 fireworks</option>
+                      </select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Controls the number of firework animations on Impact/ROI slides. Can be overridden per-slide.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1286,6 +1308,22 @@ export default function Editor() {
                     placeholder="e.g., ROI Proven, Industry Leading"
                     className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
                   />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium mb-1">Fireworks</label>
+                  <select
+                    value={selectedScene.fireworks || 'default'}
+                    onChange={(e) => updateScene(selectedIndex, { fireworks: e.target.value })}
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
+                  >
+                    <option value="default">🌐 Use Global ({settings.fireworksIntensity || 'medium'})</option>
+                    <option value="none">🚫 None - No fireworks</option>
+                    <option value="light">✨ Light - 5 fireworks</option>
+                    <option value="medium">🎆 Medium - 8 fireworks</option>
+                    <option value="heavy">🎇 Heavy - 15 fireworks</option>
+                    <option value="random">🎲 Random - 8-15 fireworks</option>
+                  </select>
+                  <p className="text-xs text-gray-400 mt-1">Override the global fireworks setting for this slide</p>
                 </div>
               </>
             )}
