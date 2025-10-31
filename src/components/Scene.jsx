@@ -14,23 +14,33 @@ import { AnimatedText, AnimatedTextChars } from './BuildAnimation.jsx'
 import { parseFormatting } from '../utils/formatText.js'
 import cx from 'classnames'
 
-// Calculate dynamic font size based on text length
+// Calculate dynamic font size based on text length with smooth curve
 const getDynamicFontSize = (text, baseSize, minSize, maxSize) => {
   if (!text) return baseSize;
   const length = text.length;
 
-  // Scale factor: shorter text = larger font
+  // Smooth scaling curve using logarithmic approach
+  // Prevents extreme sizes for very short text while maintaining dynamic range
   let scale = 1.0;
 
-  if (length < 30) {
-    // Very short text: increase up to 1.5x
-    scale = 1.0 + (30 - length) / 30 * 0.5;
-  } else if (length < 60) {
-    // Short text: slightly increase
-    scale = 1.0 + (60 - length) / 60 * 0.3;
-  } else if (length > 100) {
-    // Long text: slightly decrease
-    scale = 1.0 - (length - 100) / 200 * 0.3;
+  if (length <= 5) {
+    // Very short (1-5 chars): cap at 1.35x to prevent giant single words
+    scale = 1.35;
+  } else if (length < 20) {
+    // Short (6-20 chars): scale from 1.35x down to 1.15x
+    scale = 1.35 - ((length - 5) / 15) * 0.2;
+  } else if (length < 40) {
+    // Medium-short (20-40 chars): scale from 1.15x down to 1.0x
+    scale = 1.15 - ((length - 20) / 20) * 0.15;
+  } else if (length < 80) {
+    // Medium-long (40-80 chars): stay at base size
+    scale = 1.0;
+  } else if (length < 120) {
+    // Long (80-120 chars): scale down from 1.0x to 0.85x
+    scale = 1.0 - ((length - 80) / 40) * 0.15;
+  } else {
+    // Very long (120+ chars): scale down from 0.85x to 0.7x, with floor
+    scale = Math.max(0.7, 0.85 - ((length - 120) / 80) * 0.15);
   }
 
   const calculatedSize = baseSize * scale;

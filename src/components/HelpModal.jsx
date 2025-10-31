@@ -123,15 +123,21 @@ const helpContent = [
         content: `**When to use**: Title slides, section breaks, major announcements
 
 **Key Features**:
-- Large, bold typography (auto-scales to text length)
-- Dynamic font sizing (shorter text = larger size)
+- Large, bold typography with **smart auto-scaling**
+- Smooth font size curve based on text length
 - Gradient backgrounds with particle effects
 - Optional featured image above title
 
+**Smart Sizing**:
+- Very short titles (1-5 words): ~13.5rem (maximum impact)
+- Normal titles (20-40 chars): 10-11.5rem (balanced)
+- Long titles (80+ chars): Scales down to maintain readability
+- Prevents overly huge single words while keeping impact
+
 **Field Layout**:
 - **Featured Image**: SVG/image shown above title (80% width max)
-- **Title**: Main message (very large, up to 14rem)
-- **Subtitle**: Supporting text (large, up to 7rem)
+- **Title**: Main message (7-13.5rem range, auto-optimized)
+- **Subtitle**: Supporting text (3.5-6.75rem range, auto-optimized)
 - **CTA**: Call-to-action button text (optional)
 - **Background Image**: Subtle background (20% opacity blend)`,
         type: "slide-type"
@@ -547,22 +553,37 @@ You can customize transitions in two places:
         content: `**Title** (Text input)
 - Main heading of the slide
 - Position: Varies by slide type (usually centered top or center)
-- Font size: Auto-scales based on text length
-  - Shorter titles = larger font (up to 14rem on hero)
-  - Longer titles = smaller font to fit
+- Font size: **Smart auto-scaling** based on text length:
+  - Very short (1-5 chars): 13.5rem (1.35x base, ~216px)
+  - Short (6-20 chars): 13.5rem → 11.5rem (smooth gradient)
+  - Medium (20-40 chars): 11.5rem → 10rem (base size)
+  - Normal (40-80 chars): 10rem (base, ~160px)
+  - Long (80-120 chars): 10rem → 8.5rem (slight reduction)
+  - Very long (120+ chars): 8.5rem → 7rem (minimum)
+- Range: 7rem (min) to 13.5rem (max) for hero slides
+- Prevents oversized single words while maintaining impact
 - Supports **markdown bold** with **text**
 - Can be empty for fullscreen-image/video slides
 
 **Subtitle** (Rich text area)
 - Supporting text below title
 - Position: Below title, centered or left-aligned (varies by type)
-- Font size: Auto-scales (up to 7rem on hero)
+- Font size: **Smart auto-scaling** (same algorithm as title):
+  - Base: 5rem (~80px)
+  - Maximum: 6.75rem for very short text
+  - Minimum: 3.5rem for very long text
 - Supports rich formatting:
   - **Bold**: **text**
   - *Italic*: *text*
   - Links: [text](url)
   - Line breaks: Use Enter/Return
-- Can include multiple paragraphs`,
+- Can include multiple paragraphs
+
+**Auto-scaling benefits**:
+- Titles naturally optimize for readability
+- No manual font size adjustment needed
+- Prevents text overflow
+- Smooth transitions between sizes`,
         type: "field-reference"
       },
       {
