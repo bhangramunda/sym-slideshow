@@ -2,11 +2,13 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { AnimatePresence } from 'framer-motion'
 import Scene from './components/Scene.jsx'
 import Editor from './components/Editor.jsx'
+import MobileWarning from './components/MobileWarning.jsx'
 import scenesData from './scenes.json'
 import { supabase } from './lib/supabase'
 
 const FPS_SAFE_DELAY = 50 // ms safety delay between scenes
 const PROJECT_NAME = 'default'
+const SHOW_MOBILE_WARNING = true // Set to false to disable mobile warning
 
 // Aspect ratio configurations
 const ASPECT_RATIOS = {
@@ -24,6 +26,19 @@ function Slideshow() {
     buildStyle: 'classic', // 'off', 'classic', 'cascadingFade', 'scalingCascade', 'slideIn', 'blurFocus', 'typewriter'
     aspectRatio: '16:9' // '16:9', '21:9', '4:3', 'custom'
   })
+
+  // Mobile detection
+  const [showMobileWarning, setShowMobileWarning] = useState(false)
+
+  useEffect(() => {
+    if (!SHOW_MOBILE_WARNING) return
+
+    // Detect mobile devices
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+      || window.innerWidth < 768 // Also catch small viewports
+
+    setShowMobileWarning(isMobile)
+  }, [])
 
   // Load slides from Supabase
   useEffect(() => {
@@ -257,11 +272,17 @@ function Slideshow() {
   }
 
   return (
-    <div
-      className="w-screen h-screen relative overflow-hidden transition-[cursor] duration-300"
-      style={{ cursor: showControls ? 'default' : 'none' }}
-    >
-      {/* Secret Editor Access - Press 'e' key */}
+    <>
+      {/* Mobile Warning Overlay */}
+      {showMobileWarning && (
+        <MobileWarning onDismiss={() => setShowMobileWarning(false)} />
+      )}
+
+      <div
+        className="w-screen h-screen relative overflow-hidden transition-[cursor] duration-300"
+        style={{ cursor: showControls ? 'default' : 'none' }}
+      >
+        {/* Secret Editor Access - Press 'e' key */}
       <div
         className="absolute top-4 right-4 z-50 transition-opacity duration-300"
         style={{ opacity: showControls ? 1 : 0 }}
@@ -313,6 +334,7 @@ function Slideshow() {
         ))}
       </AnimatePresence>
     </div>
+    </>
   )
 }
 
