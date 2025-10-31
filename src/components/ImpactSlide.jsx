@@ -21,45 +21,108 @@ export default function ImpactSlide({ scene }) {
         />
       )}
 
-      {/* Fireworks/Celebration Particles */}
+      {/* Enhanced Fireworks - Shooting from bottom with explosions */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        {Array.from({ length: 40 }).map((_, i) => {
-          const startX = Math.random() * 100;
-          const startY = 50 + Math.random() * 30;
-          const endX = startX + (Math.random() - 0.5) * 60;
-          const endY = startY - Math.random() * 40;
-          const delay = Math.random() * 2;
-          const duration = 1.5 + Math.random() * 1;
+        {/* Launch trails - rockets shooting up from bottom */}
+        {Array.from({ length: 8 }).map((_, i) => {
+          const launchX = 10 + (i * 12) + Math.random() * 8; // Spread across width
+          const explodeY = 15 + Math.random() * 35; // Explode at different heights
+          const delay = i * 0.4; // Staggered launches
+          const colors = [
+            'rgba(0, 212, 255, 0.9)',
+            'rgba(106, 27, 154, 0.9)',
+            'rgba(255, 107, 107, 0.9)',
+            'rgba(255, 234, 0, 0.9)',
+            'rgba(255, 140, 0, 0.9)',
+            'rgba(0, 255, 150, 0.9)',
+          ];
+          const color = colors[i % colors.length];
 
           return (
-            <motion.div
-              key={i}
-              className="absolute w-3 h-3 rounded-full"
-              style={{
-                left: `${startX}%`,
-                top: `${startY}%`,
-                background: [
-                  'rgba(0, 212, 255, 0.8)',
-                  'rgba(106, 27, 154, 0.8)',
-                  'rgba(255, 107, 107, 0.8)',
-                  'rgba(255, 234, 0, 0.8)',
-                ][i % 4],
-                boxShadow: '0 0 10px currentColor',
-              }}
-              animate={{
-                x: [`0%`, `${(endX - startX) * 10}px`],
-                y: [`0%`, `${(endY - startY) * 10}px`],
-                opacity: [0, 1, 1, 0],
-                scale: [0, 1.5, 1, 0],
-              }}
-              transition={{
-                duration,
-                delay,
-                repeat: Infinity,
-                repeatDelay: 2,
-                ease: 'easeOut',
-              }}
-            />
+            <div key={`firework-${i}`}>
+              {/* Launch trail */}
+              <motion.div
+                className="absolute w-1 h-16 rounded-full"
+                style={{
+                  left: `${launchX}%`,
+                  bottom: 0,
+                  background: `linear-gradient(to top, ${color}, transparent)`,
+                  boxShadow: `0 0 15px ${color}`,
+                }}
+                animate={{
+                  y: [`0%`, `-${100 - explodeY}vh`],
+                  opacity: [0, 1, 0.8, 0],
+                  scaleY: [0.5, 1, 0.8, 0],
+                }}
+                transition={{
+                  duration: 1.2,
+                  delay,
+                  repeat: Infinity,
+                  repeatDelay: 3,
+                  ease: [0.4, 0.0, 0.2, 1],
+                }}
+              />
+
+              {/* Explosion burst - multiple particles radiating out */}
+              {Array.from({ length: 16 }).map((_, particleIdx) => {
+                const angle = (particleIdx / 16) * Math.PI * 2;
+                const distance = 80 + Math.random() * 60;
+                const offsetX = Math.cos(angle) * distance;
+                const offsetY = Math.sin(angle) * distance;
+
+                return (
+                  <motion.div
+                    key={`particle-${i}-${particleIdx}`}
+                    className="absolute w-2 h-2 rounded-full"
+                    style={{
+                      left: `${launchX}%`,
+                      top: `${explodeY}%`,
+                      background: color,
+                      boxShadow: `0 0 12px ${color}`,
+                    }}
+                    animate={{
+                      x: [0, offsetX],
+                      y: [0, offsetY],
+                      opacity: [0, 0, 1, 1, 0],
+                      scale: [0, 0, 1.5, 1, 0],
+                    }}
+                    transition={{
+                      duration: 2,
+                      delay: delay + 1.2, // Explode after launch
+                      repeat: Infinity,
+                      repeatDelay: 3,
+                      ease: 'easeOut',
+                    }}
+                  />
+                );
+              })}
+
+              {/* Explosion flash */}
+              <motion.div
+                className="absolute rounded-full"
+                style={{
+                  left: `${launchX}%`,
+                  top: `${explodeY}%`,
+                  width: '120px',
+                  height: '120px',
+                  marginLeft: '-60px',
+                  marginTop: '-60px',
+                  background: `radial-gradient(circle, ${color}, transparent)`,
+                  filter: 'blur(20px)',
+                }}
+                animate={{
+                  opacity: [0, 0, 0.8, 0],
+                  scale: [0, 0, 1.5, 2],
+                }}
+                transition={{
+                  duration: 1.5,
+                  delay: delay + 1.2,
+                  repeat: Infinity,
+                  repeatDelay: 3,
+                  ease: 'easeOut',
+                }}
+              />
+            </div>
           );
         })}
       </div>
