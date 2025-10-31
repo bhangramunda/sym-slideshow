@@ -1983,6 +1983,22 @@ export default function Editor() {
                   </div>
                 )}
 
+                {/* Fit Logos Option */}
+                <div className="mt-3">
+                  <label className="flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={selectedScene.fitLogos || false}
+                      onChange={(e) => updateScene(selectedIndex, { fitLogos: e.target.checked })}
+                      className="w-4 h-4 rounded border-gray-600 bg-gray-700 text-tgteal focus:ring-tgteal focus:ring-offset-gray-800"
+                    />
+                    <span className="text-sm font-medium">Fit logos to fill boxes</span>
+                  </label>
+                  <p className="text-xs text-gray-400 ml-6 mt-1">
+                    When enabled, logos scale up to fill their containers (maintaining aspect ratio)
+                  </p>
+                </div>
+
                 {/* Footer */}
                 <div className="mt-3">
                   <label className="block text-sm font-medium mb-1">Footer Text (optional)</label>

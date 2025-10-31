@@ -109,7 +109,7 @@ export default function ClientLogosSlide({ scene }) {
                 <img
                   src={logo.url || logo.public_url}
                   alt={logo.display_name || logo.name}
-                  className="relative z-10 max-w-full max-h-full object-contain p-4 group-hover:scale-105 transition-transform duration-300"
+                  className={`relative z-10 ${scene.fitLogos ? 'w-full h-full' : 'max-w-full max-h-full'} object-contain p-4 group-hover:scale-105 transition-transform duration-300`}
                   style={{ filter: 'brightness(0) invert(1)' }} // Convert logos to white for dark background
                 />
               </div>
