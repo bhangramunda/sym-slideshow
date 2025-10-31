@@ -5,11 +5,14 @@ import { parseFormatting } from '../utils/formatText';
 export default function ClientLogosSlide({ scene }) {
   // Determine grid layout based on number of logos
   const getGridConfig = (count) => {
-    if (count === 1) return { cols: 'grid-cols-1', size: 'h-64' }; // Very large
-    if (count <= 4) return { cols: 'grid-cols-2', size: 'h-48' }; // Medium, 2x2
-    if (count <= 8) return { cols: 'md:grid-cols-4 grid-cols-2', size: 'h-36' }; // Smaller, 4x2
-    // Many logos: smaller size, 3-4 columns, auto rows
-    return { cols: 'md:grid-cols-4 grid-cols-2 lg:grid-cols-4', size: 'h-32' };
+    // Much larger heights for better logo visibility
+    if (count === 1) return { cols: 'grid-cols-1', size: 'h-96', gap: 'gap-12' }; // Very large, single (384px)
+    if (count === 2) return { cols: 'grid-cols-2', size: 'h-80', gap: 'gap-12' }; // Large, 2 columns (320px)
+    if (count === 3) return { cols: 'grid-cols-3', size: 'h-72', gap: 'gap-10' }; // Large, 3 columns (288px)
+    if (count <= 6) return { cols: 'grid-cols-3', size: 'h-64', gap: 'gap-10' }; // Medium, max 3 columns (256px)
+    if (count <= 9) return { cols: 'grid-cols-3', size: 'h-56', gap: 'gap-8' }; // Smaller, 3 columns (224px)
+    // Many logos: smallest size, 3 columns max, tighter spacing (192px)
+    return { cols: 'grid-cols-3', size: 'h-48', gap: 'gap-6' };
   };
 
   const gridConfig = getGridConfig(scene.logos?.length || 0);
@@ -80,7 +83,7 @@ export default function ClientLogosSlide({ scene }) {
         )}
 
         {/* Logo Grid */}
-        <div className={`grid ${gridConfig.cols} gap-8 md:gap-10`}>
+        <div className={`grid ${gridConfig.cols} ${gridConfig.gap}`}>
           {scene.logos?.map((logo, index) => (
             <motion.div
               key={index}
