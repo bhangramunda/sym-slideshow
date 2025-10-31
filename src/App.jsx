@@ -133,9 +133,8 @@ function Slideshow() {
   // Build an expanded scene list with featured slides duplicated and evenly distributed
   const scenes = useMemo(() => {
     const featuredScenes = rawScenes.filter(s => s.featured)
-    const nonFeaturedScenes = rawScenes.filter(s => !s.featured)
 
-    console.log('[Slideshow] Total slides:', rawScenes.length, 'Featured:', featuredScenes.length, 'Non-featured:', nonFeaturedScenes.length)
+    console.log('[Slideshow] Total slides:', rawScenes.length, 'Featured:', featuredScenes.length)
     console.log('[Slideshow] Featured slide titles:', featuredScenes.map(s => s.title?.substring(0, 30)))
 
     // If no featured slides, return original order with unique IDs
@@ -145,87 +144,47 @@ function Slideshow() {
     }
 
     // Calculate how many copies of each featured slide to create
-    // Use the featuredRepeats setting (defaults to 2)
-    const totalSlides = rawScenes.length
-    const totalFeatured = featuredScenes.length
     const copiesPerFeatured = settings.featuredRepeats ?? 2
 
-    // Build pool of all featured slide instances (originals + copies)
+    if (copiesPerFeatured === 0) {
+      console.log('[Slideshow] Featured repeats = 0, using original order')
+      return rawScenes.map((scene, i) => ({ ...scene, _slideId: `slide-${i}` }))
+    }
+
+    // Start with all slides in original order with unique IDs
+    const result = rawScenes.map((scene, i) => ({ ...scene, _slideId: `slide-${i}` }))
+
+    // Build pool of featured slide copies (ONLY copies, not originals)
     // INTERLEAVE copies across different featured slides to avoid repetition
-    const allFeaturedInstances = []
+    const featuredCopies = []
 
-    // First add all originals
-    featuredScenes.forEach((featuredSlide, featIndex) => {
-      allFeaturedInstances.push({
-        ...featuredSlide,
-        _slideId: `featured-${featIndex}-original`
-      })
-    })
-
-    // Then add copies, round-robin style to interleave
+    // Add copies, round-robin style to interleave
     for (let copyNum = 0; copyNum < copiesPerFeatured; copyNum++) {
       featuredScenes.forEach((featuredSlide, featIndex) => {
-        allFeaturedInstances.push({
+        featuredCopies.push({
           ...featuredSlide,
           _slideId: `featured-${featIndex}-copy-${copyNum}`
         })
       })
     }
 
-    // Add unique IDs to non-featured slides
-    const nonFeaturedWithIds = nonFeaturedScenes.map((scene, i) => ({
-      ...scene,
-      _slideId: `slide-${i}`
-    }))
+    // Calculate positions to insert copies
+    // Spread them evenly throughout the deck
+    const totalCopies = featuredCopies.length
+    const finalDeckSize = result.length + totalCopies
+    const interval = Math.floor(finalDeckSize / (totalCopies + 1))
 
-    // Calculate even distribution: place featured slides evenly among non-featured
-    const totalFeaturedInstances = allFeaturedInstances.length
-    const totalNonFeatured = nonFeaturedWithIds.length
+    console.log('[Slideshow] Inserting', totalCopies, 'featured copies with interval of', interval, 'slides')
 
-    // If we have more featured than non-featured, just alternate
-    if (totalFeaturedInstances >= totalNonFeatured) {
-      const result = []
-      const maxLength = Math.max(totalFeaturedInstances, totalNonFeatured)
-      for (let i = 0; i < maxLength; i++) {
-        if (i < nonFeaturedWithIds.length) result.push(nonFeaturedWithIds[i])
-        if (i < allFeaturedInstances.length) result.push(allFeaturedInstances[i])
-      }
-      console.log('[Slideshow] Final deck (alternating):', result.length, 'slides')
-      console.log('[Slideshow] Full slide order:', result.map(s => s.title?.substring(0, 20)))
-      return result
+    // Insert copies at calculated intervals
+    let insertOffset = 0
+    for (let i = 0; i < totalCopies; i++) {
+      const insertPos = Math.min(interval * (i + 1) + insertOffset, result.length)
+      result.splice(insertPos, 0, featuredCopies[i])
+      insertOffset++ // Account for previously inserted copies
     }
 
-    // Calculate spacing: how many non-featured slides between each featured
-    const spacing = Math.floor(totalNonFeatured / (totalFeaturedInstances + 1))
-
-    // Build result by evenly distributing featured slides
-    const result = []
-    let nonFeaturedIndex = 0
-    let featuredIndex = 0
-
-    while (nonFeaturedIndex < totalNonFeatured || featuredIndex < totalFeaturedInstances) {
-      // Add a batch of non-featured slides
-      const batchSize = featuredIndex === 0 ? spacing : spacing
-      for (let i = 0; i < batchSize && nonFeaturedIndex < totalNonFeatured; i++) {
-        result.push(nonFeaturedWithIds[nonFeaturedIndex])
-        nonFeaturedIndex++
-      }
-
-      // Add one featured slide
-      if (featuredIndex < totalFeaturedInstances) {
-        result.push(allFeaturedInstances[featuredIndex])
-        featuredIndex++
-      }
-    }
-
-    // Add any remaining non-featured slides at the end
-    while (nonFeaturedIndex < totalNonFeatured) {
-      result.push(nonFeaturedWithIds[nonFeaturedIndex])
-      nonFeaturedIndex++
-    }
-
-    console.log('[Slideshow] Final deck:', result.length, 'slides (', nonFeaturedScenes.length, 'non-featured +', totalFeaturedInstances, 'featured instances)')
-    console.log('[Slideshow] Spacing:', spacing, 'non-featured slides between featured')
+    console.log('[Slideshow] Final deck:', result.length, 'slides (', rawScenes.length, 'original +', totalCopies, 'featured copies)')
     console.log('[Slideshow] First 10 slides:', result.slice(0, 10).map(s => s.title?.substring(0, 20)))
     console.log('[Slideshow] Full slide order:', result.map(s => s.title?.substring(0, 20)))
     return result

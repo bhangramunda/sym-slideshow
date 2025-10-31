@@ -45,9 +45,9 @@ export default function ImpactSlide({ scene, fireworksIntensity }) {
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         {/* Launch trails - rockets shooting up from bottom */}
         {Array.from({ length: fireworksCount }).map((_, i) => {
-          const launchX = 10 + (i * 12) + Math.random() * 8; // Spread across width
-          const explodeY = 15 + Math.random() * 35; // Explode at different heights
-          const delay = i * 0.4; // Staggered launches
+          const launchX = 10 + Math.random() * 80; // Random position across width (10-90%)
+          const explodeY = 15 + Math.random() * 35; // Explode at different heights (15-50%)
+          const delay = Math.random() * 2; // Random delays (0-2s)
           const colors = [
             'rgba(0, 212, 255, 0.9)',
             'rgba(106, 27, 154, 0.9)',
