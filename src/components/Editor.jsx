@@ -44,6 +44,9 @@ export default function Editor() {
   // Video upload state
   const [uploadingVideo, setUploadingVideo] = useState(false);
 
+  // Client logos state
+  const [availableLogos, setAvailableLogos] = useState([]);
+
   // Help modal state
   const [showHelp, setShowHelp] = useState(false);
 
@@ -172,6 +175,69 @@ export default function Editor() {
 
     fetchUploadedImages();
   }, []);
+
+  // Fetch client logos from Supabase database
+  useEffect(() => {
+    fetchClientLogos();
+  }, []);
+
+  const fetchClientLogos = async () => {
+    try {
+      const { data, error } = await supabase
+        .from('client_logos')
+        .select('*')
+        .order('display_name', { ascending: true });
+
+      if (error) throw error;
+
+      if (data) {
+        // Validate and filter logos - only include those with all required fields
+        const validLogos = data.filter(logo => {
+          const isValid = logo.id
+            && logo.display_name
+            && logo.public_url
+            && logo.storage_path;
+
+          if (!isValid) {
+            console.warn('Skipping invalid logo:', logo);
+          }
+
+          return isValid;
+        });
+
+        console.log(`Loaded ${validLogos.length} valid logos (${data.length - validLogos.length} invalid skipped)`);
+        setAvailableLogos(validLogos);
+
+        // Clean up any invalid logos from selected scenes
+        setScenes(prevScenes => {
+          let hasChanges = false;
+          const updatedScenes = prevScenes.map(scene => {
+            if (scene.type === 'client-logos' && scene.logos && scene.logos.length > 0) {
+              const validIds = new Set(validLogos.map(l => l.id));
+              const cleanedLogos = scene.logos.filter(logo => {
+                if (!logo.id || !validIds.has(logo.id)) {
+                  console.warn('Removing invalid logo from scene:', logo);
+                  hasChanges = true;
+                  return false;
+                }
+                return true;
+              });
+
+              if (cleanedLogos.length !== scene.logos.length) {
+                return { ...scene, logos: cleanedLogos };
+              }
+            }
+            return scene;
+          });
+
+          return hasChanges ? updatedScenes : prevScenes;
+        });
+      }
+    } catch (error) {
+      console.error('Error fetching client logos:', error);
+      setAvailableLogos([]);
+    }
+  };
 
   // Save to history when scenes change (using functional updates to prevent race conditions)
   // Can accept either new scenes array OR a function that receives prev scenes
@@ -481,20 +547,40 @@ export default function Editor() {
   };
 
   const deleteScene = (index) => {
-    saveToHistory(prevScenes => {
+    console.log('[Editor] Deleting slide at index:', index);
+
+    // Update selected index BEFORE updating scenes to prevent accessing undefined
+    setScenes(prevScenes => {
+      console.log('[Editor] Current scenes count:', prevScenes.length);
+
       if (prevScenes.length <= 1) {
         alert('Cannot delete the last slide!');
         return prevScenes; // No change
       }
 
       const newScenes = prevScenes.filter((_, i) => i !== index);
+      console.log('[Editor] New scenes count after deletion:', newScenes.length);
 
-      // Update selected index if needed
+      // Update selected index SYNCHRONOUSLY before returning new scenes
       if (selectedIndex >= newScenes.length) {
-        setSelectedIndex(newScenes.length - 1);
+        const newIndex = newScenes.length - 1;
+        console.log('[Editor] Adjusting selected index from', selectedIndex, 'to', newIndex);
+        setSelectedIndex(newIndex);
+      } else if (selectedIndex === index && newScenes.length > 0) {
+        // If we deleted the selected slide, select the one before it (or 0)
+        const newIndex = Math.max(0, index - 1);
+        console.log('[Editor] Deleted selected slide, moving to index', newIndex);
+        setSelectedIndex(newIndex);
       }
 
       return newScenes;
+    });
+
+    // Also save to history for undo
+    setHistory(prevHistory => {
+      const newHistory = [...prevHistory.slice(0, historyIndex + 1)];
+      // The new scenes will be added by the setScenes above
+      return newHistory;
     });
   };
 
@@ -620,7 +706,15 @@ export default function Editor() {
     };
   }, [isDraggingHorizontal, topPanelHeight]);
 
-  const selectedScene = scenes[selectedIndex];
+  // Safety check: ensure selectedIndex is valid
+  const safeSelectedIndex = Math.min(selectedIndex, scenes.length - 1);
+  const selectedScene = scenes[safeSelectedIndex] || scenes[0];
+
+  // Auto-correct if selectedIndex is out of bounds
+  if (safeSelectedIndex !== selectedIndex && scenes.length > 0) {
+    console.warn('[Editor] Selected index', selectedIndex, 'is out of bounds, correcting to', safeSelectedIndex);
+    setSelectedIndex(safeSelectedIndex);
+  }
 
   // Show loading state while fetching from Supabase
   if (isLoading) {
@@ -629,6 +723,18 @@ export default function Editor() {
         <div className="text-center">
           <div className="animate-spin h-12 w-12 border-4 border-tgteal border-t-transparent rounded-full mx-auto mb-4"></div>
           <div className="text-xl text-gray-400">Loading slides...</div>
+        </div>
+      </div>
+    );
+  }
+
+  // Safety check: ensure we have at least one scene
+  if (scenes.length === 0) {
+    return (
+      <div className="flex items-center justify-center h-screen bg-gray-900 text-white">
+        <div className="text-center">
+          <div className="text-xl text-red-400 mb-4">No slides found!</div>
+          <p className="text-gray-400">Something went wrong. Please refresh the page.</p>
         </div>
       </div>
     );
@@ -1103,7 +1209,15 @@ export default function Editor() {
                 Duplicate
               </button>
               <button
-                onClick={() => deleteScene(selectedIndex)}
+                onClick={() => {
+                  if (scenes.length <= 1) {
+                    alert('Cannot delete the last slide!');
+                    return;
+                  }
+                  if (confirm(`Delete slide "${selectedScene.title || 'Untitled'}"?\n\nThis action cannot be undone (but you can use Undo if needed).`)) {
+                    deleteScene(selectedIndex);
+                  }
+                }}
                 className="px-3 py-1 bg-red-600 rounded hover:bg-red-700 transition-colors text-sm"
               >
                 Delete
@@ -1132,7 +1246,8 @@ export default function Editor() {
                 <option value="hero">Hero</option>
                 <option value="impact">💥 Impact / ROI</option>
                 <option value="testimonial">Testimonial</option>
-                <option value="logo-grid">Logo Grid</option>
+                <option value="logo-grid">Logo Grid (Text)</option>
+                <option value="client-logos">🖼️ Client Logos (Images)</option>
                 <option value="service-card">Service Card</option>
                 <option value="split-content">Split Content</option>
                 <option value="fullscreen-image">Full Screen Image</option>
@@ -1697,7 +1812,7 @@ export default function Editor() {
             {/* Logo Grid - Logos Editor */}
             {selectedScene.type === 'logo-grid' && (
               <div>
-                <label className="block text-sm font-medium mb-2">Client Logos</label>
+                <label className="block text-sm font-medium mb-2">Client Logos (Text)</label>
                 {(selectedScene.logos || []).map((logo, idx) => (
                   <div key={idx} className="flex gap-2 mb-2">
                     <input
@@ -1742,6 +1857,154 @@ export default function Editor() {
                     />
                   </div>
                 )}
+              </div>
+            )}
+
+            {/* Client Logos - Image Logos Editor */}
+            {selectedScene.type === 'client-logos' && (
+              <div>
+                <div className="flex items-center justify-between mb-2">
+                  <label className="block text-sm font-medium">
+                    Client Logos ({availableLogos.length} available)
+                  </label>
+                  <button
+                    onClick={fetchClientLogos}
+                    className="px-2 py-1 bg-gray-700 hover:bg-gray-600 rounded text-xs transition-colors"
+                    title="Refresh logo list from database"
+                  >
+                    🔄 Refresh
+                  </button>
+                </div>
+
+                {availableLogos.length === 0 && (
+                  <div className="p-3 bg-yellow-900/20 border border-yellow-700/50 rounded text-sm text-yellow-200 mb-3">
+                    ⚠️ No logos found in Supabase. Please visit <a href="/admin" className="underline text-tgteal">/admin</a> to upload logos.
+                  </div>
+                )}
+
+                {/* Selected Logos List - Draggable */}
+                <div className="mb-3 space-y-2">
+                  {(selectedScene.logos || []).map((logo, idx) => (
+                    <div
+                      key={idx}
+                      draggable
+                      onDragStart={(e) => {
+                        e.dataTransfer.effectAllowed = 'move';
+                        e.dataTransfer.setData('logoIndex', idx.toString());
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'move';
+                      }}
+                      onDrop={(e) => {
+                        e.preventDefault();
+                        const draggedIdx = parseInt(e.dataTransfer.getData('logoIndex'));
+                        if (draggedIdx === idx) return;
+
+                        const newLogos = [...(selectedScene.logos || [])];
+                        const [draggedLogo] = newLogos.splice(draggedIdx, 1);
+                        newLogos.splice(idx, 0, draggedLogo);
+                        updateScene(selectedIndex, { logos: newLogos });
+                      }}
+                      className="flex items-center gap-2 p-2 bg-gray-700/50 rounded border border-gray-600 cursor-grab active:cursor-grabbing hover:border-tgteal/50 transition-all"
+                    >
+                      {/* Drag Handle */}
+                      <div className="text-gray-500 hover:text-tgteal transition-colors flex-shrink-0">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                          <circle cx="4" cy="4" r="1.5"/>
+                          <circle cx="12" cy="4" r="1.5"/>
+                          <circle cx="4" cy="8" r="1.5"/>
+                          <circle cx="12" cy="8" r="1.5"/>
+                          <circle cx="4" cy="12" r="1.5"/>
+                          <circle cx="12" cy="12" r="1.5"/>
+                        </svg>
+                      </div>
+
+                      {/* Logo Preview */}
+                      {(logo.public_url || logo.url) ? (
+                        <img
+                          src={logo.public_url || logo.url}
+                          alt={logo.display_name || logo.name}
+                          className="w-12 h-12 object-contain bg-white/10 rounded p-1 pointer-events-none"
+                          style={{ filter: 'brightness(0) invert(1)' }}
+                          onError={(e) => {
+                            e.target.style.display = 'none';
+                            console.warn('Failed to load logo:', logo);
+                          }}
+                        />
+                      ) : (
+                        <div className="w-12 h-12 flex items-center justify-center bg-red-900/20 rounded text-xs text-red-400">
+                          ⚠️
+                        </div>
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <div className="text-sm font-medium truncate">{logo.display_name || logo.name || 'Unnamed'}</div>
+                        <div className="text-xs text-gray-400">
+                          {logo.theme || '?'} • {logo.orientation || '?'}
+                          {(!logo.public_url && !logo.url) && <span className="text-red-400 ml-2">Missing URL</span>}
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          const newLogos = (selectedScene.logos || []).filter((_, i) => i !== idx);
+                          updateScene(selectedIndex, { logos: newLogos });
+                        }}
+                        className="px-3 py-1 bg-red-600 rounded hover:bg-red-700 transition-colors text-sm"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Add Logo Dropdown */}
+                {availableLogos.length > 0 && (
+                  <div className="flex gap-2">
+                    <select
+                      className="flex-1 bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white text-sm"
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          const selectedLogo = availableLogos.find(l => l.id.toString() === e.target.value);
+                          if (selectedLogo) {
+                            const newLogos = [...(selectedScene.logos || []), selectedLogo];
+                            updateScene(selectedIndex, { logos: newLogos });
+                            e.target.value = '';
+                          }
+                        }
+                      }}
+                    >
+                      <option value="">Select a logo to add...</option>
+                      {availableLogos.map(logo => (
+                        <option key={logo.id} value={logo.id}>
+                          {logo.display_name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+
+                {/* Footer */}
+                <div className="mt-3">
+                  <label className="block text-sm font-medium mb-1">Footer Text (optional)</label>
+                  <input
+                    type="text"
+                    value={selectedScene.footer || ''}
+                    onChange={(e) => updateScene(selectedIndex, { footer: e.target.value })}
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
+                    placeholder="e.g., Trusted by 100+ companies"
+                  />
+                </div>
+
+                {/* Subtitle */}
+                <div className="mt-3">
+                  <RichTextArea
+                    label="Subtitle (optional)"
+                    value={selectedScene.subtitle || ''}
+                    onChange={(value) => updateScene(selectedIndex, { subtitle: value })}
+                    rows={2}
+                    placeholder="Additional context"
+                  />
+                </div>
               </div>
             )}
 

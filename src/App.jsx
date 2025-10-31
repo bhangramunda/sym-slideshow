@@ -353,7 +353,22 @@ function Slideshow() {
 
 export default function App() {
   // Simple client-side routing
-  const isEditor = window.location.pathname === '/editor'
+  const pathname = window.location.pathname
+  const isEditor = pathname === '/editor'
+  const isAdmin = pathname === '/admin'
+
+  if (isAdmin) {
+    const Admin = React.lazy(() => import('./pages/Admin.jsx'))
+    return (
+      <React.Suspense fallback={
+        <div className="w-screen h-screen flex items-center justify-center bg-gray-900">
+          <div className="animate-spin h-12 w-12 border-4 border-tgteal border-t-transparent rounded-full"></div>
+        </div>
+      }>
+        <Admin />
+      </React.Suspense>
+    )
+  }
 
   return isEditor ? <Editor /> : <Slideshow />
 }

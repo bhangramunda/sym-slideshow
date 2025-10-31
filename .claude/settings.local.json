@@ -27,7 +27,12 @@
       "Bash(git reset:*)",
       "Bash(npm run build:*)",
       "Bash(node -e:*)",
-      "Bash(node scripts/analyze-logos.js:*)"
+      "Bash(node scripts/analyze-logos.js:*)",
+      "Bash(node scripts/upload-logos-to-supabase.js:*)",
+      "Bash(copy \".env.local\" \".env\")",
+      "Bash(node scripts/cleanup-orphaned-logos.js:*)",
+      "Bash(node scripts/check-logo-state.js:*)",
+      "Bash(node scripts/test-rename.js:*)"
     ],
     "deny": [],
     "ask": []

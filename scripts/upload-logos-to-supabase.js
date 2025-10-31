@@ -38,6 +38,11 @@ async function setupStorage() {
     });
 
     if (error) {
+      // If RLS policy error, bucket might already exist - continue anyway
+      if (error.statusCode === '403') {
+        console.log('⚠️  Permission error creating bucket (may already exist), continuing...');
+        return true;
+      }
       console.error('Error creating bucket:', error);
       return false;
     }

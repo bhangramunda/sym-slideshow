@@ -1,0 +1,308 @@
+[
+  {
+    "id": 1,
+    "filename": "aba-logo.svg",
+    "display_name": "Aba Logo",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "aba-logo.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/aba-logo.svg"
+  },
+  {
+    "id": 2,
+    "filename": "amica-color.svg",
+    "display_name": "Amica",
+    "theme": "color",
+    "orientation": "horizontal",
+    "storage_path": "amica-color.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/amica-color.svg"
+  },
+  {
+    "id": 3,
+    "filename": "amica-light.svg",
+    "display_name": "Amica",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "amica-light.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/amica-light.svg"
+  },
+  {
+    "id": 4,
+    "filename": "amica-white-on-gray.svg",
+    "display_name": "Amica On",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "amica-white-on-gray.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/amica-white-on-gray.svg"
+  },
+  {
+    "id": 5,
+    "filename": "amica-white.svg",
+    "display_name": "Amica",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "amica-white.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/amica-white.svg"
+  },
+  {
+    "id": 6,
+    "filename": "Asset 1.svg",
+    "display_name": "Asset 1",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "asset-1.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/asset-1.svg"
+  },
+  {
+    "id": 7,
+    "filename": "Canada_Mortgage_and_Housing_Corporation.svg",
+    "display_name": "Canada Mortgage And Housing Corporation",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "canada_mortgage_and_housing_corporation.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/canada_mortgage_and_housing_corporation.svg"
+  },
+  {
+    "id": 8,
+    "filename": "Canada_Mortgage_and_Housing_Corporation2.svg",
+    "display_name": "Canada Mortgage And Housing Corporation2",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "canada_mortgage_and_housing_corporation2.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/canada_mortgage_and_housing_corporation2.svg"
+  },
+  {
+    "id": 9,
+    "filename": "Deloitte.svg",
+    "display_name": "Deloitte",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "deloitte.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/deloitte.svg"
+  },
+  {
+    "id": 10,
+    "filename": "DEL_PRI_Digital_RGB-2.svg",
+    "display_name": "DEL PRI Digital RGB 2",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "del_pri_digital_rgb-2.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/del_pri_digital_rgb-2.svg"
+  },
+  {
+    "id": 11,
+    "filename": "aba.svg",
+    "display_name": "Aba",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "for-dark-bg/aba.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/for-dark-bg/aba.svg"
+  },
+  {
+    "id": 12,
+    "filename": "deloitte.svg",
+    "display_name": "Deloitte",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "for-dark-bg/deloitte.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/for-dark-bg/deloitte.svg"
+  },
+  {
+    "id": 13,
+    "filename": "nwmo.svg",
+    "display_name": "Nwmo",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "for-dark-bg/nwmo.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/for-dark-bg/nwmo.svg"
+  },
+  {
+    "id": 14,
+    "filename": "prsche.svg",
+    "display_name": "Prsche",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "for-dark-bg/prsche.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/for-dark-bg/prsche.svg"
+  },
+  {
+    "id": 15,
+    "filename": "ymca-gta.svg",
+    "display_name": "Ymca Gta",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "for-dark-bg/ymca-gta.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/for-dark-bg/ymca-gta.svg"
+  },
+  {
+    "id": 16,
+    "filename": "honda-h-red.svg",
+    "display_name": "Honda H Red",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "honda-h-red.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/honda-h-red.svg"
+  },
+  {
+    "id": 17,
+    "filename": "honda-h.svg",
+    "display_name": "Honda H",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "honda-h.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/honda-h.svg"
+  },
+  {
+    "id": 18,
+    "filename": "Honda-red.svg",
+    "display_name": "Honda Red",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "honda-red.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/honda-red.svg"
+  },
+  {
+    "id": 19,
+    "filename": "Honda.svg",
+    "display_name": "Honda",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "honda.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/honda.svg"
+  },
+  {
+    "id": 21,
+    "filename": "moneris-light.svg",
+    "display_name": "Moneris",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "moneris-light.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/moneris-light.svg"
+  },
+  {
+    "id": 22,
+    "filename": "moneris-white.svg",
+    "display_name": "Moneris",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "moneris-white.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/moneris-white.svg"
+  },
+  {
+    "id": 23,
+    "filename": "nwmo-light.svg",
+    "display_name": "Nwmo",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "nwmo-light.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/nwmo-light.svg"
+  },
+  {
+    "id": 24,
+    "filename": "osstf-color.svg",
+    "display_name": "Osstf",
+    "theme": "color",
+    "orientation": "horizontal",
+    "storage_path": "osstf-color.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/osstf-color.svg"
+  },
+  {
+    "id": 25,
+    "filename": "osstf-light-gray.svg",
+    "display_name": "Osstf",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "osstf-light-gray.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/osstf-light-gray.svg"
+  },
+  {
+    "id": 26,
+    "filename": "osstf-shape.svg",
+    "display_name": "Osstf Shape",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "osstf-shape.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/osstf-shape.svg"
+  },
+  {
+    "id": 27,
+    "filename": "osstf-white.svg",
+    "display_name": "Osstf",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "osstf-white.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/osstf-white.svg"
+  },
+  {
+    "id": 28,
+    "filename": "PIC-Logo-Color.svg",
+    "display_name": "PIC Logo",
+    "theme": "color",
+    "orientation": "horizontal",
+    "storage_path": "pic-logo-color.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/pic-logo-color.svg"
+  },
+  {
+    "id": 29,
+    "filename": "porsche-logo.svg",
+    "display_name": "Porsche Logo",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "porsche-logo.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/porsche-logo.svg"
+  },
+  {
+    "id": 30,
+    "filename": "psit-white.svg",
+    "display_name": "Psit",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "psit-white.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/psit-white.svg"
+  },
+  {
+    "id": 31,
+    "filename": "Sodexo_logo.svg",
+    "display_name": "Sodexo Logo",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "sodexo_logo.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/sodexo_logo.svg"
+  },
+  {
+    "id": 32,
+    "filename": "wsp.svg",
+    "display_name": "Wsp",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "wsp.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/wsp.svg"
+  },
+  {
+    "id": 33,
+    "filename": "y-gta.svg",
+    "display_name": "Y Gta",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "y-gta.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/y-gta.svg"
+  },
+  {
+    "id": 34,
+    "filename": "ymca-light.svg",
+    "display_name": "Ymca",
+    "theme": "light",
+    "orientation": "horizontal",
+    "storage_path": "ymca-light.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/ymca-light.svg"
+  },
+  {
+    "id": 35,
+    "filename": "ymcs-gta-color.svg",
+    "display_name": "Ymcs Gta",
+    "theme": "color",
+    "orientation": "horizontal",
+    "storage_path": "ymcs-gta-color.svg",
+    "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/ymcs-gta-color.svg"
+  }
+]

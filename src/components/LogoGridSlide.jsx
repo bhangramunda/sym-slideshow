@@ -70,15 +70,15 @@ export default function LogoGridSlide({ scene }) {
 
         {/* Logo Grid - dynamically adapt columns based on logo count */}
         <div className={`grid gap-8 md:gap-12 ${
-          scene.logos.length <= 3 ? 'grid-cols-1 md:grid-cols-3' :
-          scene.logos.length === 4 ? 'grid-cols-2 md:grid-cols-4' :
-          scene.logos.length === 5 ? 'grid-cols-2 md:grid-cols-5' :
-          scene.logos.length === 6 ? 'grid-cols-2 md:grid-cols-3' :
-          scene.logos.length === 8 ? 'grid-cols-2 md:grid-cols-4' :
-          scene.logos.length === 9 ? 'grid-cols-3 md:grid-cols-3' :
+          (scene.logos?.length || 0) <= 3 ? 'grid-cols-1 md:grid-cols-3' :
+          (scene.logos?.length || 0) === 4 ? 'grid-cols-2 md:grid-cols-4' :
+          (scene.logos?.length || 0) === 5 ? 'grid-cols-2 md:grid-cols-5' :
+          (scene.logos?.length || 0) === 6 ? 'grid-cols-2 md:grid-cols-3' :
+          (scene.logos?.length || 0) === 8 ? 'grid-cols-2 md:grid-cols-4' :
+          (scene.logos?.length || 0) === 9 ? 'grid-cols-3 md:grid-cols-3' :
           'grid-cols-2 md:grid-cols-3 lg:grid-cols-4'
         }`}>
-          {scene.logos.map((logo, index) => (
+          {scene.logos?.map((logo, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, scale: 0.8, y: 30 }}
@@ -122,7 +122,7 @@ export default function LogoGridSlide({ scene }) {
                 }}
               />
             </motion.div>
-          ))}
+          )) || []}
         </div>
 
         {/* Optional Footer Text */}
