@@ -26,7 +26,8 @@ export default function Editor() {
     transitionMode: 'sync', // 'sync' = crossfade, 'wait' = blank gap
     buildScope: 'components', // 'off', 'components', 'elements', 'sections'
     buildStyle: 'classic', // 'off', 'classic', 'cascadingFade', 'scalingCascade', 'slideIn', 'blurFocus', 'typewriter'
-    aspectRatio: '16:9' // '16:9', '21:9', '4:3'
+    aspectRatio: '16:9', // '16:9', '21:9', '4:3'
+    featuredRepeats: 2 // How many additional copies of each featured slide (0-5)
   });
 
   // Undo/Redo history
@@ -831,6 +832,29 @@ export default function Editor() {
                       </select>
                       <p className="text-xs text-gray-500 mt-1">
                         Choose the aspect ratio for your display. Ensures slides look great on different screens.
+                      </p>
+                    </div>
+
+                    <div className="mt-3">
+                      <label className="text-sm text-gray-300 font-medium">Featured Slide Repeats</label>
+                      <select
+                        value={settings.featuredRepeats ?? 2}
+                        onChange={(e) => {
+                          const value = parseInt(e.target.value, 10);
+                          console.log('[Editor] Featured repeats changed to:', value);
+                          setSettings({ ...settings, featuredRepeats: value });
+                        }}
+                        className="w-full bg-gray-700 text-white rounded px-2 py-1 text-sm border border-gray-600 focus:border-tgteal focus:outline-none mt-1"
+                      >
+                        <option value="0">0 - No repeats (original only)</option>
+                        <option value="1">1 - One additional copy</option>
+                        <option value="2">2 - Two additional copies (default)</option>
+                        <option value="3">3 - Three additional copies</option>
+                        <option value="4">4 - Four additional copies</option>
+                        <option value="5">5 - Five additional copies</option>
+                      </select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        How many extra copies of each featured slide to distribute throughout the deck. Higher values = more repetition.
                       </p>
                     </div>
                   </div>

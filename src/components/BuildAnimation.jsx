@@ -209,12 +209,7 @@ export function AnimatedText({ text, style = 'classic', className = '', textStyl
     <motion.div
       className={className}
       style={{
-        ...textStyle,
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%'
+        ...textStyle
       }}
       variants={animation.container}
       initial="hidden"
@@ -247,12 +242,7 @@ export function AnimatedTextChars({ text, style = 'typewriter', className = '', 
     <motion.div
       className={className}
       style={{
-        ...textStyle,
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'center',
-        width: '100%'
+        ...textStyle
       }}
       variants={animation.container}
       initial="hidden"

@@ -25,7 +25,8 @@
       "Bash(git log:*)",
       "Bash(vercel:*)",
       "Bash(git reset:*)",
-      "Bash(npm run build:*)"
+      "Bash(npm run build:*)",
+      "Bash(node -e:*)"
     ],
     "deny": [],
     "ask": []
