@@ -26,7 +26,8 @@
       "Bash(vercel:*)",
       "Bash(git reset:*)",
       "Bash(npm run build:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(node scripts/analyze-logos.js:*)"
     ],
     "deny": [],
     "ask": []

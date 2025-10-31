@@ -3,6 +3,7 @@ import { motion } from 'framer-motion'
 import KineticText from './KineticText.jsx'
 import TestimonialSlide from './TestimonialSlide.jsx'
 import LogoGridSlide from './LogoGridSlide.jsx'
+import ClientLogosSlide from './ClientLogosSlide.jsx'
 import ServiceCardSlide from './ServiceCardSlide.jsx'
 import SplitContentSlide from './SplitContentSlide.jsx'
 import FullScreenImageSlide from './FullScreenImageSlide.jsx'
@@ -196,6 +197,9 @@ export default function Scene({ scene, isActive, buildScope, buildStyle, onVideo
       break
     case 'logo-grid':
       SlideContent = <LogoGridSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
+      break
+    case 'client-logos':
+      SlideContent = <ClientLogosSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
       break
     case 'service-card':
       SlideContent = <ServiceCardSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
