@@ -329,7 +329,7 @@ function Slideshow() {
       </div>
       <AnimatePresence mode={settings.transitionMode}>
         {scenes.map((scene, i) => (
-          i === index && (
+          i === index && scene && (
             <Scene
               key={scene._slideId || i}
               scene={scene}

@@ -187,6 +187,12 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
 
 // Main Scene component - routes to appropriate slide type with transition
 export default function Scene({ scene, isActive, buildScope, buildStyle, onVideoEnd, aspectRatio, fireworksIntensity }) {
+  // Safety check: ensure scene exists
+  if (!scene) {
+    console.error('[Scene] Scene prop is undefined!');
+    return null;
+  }
+
   if (!isActive) return null
 
   // Get slide content based on type
