@@ -1,0 +1,553 @@
+{
+  "metadata": {
+    "backupDate": "2025-11-01T02:33:45.040Z",
+    "backupVersion": 637,
+    "supabaseProjectUrl": "https://fyiwpqnbiutuzuxjdeot.supabase.co",
+    "totalSlides": 14,
+    "totalLogos": 18
+  },
+  "slideshow_data": {
+    "project_name": "default",
+    "slides": [
+      {
+        "role": "Senior Director, User Experience",
+        "type": "impact",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761931082115-v9oy6b.jpg",
+        "quote": "We are so grateful for our partnership with TechGuilds and for their willingness to step in and support us. It has meant so much that they've been there for us and helped us get to 'go' more than once over this last year. Thank you.\n",
+        "title": "ABA chose Kajoo ",
+        "author": "Jess Moore",
+        "rating": 5,
+        "company": "American Bankers Association",
+        "featured": false,
+        "subtitle": "American Bankers Association saved $500k using Kajoo.ai \nfor migrations instead of their agency partner. ",
+        "fireworks": "heavy",
+        "imageName": "canada-night-sky",
+        "buildScope": "components",
+        "buildStyle": "slideIn",
+        "transition": "blurFade",
+        "description": "saved in agency fees in the first year.",
+        "durationSec": 12,
+        "impactNumber": "$500k "
+      },
+      {
+        "cta": "Live demo at the booth",
+        "type": "hero",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761843289650-kumke.jpg",
+        "title": "Meet Kajoo AI — your new delivery pod.",
+        "featured": false,
+        "subtitle": "An intelligent, always-on team of AI Agents. \n\n_PM, Architect, Dev, QA_. **Built for Sitecore**. \nThey plan. They build. They verify. You deliver.",
+        "imageName": "canada-night-sky",
+        "transition": "blurFade",
+        "durationSec": 12
+      },
+      {
+        "cta": null,
+        "type": "service-card",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761843307139-vcpd8.jpg",
+        "title": "Super Care™ ",
+        "services": [
+          {
+            "icon": "🚀",
+            "name": "24/7 Support",
+            "badge": "Most Popular",
+            "features": [
+              "Dedicated support team",
+              "15-minute response time",
+              "Proactive monitoring"
+            ],
+            "description": "Round-the-clock monitoring and immediate response to critical issues."
+          },
+          {
+            "icon": "⚡",
+            "name": "Performance Optimization",
+            "features": [
+              "Monthly performance audits",
+              "CDN optimization",
+              "Code review & refactoring"
+            ],
+            "description": "Continuous improvements to keep your site lightning-fast."
+          },
+          {
+            "icon": "🛡️",
+            "name": "Security & Compliance",
+            "features": [
+              "Security patches",
+              "Compliance monitoring",
+              "Penetration testing"
+            ],
+            "description": "Enterprise-grade security with regular audits and updates."
+          }
+        ],
+        "subtitle": "Premium support that keeps your digital experiences running flawlessly",
+        "imageName": "abstract-fire",
+        "buildScope": "components",
+        "buildStyle": "blurFocus",
+        "transition": "blurFade",
+        "durationSec": 18
+      },
+      {
+        "cta": null,
+        "type": "split-content",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761845592898-8wfr7.png",
+        "title": "Deliver Experiences — Not Just Content.",
+        "layout": "image-right",
+        "points": [
+          "Automated code generation and testing",
+          "Intelligent migration workflows",
+          "Built-in QA automation",
+          "One-click deployment pipelines"
+        ],
+        "subtitle": "While others use AI to write content, we use AI to deliver complete digital experiences.",
+        "imageName": "Screenshot_2025-10-18_231655",
+        "transition": "blurFade",
+        "durationSec": 12
+      },
+      {
+        "cta": null,
+        "type": "split-content",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761843263746-fma75.jpg",
+        "title": "The Challenge",
+        "layout": "image-right",
+        "points": [
+          "Tight budgets with increasing demands",
+          "Talent shortages in specialized skills",
+          "Pressure to deliver faster than ever",
+          "Quality expectations that never compromise"
+        ],
+        "subtitle": "Today's Sitecore teams face impossible trade-offs.",
+        "imageName": "fire-1",
+        "transition": "blurFade",
+        "durationSec": 12
+      },
+      {
+        "role": "Sitecore Partner Tech Leader",
+        "type": "testimonial",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761845637292-18deg.png",
+        "quote": "The Kajoo AI delivery pod feels like adding an entire experienced team overnight. \n\nGame-changing for our capacity.",
+        "author": "Anonymous",
+        "rating": 5,
+        "company": "Current Kajoo Customer (during Agentic Beta test)",
+        "imageName": "globe",
+        "buildScope": "elements",
+        "buildStyle": "scalingCascade",
+        "transition": "blurFade",
+        "durationSec": 12
+      },
+      {
+        "cta": null,
+        "type": "service-card",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761845657022-1ll5l.jpg",
+        "title": "AI-Powered Services",
+        "services": [
+          {
+            "icon": "🤖",
+            "name": "Kajoo AI Agents",
+            "badge": "New",
+            "features": [
+              "AI-powered development",
+              "Automated testing & QA",
+              "Continuous improvement"
+            ],
+            "description": "Your intelligent delivery team working 24/7."
+          },
+          {
+            "icon": "🔄",
+            "name": "Migration Accelerator",
+            "features": [
+              "Automated content migration",
+              "Code modernization",
+              "Zero-downtime transitions"
+            ],
+            "description": "Move to the latest Sitecore versions 60% faster."
+          }
+        ],
+        "subtitle": "Revolutionary capabilities that transform how you build",
+        "imageName": "ceiling",
+        "buildScope": "sections",
+        "buildStyle": "typewriter",
+        "transition": "none",
+        "durationSec": 12
+      },
+      {
+        "cta": null,
+        "type": "hero",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761843204106-u56wm.jpg",
+        "title": "PRICE. QUALITY. SPEED.",
+        "subtitle": "For the first time in digital delivery… you can have all three.\nNow possible with Kajoo AI. Backed by TechGuilds' Sitecore expertise.",
+        "imageName": "swoosh",
+        "buildScope": "components",
+        "buildStyle": "scalingCascade",
+        "transition": "none",
+        "durationSec": 12
+      },
+      {
+        "cta": null,
+        "type": "hero",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761845681655-xbkswd.png",
+        "title": "Proven, Not Hype.",
+        "subtitle": "**There's a lot of AI noise out there. \nWe focus on what moves the needle:**\n\nMicrosites in weeks, not months | 60% faster migrations | \nBuilt-in QA automation | Predictable costs and timelines",
+        "imageName": "tornado",
+        "transition": "none",
+        "durationSec": 12
+      },
+      {
+        "role": "Director, Web Applications",
+        "type": "testimonial",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761845842621-q57z73.jpg",
+        "quote": "With Super Care™ we moved from firefighting to delivering meaningful changes to production.",
+        "author": "Anonymous",
+        "rating": 5,
+        "company": "Trade Association",
+        "imageName": "canada-night-sky",
+        "buildScope": "elements",
+        "buildStyle": "scalingCascade",
+        "transition": "blurFade",
+        "durationSec": 12
+      },
+      {
+        "cta": null,
+        "type": "hero",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761963787710-39qkcn.jpg",
+        "title": "Stop Compromising. ",
+        "subtitle": "With TechGuilds + Kajoo AI, your next Sitecore success story starts here.",
+        "imageName": "geometry-cyberspace-digital-art-lines-wallpaper-f950de2a3cc2c6dae09fa5853997ea4b",
+        "durationSec": 12
+      },
+      {
+        "cta": null,
+        "type": "hero",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761845961528-fx0g5r.jpg",
+        "title": "TechGuilds × Kajoo.ai",
+        "subtitle": "Proven Sitecore experts. AI-powered delivery pods.\nNext is Now.",
+        "imageName": "abstract-fire",
+        "durationSec": 12
+      },
+      {
+        "cta": null,
+        "type": "impact",
+        "image": "/assets/placeholder-01.svg",
+        "title": "ABA Time to Value",
+        "subtitle": "ABA chose Kajoo.ai for platform migrations to Sitecore.",
+        "buildScope": "elements",
+        "buildStyle": "cascadingFade",
+        "transition": "liquid",
+        "description": "in the last 12 months. ",
+        "durationSec": 20,
+        "impactNumber": "12x ROI"
+      },
+      {
+        "cta": null,
+        "type": "client-logos",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761939276417-sf9uz2.jpg",
+        "logos": [
+          {
+            "id": 1,
+            "theme": "light",
+            "filename": "aba-logo.svg",
+            "created_at": "2025-10-31T19:47:32.751382+00:00",
+            "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/aba-logo.svg",
+            "updated_at": "2025-10-31T19:47:32.751382+00:00",
+            "orientation": "horizontal",
+            "display_name": "American Bankers Association",
+            "storage_path": "aba-logo.svg"
+          },
+          {
+            "id": 8,
+            "theme": "light",
+            "filename": "Canada_Mortgage_and_Housing_Corporation2.svg",
+            "created_at": "2025-10-31T19:47:32.751382+00:00",
+            "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/canada_mortgage_and_housing_corporation2.svg",
+            "updated_at": "2025-10-31T19:47:32.751382+00:00",
+            "orientation": "horizontal",
+            "display_name": "CMHC",
+            "storage_path": "canada_mortgage_and_housing_corporation2.svg"
+          },
+          {
+            "id": 12,
+            "theme": "light",
+            "filename": "deloitte.svg",
+            "created_at": "2025-10-31T19:20:12.812663+00:00",
+            "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/for-dark-bg/deloitte.svg",
+            "updated_at": "2025-10-31T19:20:12.812663+00:00",
+            "orientation": "horizontal",
+            "display_name": "Deloitte Digital",
+            "storage_path": "for-dark-bg/deloitte.svg"
+          },
+          {
+            "id": 6,
+            "theme": "light",
+            "filename": "Asset 1.svg",
+            "created_at": "2025-10-31T19:20:12.812663+00:00",
+            "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/asset-1.svg",
+            "updated_at": "2025-10-31T19:20:12.812663+00:00",
+            "orientation": "horizontal",
+            "display_name": "Porsche",
+            "storage_path": "asset-1.svg"
+          },
+          {
+            "id": 31,
+            "theme": "light",
+            "filename": "Sodexo_logo.svg",
+            "created_at": "2025-10-31T19:20:12.812663+00:00",
+            "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/sodexo_logo.svg",
+            "updated_at": "2025-10-31T19:20:12.812663+00:00",
+            "orientation": "horizontal",
+            "display_name": "Sodexo",
+            "storage_path": "sodexo_logo.svg"
+          },
+          {
+            "id": 36,
+            "theme": "light",
+            "filename": "LOreal_logo.svg",
+            "created_at": "2025-10-31T20:03:41.928468+00:00",
+            "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/1761941020224-loreallogo.svg",
+            "updated_at": "2025-10-31T20:03:41.928468+00:00",
+            "orientation": "horizontal",
+            "display_name": "LOreal",
+            "storage_path": "1761941020224-loreallogo.svg"
+          },
+          {
+            "id": 8,
+            "theme": "light",
+            "filename": "Canada_Mortgage_and_Housing_Corporation2.svg",
+            "created_at": "2025-10-31T19:47:32.751382+00:00",
+            "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/canada_mortgage_and_housing_corporation2.svg",
+            "updated_at": "2025-10-31T19:47:32.751382+00:00",
+            "orientation": "horizontal",
+            "display_name": "CMHC",
+            "storage_path": "canada_mortgage_and_housing_corporation2.svg"
+          },
+          {
+            "id": 23,
+            "theme": "light",
+            "filename": "nwmo-light.svg",
+            "created_at": "2025-10-31T19:20:12.812663+00:00",
+            "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/nwmo-light.svg",
+            "updated_at": "2025-10-31T19:20:12.812663+00:00",
+            "orientation": "horizontal",
+            "display_name": "NWMO",
+            "storage_path": "nwmo-light.svg"
+          }
+        ],
+        "title": "Your Trusted Sitecore Partner.",
+        "featured": true,
+        "subtitle": "Helping clients around the world love Sitecore.",
+        "imageName": "swoosh",
+        "buildScope": "components",
+        "buildStyle": "blurFocus",
+        "durationSec": 12
+      }
+    ],
+    "settings": {
+      "buildScope": "elements",
+      "buildStyle": "classic",
+      "aspectRatio": "16:9",
+      "transitionMode": "sync",
+      "featuredRepeats": 2,
+      "fireworksIntensity": "medium"
+    },
+    "version": 637,
+    "updated_at": "2025-11-01T02:32:59.957534+00:00",
+    "updated_by": "editor"
+  },
+  "client_logos": [
+    {
+      "id": 1,
+      "filename": "aba-logo.svg",
+      "display_name": "American Bankers Association",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "aba-logo.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/aba-logo.svg",
+      "created_at": "2025-10-31T19:47:32.751382+00:00",
+      "updated_at": "2025-10-31T19:47:32.751382+00:00"
+    },
+    {
+      "id": 5,
+      "filename": "amica-white.svg",
+      "display_name": "Amica",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "amica-white.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/amica-white.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 6,
+      "filename": "Asset 1.svg",
+      "display_name": "Porsche",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "asset-1.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/asset-1.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 8,
+      "filename": "Canada_Mortgage_and_Housing_Corporation2.svg",
+      "display_name": "CMHC",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "canada_mortgage_and_housing_corporation2.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/canada_mortgage_and_housing_corporation2.svg",
+      "created_at": "2025-10-31T19:47:32.751382+00:00",
+      "updated_at": "2025-10-31T19:47:32.751382+00:00"
+    },
+    {
+      "id": 9,
+      "filename": "Deloitte.svg",
+      "display_name": "Deloitte",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "deloitte.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/deloitte.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 12,
+      "filename": "deloitte.svg",
+      "display_name": "Deloitte Digital",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "for-dark-bg/deloitte.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/for-dark-bg/deloitte.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 14,
+      "filename": "prsche.svg",
+      "display_name": "Porsche Digital",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "for-dark-bg/prsche.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/for-dark-bg/prsche.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 16,
+      "filename": "honda-h-red.svg",
+      "display_name": "Honda H Red",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "honda-h-red.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/honda-h-red.svg",
+      "created_at": "2025-10-31T19:47:32.751382+00:00",
+      "updated_at": "2025-10-31T19:47:32.751382+00:00"
+    },
+    {
+      "id": 19,
+      "filename": "Honda.svg",
+      "display_name": "Honda",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "honda.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/honda.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 21,
+      "filename": "moneris-light.svg",
+      "display_name": "Moneris",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "moneris-light.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/moneris-light.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 22,
+      "filename": "moneris-white.svg",
+      "display_name": "Moneris - Small",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "moneris-white.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/moneris-white.svg",
+      "created_at": "2025-10-31T19:47:32.751382+00:00",
+      "updated_at": "2025-10-31T19:47:32.751382+00:00"
+    },
+    {
+      "id": 23,
+      "filename": "nwmo-light.svg",
+      "display_name": "NWMO",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "nwmo-light.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/nwmo-light.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 27,
+      "filename": "osstf-white.svg",
+      "display_name": "OSSTF",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "osstf-white.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/osstf-white.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 30,
+      "filename": "psit-white.svg",
+      "display_name": "ProserveIT",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "psit-white.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/psit-white.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 31,
+      "filename": "Sodexo_logo.svg",
+      "display_name": "Sodexo",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "sodexo_logo.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/sodexo_logo.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 32,
+      "filename": "wsp.svg",
+      "display_name": "WSP",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "wsp.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/wsp.svg",
+      "created_at": "2025-10-31T19:20:12.812663+00:00",
+      "updated_at": "2025-10-31T19:20:12.812663+00:00"
+    },
+    {
+      "id": 35,
+      "filename": "ymcs-gta-color.svg",
+      "display_name": "YMCA GTA",
+      "theme": "color",
+      "orientation": "horizontal",
+      "storage_path": "ymcs-gta-color.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/ymcs-gta-color.svg",
+      "created_at": "2025-10-31T19:47:32.751382+00:00",
+      "updated_at": "2025-10-31T19:47:32.751382+00:00"
+    },
+    {
+      "id": 36,
+      "filename": "LOreal_logo.svg",
+      "display_name": "LOreal",
+      "theme": "light",
+      "orientation": "horizontal",
+      "storage_path": "1761941020224-loreallogo.svg",
+      "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/1761941020224-loreallogo.svg",
+      "created_at": "2025-10-31T20:03:41.928468+00:00",
+      "updated_at": "2025-10-31T20:03:41.928468+00:00"
+    }
+  ]
+}

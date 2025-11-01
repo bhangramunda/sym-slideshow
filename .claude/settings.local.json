@@ -33,7 +33,9 @@
       "Bash(node scripts/cleanup-orphaned-logos.js:*)",
       "Bash(node scripts/check-logo-state.js:*)",
       "Bash(node scripts/test-rename.js:*)",
-      "Bash(node scripts/ensure-settings-saved.js:*)"
+      "Bash(node scripts/ensure-settings-saved.js:*)",
+      "Bash(node scripts/verify-content-persistence.js:*)",
+      "Bash(node scripts/backup-production-data.js:*)"
     ],
     "deny": [],
     "ask": []
