@@ -27,23 +27,25 @@ export default function FullScreenImageSlide({ scene }) {
         </div>
       )}
 
-      {/* Optional: Subtle text overlay at bottom (can be hidden if not needed) */}
+      {/* Text overlay - guaranteed visible on screen */}
       {scene.title && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-12"
+          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent px-12 pt-24 pb-16"
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white text-center">
-            {scene.title}
-          </h2>
-          {scene.subtitle && (
-            <p
-              className="text-xl md:text-2xl text-white/80 text-center mt-4"
-              dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
-            />
-          )}
+          <div className="max-w-5xl mx-auto">
+            <h2 className="text-4xl md:text-6xl font-bold text-white text-center drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+              {scene.title}
+            </h2>
+            {scene.subtitle && (
+              <p
+                className="text-xl md:text-3xl text-white/90 text-center mt-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+                dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
+              />
+            )}
+          </div>
         </motion.div>
       )}
     </div>
