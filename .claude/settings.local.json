@@ -32,7 +32,8 @@
       "Bash(copy \".env.local\" \".env\")",
       "Bash(node scripts/cleanup-orphaned-logos.js:*)",
       "Bash(node scripts/check-logo-state.js:*)",
-      "Bash(node scripts/test-rename.js:*)"
+      "Bash(node scripts/test-rename.js:*)",
+      "Bash(node scripts/ensure-settings-saved.js:*)"
     ],
     "deny": [],
     "ask": []
