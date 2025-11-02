@@ -33,6 +33,46 @@ export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
     };
   }, [onVideoEnd]);
 
+  // Text position options: 'bottom-edge' (default), 'top-edge', 'middle', 'middle-top', 'middle-bottom'
+  const textPosition = scene.textPosition || 'bottom-edge';
+
+  // Define position-specific classes
+  const getPositionClasses = () => {
+    switch (textPosition) {
+      case 'top-edge':
+        return {
+          containerClass: 'absolute top-0 left-0 right-0 bg-gradient-to-b from-black/90 via-black/60 to-transparent px-12 pt-16 pb-24 pointer-events-none',
+          justifyClass: 'justify-start'
+        };
+      case 'middle':
+        return {
+          containerClass: 'absolute inset-0 flex items-center justify-center px-12 py-16 pointer-events-none',
+          justifyClass: 'justify-center',
+          hasBackground: true
+        };
+      case 'middle-top':
+        return {
+          containerClass: 'absolute top-[20%] left-0 right-0 px-12 py-8 pointer-events-none',
+          justifyClass: 'justify-start',
+          hasBackground: true
+        };
+      case 'middle-bottom':
+        return {
+          containerClass: 'absolute bottom-[20%] left-0 right-0 px-12 py-8 pointer-events-none',
+          justifyClass: 'justify-end',
+          hasBackground: true
+        };
+      case 'bottom-edge':
+      default:
+        return {
+          containerClass: 'absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent px-12 pt-24 pb-16 pointer-events-none',
+          justifyClass: 'justify-end'
+        };
+    }
+  };
+
+  const { containerClass, hasBackground } = getPositionClasses();
+
   return (
     <div
       className="relative w-screen h-screen overflow-hidden bg-black"
@@ -59,23 +99,25 @@ export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
         </div>
       )}
 
-      {/* Optional: Text overlay at bottom */}
+      {/* Text overlay - positioned based on textPosition field */}
       {scene.title && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.5 }}
-          className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-12 pointer-events-none"
+          className={containerClass}
         >
-          <h2 className="text-4xl md:text-5xl font-bold text-white text-center">
-            {scene.title}
-          </h2>
-          {scene.subtitle && (
-            <p
-              className="text-xl md:text-2xl text-white/80 text-center mt-4"
-              dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
-            />
-          )}
+          <div className={`max-w-5xl mx-auto ${hasBackground ? 'bg-black/70 backdrop-blur-sm rounded-2xl px-12 py-8' : ''}`}>
+            <h2 className="text-4xl md:text-5xl font-bold text-white text-center drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+              {scene.title}
+            </h2>
+            {scene.subtitle && (
+              <p
+                className="text-xl md:text-2xl text-white/80 text-center mt-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+                dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
+              />
+            )}
+          </div>
         </motion.div>
       )}
 

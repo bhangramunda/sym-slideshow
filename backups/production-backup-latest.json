@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "backupDate": "2025-11-01T02:33:45.040Z",
-    "backupVersion": 637,
+    "backupDate": "2025-11-02T20:33:43.089Z",
+    "backupVersion": 821,
     "supabaseProjectUrl": "https://fyiwpqnbiutuzuxjdeot.supabase.co",
-    "totalSlides": 14,
+    "totalSlides": 18,
     "totalLogos": 18
   },
   "slideshow_data": {
@@ -30,6 +30,37 @@
         "impactNumber": "$500k "
       },
       {
+        "role": "Senior Director, User Experience",
+        "type": "impact",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761931082115-v9oy6b.jpg",
+        "quote": "We are so grateful for our partnership with TechGuilds and for their willingness to step in and support us. It has meant so much that they've been there for us and helped us get to 'go' more than once over this last year. Thank you.\n",
+        "title": "ABA chose Kajoo ",
+        "author": "Jess Moore",
+        "rating": 5,
+        "company": "American Bankers Association",
+        "featured": false,
+        "subtitle": "American Bankers Association saved $500k using Kajoo.ai \nfor migrations and you can too - Let's talk!",
+        "fireworks": "heavy",
+        "imageName": "canada-night-sky",
+        "buildScope": "components",
+        "buildStyle": "slideIn",
+        "transition": "blurFade",
+        "description": "saved in agency fees in the first year.",
+        "durationSec": 12,
+        "impactNumber": "$500k "
+      },
+      {
+        "cta": "Live demo at the booth",
+        "type": "hero",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761843289650-kumke.jpg",
+        "title": "Meet Kajoo AI — your new delivery pod.",
+        "featured": false,
+        "subtitle": "An intelligent, always-on team of AI Agents. \n\n_PM, Architect, Dev, QA_. **Built for Sitecore**. \nThey plan. They build. They test. You verify. You deliver - Faster, Better.",
+        "imageName": "canada-night-sky",
+        "transition": "blurFade",
+        "durationSec": 12
+      },
+      {
         "cta": "Live demo at the booth",
         "type": "hero",
         "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761843289650-kumke.jpg",
@@ -44,63 +75,46 @@
         "cta": null,
         "type": "service-card",
         "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761843307139-vcpd8.jpg",
-        "title": "Super Care™ ",
+        "title": "TechGuilds Super Care™ ",
         "services": [
           {
-            "icon": "🚀",
-            "name": "24/7 Support",
-            "badge": "Most Popular",
+            "icon": "",
+            "name": "🚀 Web Application Support",
+            "badge": "",
             "features": [
               "Dedicated support team",
-              "15-minute response time",
+              "20-minute response time",
               "Proactive monitoring"
             ],
-            "description": "Round-the-clock monitoring and immediate response to critical issues."
+            "description": "Available 24/7 monitoring, support and response to critical issues."
           },
           {
-            "icon": "⚡",
-            "name": "Performance Optimization",
+            "icon": "",
+            "name": "⚡ Enhancement Development",
             "features": [
-              "Monthly performance audits",
-              "CDN optimization",
-              "Code review & refactoring"
+              "Technical audits",
+              "Application enhancements and optimization",
+              "Regular releases that helps your site grow"
             ],
-            "description": "Continuous improvements to keep your site lightning-fast."
+            "description": "Ongoing improvements to evolve and enhance your site"
           },
           {
-            "icon": "🛡️",
-            "name": "Security & Compliance",
+            "icon": "",
+            "name": "🧠 Digital & AI Strategy Consulting",
             "features": [
-              "Security patches",
-              "Compliance monitoring",
-              "Penetration testing"
+              "Digital Strategic roadmaps",
+              "AI strategy consulting",
+              "AEO & GEO strategy and execution"
             ],
-            "description": "Enterprise-grade security with regular audits and updates."
+            "description": "Make strategic consulting services a part of your Super Care™"
           }
         ],
-        "subtitle": "Premium support that keeps your digital experiences running flawlessly",
+        "subtitle": "Completely customizable application managed services that truly moves the needle and complete peace of mind, consisting of:",
         "imageName": "abstract-fire",
         "buildScope": "components",
         "buildStyle": "blurFocus",
         "transition": "blurFade",
         "durationSec": 18
-      },
-      {
-        "cta": null,
-        "type": "split-content",
-        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761845592898-8wfr7.png",
-        "title": "Deliver Experiences — Not Just Content.",
-        "layout": "image-right",
-        "points": [
-          "Automated code generation and testing",
-          "Intelligent migration workflows",
-          "Built-in QA automation",
-          "One-click deployment pipelines"
-        ],
-        "subtitle": "While others use AI to write content, we use AI to deliver complete digital experiences.",
-        "imageName": "Screenshot_2025-10-18_231655",
-        "transition": "blurFade",
-        "durationSec": 12
       },
       {
         "cta": null,
@@ -120,13 +134,15 @@
         "durationSec": 12
       },
       {
-        "role": "Sitecore Partner Tech Leader",
+        "role": "Web Content Strategist",
         "type": "testimonial",
         "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761845637292-18deg.png",
-        "quote": "The Kajoo AI delivery pod feels like adding an entire experienced team overnight. \n\nGame-changing for our capacity.",
-        "author": "Anonymous",
+        "quote": "Thank you for always being on it and accessible \nto us, you have no idea how helpful it is to \nhave an engaged partner!",
+        "title": "Amica Quote",
+        "author": "Chris Sanders",
         "rating": 5,
-        "company": "Current Kajoo Customer (during Agentic Beta test)",
+        "company": "Amica Senior Living",
+        "featured": true,
         "imageName": "globe",
         "buildScope": "elements",
         "buildStyle": "scalingCascade",
@@ -170,10 +186,27 @@
       },
       {
         "cta": null,
+        "type": "split-content",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761968097111-0u055i.jpg",
+        "title": "Deliver Experiences — Not Just Content.",
+        "layout": "image-right",
+        "points": [
+          "Automated code generation and testing",
+          "Intelligent migration workflows",
+          "Built-in QA automation",
+          "One-click deployment pipelines"
+        ],
+        "subtitle": "While others use AI to write content, we use AI to deliver complete digital experiences.",
+        "imageName": "tree-mist-fog-cloudy-34fe5410d4122039c2d2dd16229b9281",
+        "transition": "blurFade",
+        "durationSec": 12
+      },
+      {
+        "cta": null,
         "type": "hero",
         "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761843204106-u56wm.jpg",
         "title": "PRICE. QUALITY. SPEED.",
-        "subtitle": "For the first time in digital delivery… you can have all three.\nNow possible with Kajoo AI. Backed by TechGuilds' Sitecore expertise.",
+        "subtitle": "For the first time in digital delivery… you can have all three.\nNow possible with Kajoo.ai. Backed by TechGuilds' 10+ years of Sitecore expertise.",
         "imageName": "swoosh",
         "buildScope": "components",
         "buildStyle": "scalingCascade",
@@ -184,20 +217,31 @@
         "cta": null,
         "type": "hero",
         "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761845681655-xbkswd.png",
-        "title": "Proven, Not Hype.",
-        "subtitle": "**There's a lot of AI noise out there. \nWe focus on what moves the needle:**\n\nMicrosites in weeks, not months | 60% faster migrations | \nBuilt-in QA automation | Predictable costs and timelines",
+        "title": "Proven and Trusted AI.",
+        "subtitle": "Sitecore Partners and Clients reimagine Sitecore delivery with Kajoo.ai",
         "imageName": "tornado",
         "transition": "none",
         "durationSec": 12
       },
       {
-        "role": "Director, Web Applications",
+        "cta": null,
+        "type": "hero",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761845681655-xbkswd.png",
+        "title": "Proven and Trusted AI.",
+        "subtitle": "As pioneers of leveraging AI in the DX space, Kajoo.ai has been delivering **real results** for **real clients** for years.",
+        "imageName": "tornado",
+        "transition": "none",
+        "durationSec": 12
+      },
+      {
+        "role": "Chief Operating Officer",
         "type": "testimonial",
         "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761845842621-q57z73.jpg",
-        "quote": "With Super Care™ we moved from firefighting to delivering meaningful changes to production.",
-        "author": "Anonymous",
+        "quote": "When we were up at crazy hours, TechGuilds were doing the same. On several occasions, we kept a bridge open until 3–4 AM and worked on things together.\"",
+        "title": "CNA Quote",
+        "author": "Donna Dewar",
         "rating": 5,
-        "company": "Trade Association",
+        "company": "Canadian Nurses Association",
         "imageName": "canada-night-sky",
         "buildScope": "elements",
         "buildStyle": "scalingCascade",
@@ -209,7 +253,7 @@
         "type": "hero",
         "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761963787710-39qkcn.jpg",
         "title": "Stop Compromising. ",
-        "subtitle": "With TechGuilds + Kajoo AI, your next Sitecore success story starts here.",
+        "subtitle": "With TechGuilds + Kajoo.ai, your next Sitecore success story starts here.",
         "imageName": "geometry-cyberspace-digital-art-lines-wallpaper-f950de2a3cc2c6dae09fa5853997ea4b",
         "durationSec": 12
       },
@@ -225,14 +269,16 @@
       {
         "cta": null,
         "type": "impact",
-        "image": "/assets/placeholder-01.svg",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761965406430-ca0bcj.jpg",
         "title": "ABA Time to Value",
-        "subtitle": "ABA chose Kajoo.ai for platform migrations to Sitecore.",
-        "buildScope": "elements",
+        "subtitle": "ABA achieved remarkable payback within 12 months. You can too.",
+        "fireworks": "heavy",
+        "imageName": "geometry-cyberspace-abstract-blue-wallpaper-49e0ceca1cd2760a10efb59599b7aaab",
+        "buildScope": "components",
         "buildStyle": "cascadingFade",
-        "transition": "liquid",
+        "transition": "blurFade",
         "description": "in the last 12 months. ",
-        "durationSec": 20,
+        "durationSec": 12,
         "impactNumber": "12x ROI"
       },
       {
@@ -250,6 +296,17 @@
             "orientation": "horizontal",
             "display_name": "American Bankers Association",
             "storage_path": "aba-logo.svg"
+          },
+          {
+            "id": 5,
+            "theme": "light",
+            "filename": "amica-white.svg",
+            "created_at": "2025-10-31T19:20:12.812663+00:00",
+            "public_url": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/client-logos/amica-white.svg",
+            "updated_at": "2025-10-31T19:20:12.812663+00:00",
+            "orientation": "horizontal",
+            "display_name": "Amica",
+            "storage_path": "amica-white.svg"
           },
           {
             "id": 8,
@@ -330,11 +387,21 @@
           }
         ],
         "title": "Your Trusted Sitecore Partner.",
+        "footer": "Over 10 years of Sitecore experience and 200+ projects for wonderful clients of all kinds",
         "featured": true,
-        "subtitle": "Helping clients around the world love Sitecore.",
+        "subtitle": "Helping clients around the world who trust us with their Sitecore investment",
         "imageName": "swoosh",
         "buildScope": "components",
         "buildStyle": "blurFocus",
+        "durationSec": 12
+      },
+      {
+        "cta": null,
+        "type": "fullscreen-image",
+        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761965903059-wqyt1o.jpg",
+        "title": "Enter to Win - Lego Maclaren P1",
+        "subtitle": "",
+        "imageName": "p1-maclaren",
         "durationSec": 12
       }
     ],
@@ -346,8 +413,8 @@
       "featuredRepeats": 2,
       "fireworksIntensity": "medium"
     },
-    "version": 637,
-    "updated_at": "2025-11-01T02:32:59.957534+00:00",
+    "version": 821,
+    "updated_at": "2025-11-02T20:27:45.503107+00:00",
     "updated_by": "editor"
   },
   "client_logos": [

@@ -193,23 +193,54 @@ function Slideshow() {
   const [index, setIndex] = useState(0)
   const [jumpToInput, setJumpToInput] = useState('')
   const [showControls, setShowControls] = useState(true)
+  const [isPaused, setIsPaused] = useState(false)
+  const [manualAdvanceTimer, setManualAdvanceTimer] = useState(null)
+  const autoAdvanceTimeoutRef = React.useRef(null)
+  const manualResumeTimeoutRef = React.useRef(null)
 
+  // Auto-advance logic - only runs when not paused
   useEffect(() => {
-    let timeoutId
-    function scheduleNext(i) {
-      const durationMs = (scenes[i].durationSec ?? 20) * 1000
-      timeoutId = setTimeout(() => {
-        setIndex(prev => (prev + 1) % scenes.length)
-        scheduleNext((i + 1) % scenes.length)
-      }, durationMs + FPS_SAFE_DELAY)
+    if (isPaused) {
+      // Clear any existing timeouts when paused
+      if (autoAdvanceTimeoutRef.current) {
+        clearTimeout(autoAdvanceTimeoutRef.current)
+        autoAdvanceTimeoutRef.current = null
+      }
+      return
     }
-    scheduleNext(index)
-    return () => clearTimeout(timeoutId)
-  }, [scenes, index])
+
+    // Clear any existing timeout
+    if (autoAdvanceTimeoutRef.current) {
+      clearTimeout(autoAdvanceTimeoutRef.current)
+    }
+
+    const durationMs = (scenes[index].durationSec ?? 20) * 1000
+    autoAdvanceTimeoutRef.current = setTimeout(() => {
+      setIndex(prev => (prev + 1) % scenes.length)
+    }, durationMs + FPS_SAFE_DELAY)
+
+    return () => {
+      if (autoAdvanceTimeoutRef.current) {
+        clearTimeout(autoAdvanceTimeoutRef.current)
+      }
+    }
+  }, [scenes, index, isPaused])
 
   // Keyboard navigation: type number and press Enter to jump to slide
   useEffect(() => {
     const handleKeyDown = (e) => {
+      // Space bar for pause/play toggle
+      if (e.key === ' ') {
+        e.preventDefault() // Prevent page scroll
+        setIsPaused(prev => !prev)
+        // Clear any manual resume timer when manually toggling pause
+        if (manualResumeTimeoutRef.current) {
+          clearTimeout(manualResumeTimeoutRef.current)
+          manualResumeTimeoutRef.current = null
+        }
+        return
+      }
+
       // Check if it's a number key (0-9)
       if (e.key >= '0' && e.key <= '9') {
         setJumpToInput(prev => prev + e.key)
@@ -219,6 +250,16 @@ function Slideshow() {
         const targetSlide = parseInt(jumpToInput, 10) - 1 // Convert to 0-indexed
         if (targetSlide >= 0 && targetSlide < scenes.length) {
           setIndex(targetSlide)
+
+          // Manual navigation: pause and resume after 5 seconds
+          setIsPaused(true)
+          if (manualResumeTimeoutRef.current) {
+            clearTimeout(manualResumeTimeoutRef.current)
+          }
+          manualResumeTimeoutRef.current = setTimeout(() => {
+            setIsPaused(false)
+            manualResumeTimeoutRef.current = null
+          }, 5000)
         }
         setJumpToInput('') // Clear input
       }
@@ -226,17 +267,44 @@ function Slideshow() {
       else if (e.key === 'Escape') {
         setJumpToInput('')
       }
-      // Arrow keys for next/previous
-      else if (e.key === 'ArrowRight' || e.key === ' ') {
+      // Arrow keys for manual navigation
+      else if (e.key === 'ArrowRight') {
+        e.preventDefault()
         setIndex(prev => (prev + 1) % scenes.length)
+
+        // Manual navigation: pause and resume after 5 seconds
+        setIsPaused(true)
+        if (manualResumeTimeoutRef.current) {
+          clearTimeout(manualResumeTimeoutRef.current)
+        }
+        manualResumeTimeoutRef.current = setTimeout(() => {
+          setIsPaused(false)
+          manualResumeTimeoutRef.current = null
+        }, 5000)
       }
       else if (e.key === 'ArrowLeft') {
+        e.preventDefault()
         setIndex(prev => (prev - 1 + scenes.length) % scenes.length)
+
+        // Manual navigation: pause and resume after 5 seconds
+        setIsPaused(true)
+        if (manualResumeTimeoutRef.current) {
+          clearTimeout(manualResumeTimeoutRef.current)
+        }
+        manualResumeTimeoutRef.current = setTimeout(() => {
+          setIsPaused(false)
+          manualResumeTimeoutRef.current = null
+        }, 5000)
       }
     }
 
     window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown)
+      if (manualResumeTimeoutRef.current) {
+        clearTimeout(manualResumeTimeoutRef.current)
+      }
+    }
   }, [jumpToInput, scenes.length])
 
   // Auto-hide controls after 500ms of inactivity
@@ -317,9 +385,14 @@ function Slideshow() {
       {/* Slide counter and jump-to indicator */}
       <div
         className="absolute bottom-4 right-4 z-50 text-white/40 text-sm transition-opacity duration-300"
-        style={{ opacity: showControls || jumpToInput ? 1 : 0 }}
+        style={{ opacity: showControls || jumpToInput || isPaused ? 1 : 0 }}
       >
-        Slide {index + 1} / {scenes.length}
+        <div className="flex items-center gap-2">
+          <span>Slide {index + 1} / {scenes.length}</span>
+          {isPaused && (
+            <span className="text-yellow-400/80 font-medium">⏸ PAUSED</span>
+          )}
+        </div>
         {jumpToInput && (
           <div className="mt-2 bg-black/80 backdrop-blur border border-white/30 rounded px-4 py-2 text-white text-lg">
             Jump to: {jumpToInput}_

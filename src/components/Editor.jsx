@@ -1786,6 +1786,27 @@ export default function Editor() {
               </div>
             )}
 
+            {/* Text Position for Full Screen Image and Video */}
+            {(selectedScene.type === 'fullscreen-image' || selectedScene.type === 'fullscreen-video') && (
+              <div>
+                <label className="block text-sm font-medium mb-1">Text Position</label>
+                <select
+                  value={selectedScene.textPosition || 'bottom-edge'}
+                  onChange={(e) => updateScene(selectedIndex, { textPosition: e.target.value })}
+                  className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white"
+                >
+                  <option value="bottom-edge">Bottom Edge (Default)</option>
+                  <option value="top-edge">Top Edge</option>
+                  <option value="middle">Middle (Centered)</option>
+                  <option value="middle-top">Middle-Top (20% from top)</option>
+                  <option value="middle-bottom">Middle-Bottom (20% from bottom)</option>
+                </select>
+                <div className="mt-2 text-xs text-gray-400">
+                  Position of title and subtitle text overlay on the {selectedScene.type === 'fullscreen-image' ? 'image' : 'video'}
+                </div>
+              </div>
+            )}
+
             {/* Split Content - Points Editor */}
             {selectedScene.type === 'split-content' && (
               <div>

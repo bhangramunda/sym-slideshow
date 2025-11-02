@@ -91,13 +91,19 @@ const helpContent = [
 **Key Features**:
 - Image fills entire screen
 - Subtle zoom animation on entrance
-- Optional overlay text
+- Optional overlay text with **custom positioning**
 - Supports high-resolution images
 
 **Field Layout**:
 - **Image URL**: Path or URL to image
-- **Title**: Overlay text (optional, centered)
+- **Title**: Overlay text (optional)
 - **Subtitle**: Additional overlay text (optional)
+- **Text Position**: Choose where text appears:
+  - Bottom Edge (default) - gradient from bottom
+  - Top Edge - gradient from top
+  - Middle - centered with background box
+  - Middle-Top - 20% from top with background box
+  - Middle-Bottom - 20% from bottom with background box
 - **Image Upload**: Use 📁 button to upload new images`,
         type: "slide-type"
       },
@@ -110,11 +116,18 @@ const helpContent = [
 - Auto-advances to next slide when video ends
 - Loop option for continuous playback
 - Mute option for silent playback
+- Optional overlay text with **custom positioning**
 
 **Field Layout**:
 - **Video URL**: Path to MP4 file
 - **Loop**: Checkbox to repeat video
-- **Muted**: Checkbox to disable audio
+- **Muted**: Checkbox to disable audio (required for autoplay)
+- **Text Position**: Choose where text appears:
+  - Bottom Edge (default) - gradient from bottom
+  - Top Edge - gradient from top
+  - Middle - centered with background box
+  - Middle-Top - 20% from top with background box
+  - Middle-Bottom - 20% from bottom with background box
 - **Video Upload**: Use 📁 button to upload (max 100MB)`,
         type: "slide-type"
       },
@@ -848,20 +861,26 @@ Options: 0-5 (Default: 2)
       },
       {
         title: "Keyboard Navigation",
-        content: `**Arrow Keys**:
-- **Right Arrow / Space**: Next slide
-- **Left Arrow**: Previous slide
+        content: `**Manual Navigation**:
+- **Right Arrow**: Next slide (pauses auto-play for 5 seconds)
+- **Left Arrow**: Previous slide (pauses auto-play for 5 seconds)
+- After 5 seconds, auto-play resumes automatically
+
+**Pause/Play Control**:
+- **Space Bar**: Toggle pause/play
+- When paused, shows "⏸ PAUSED" indicator
+- Manually toggle to resume playback
 
 **Jump to Slide**:
 1. Type a number (e.g., "5")
 2. Press Enter
-3. Jumps to slide #5
+3. Jumps to slide #5 (pauses for 5 seconds, then resumes)
 4. Press Escape to cancel
 
 **Controls**:
 - Mouse/keyboard activity shows controls
 - Auto-hide after 500ms of inactivity
-- Shows: slide counter, current slide number
+- Shows: slide counter, current slide number, pause status
 
 **Other**:
 - **Escape**: Exit fullscreen (browser default)`,
