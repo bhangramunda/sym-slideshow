@@ -107,13 +107,21 @@ export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
           transition={{ duration: 0.8, delay: 0.5 }}
           className={containerClass}
         >
-          <div className={`max-w-5xl mx-auto ${hasBackground ? 'bg-black/70 backdrop-blur-sm rounded-2xl px-12 py-8' : ''}`}>
-            <h2 className="text-4xl md:text-5xl font-bold text-white text-center drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]">
+          <div className={`max-w-6xl mx-auto ${hasBackground ? 'bg-black/70 backdrop-blur-sm rounded-2xl px-12 py-8' : ''}`}>
+            <h2
+              className="font-bold text-white text-center drop-shadow-[0_4px_12px_rgba(0,0,0,0.8)]"
+              style={{
+                fontSize: `clamp(3rem, ${Math.max(4, Math.min(10, 400 / Math.max(1, (scene.title?.length || 1))))}vw, 10rem)`
+              }}
+            >
               {scene.title}
             </h2>
             {scene.subtitle && (
               <p
-                className="text-xl md:text-2xl text-white/80 text-center mt-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+                className="text-white/90 text-center mt-6 drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]"
+                style={{
+                  fontSize: `clamp(1.5rem, ${Math.max(2, Math.min(5, 200 / Math.max(1, (scene.subtitle?.length || 1))))}vw, 5rem)`
+                }}
                 dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
               />
             )}
