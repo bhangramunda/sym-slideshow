@@ -72,29 +72,29 @@ export default function ImpactSlide({ scene, fireworksIntensity }) {
           let explodeY, launchDuration, particleCount, particleDistance, particleSize, flashSize
 
           if (isBackground) {
-            // Far fireworks: high, slow, large
+            // Far fireworks: high, slow, large - STRONGER
             explodeY = 10 + Math.random() * 20; // 10-30% from top
             launchDuration = 1.5 + Math.random() * 0.3; // 1.5-1.8s
-            particleCount = 24
-            particleDistance = 120 + Math.random() * 80; // 120-200px
-            particleSize = 4
-            flashSize = 200
+            particleCount = 36 // Increased from 24 (50% more particles)
+            particleDistance = 180 + Math.random() * 120; // 180-300px (was 120-200, 50% larger spread)
+            particleSize = 6 // Increased from 4 (50% bigger particles)
+            flashSize = 300 // Increased from 200 (50% bigger flash)
           } else if (isMidground) {
-            // Medium fireworks
+            // Medium fireworks - STRONGER
             explodeY = 25 + Math.random() * 20; // 25-45% from top
             launchDuration = 1.0 + Math.random() * 0.3; // 1.0-1.3s
-            particleCount = 20
-            particleDistance = 90 + Math.random() * 60; // 90-150px
-            particleSize = 3
-            flashSize = 160
+            particleCount = 30 // Increased from 20 (50% more particles)
+            particleDistance = 135 + Math.random() * 90; // 135-225px (was 90-150, 50% larger spread)
+            particleSize = 4.5 // Increased from 3 (50% bigger particles)
+            flashSize = 240 // Increased from 160 (50% bigger flash)
           } else {
-            // Close fireworks: low, fast, smaller
+            // Close fireworks: low, fast, smaller - STRONGER
             explodeY = 40 + Math.random() * 25; // 40-65% from top
             launchDuration = 0.7 + Math.random() * 0.2; // 0.7-0.9s
-            particleCount = 16
-            particleDistance = 70 + Math.random() * 40; // 70-110px
-            particleSize = 2.5
-            flashSize = 120
+            particleCount = 24 // Increased from 16 (50% more particles)
+            particleDistance = 105 + Math.random() * 60; // 105-165px (was 70-110, 50% larger spread)
+            particleSize = 3.5 // Increased from 2.5 (40% bigger particles)
+            flashSize = 180 // Increased from 120 (50% bigger flash)
           }
 
           // Spread firework launches across the available time

@@ -57,16 +57,23 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
   const scope = scene.buildScope || buildScope || 'components'
   const style = scene.buildStyle || buildStyle || 'classic'
 
+  // Determine if build animations are active
+  const hasBuildAnimations = scope !== 'off' && style !== 'off';
+
   // Choose the right title component based on scope/style
   const TitleComponent = () => {
     if (scope === 'off' || style === 'off') {
+      // No build animations - use simple base animation
       return (
-        <div
+        <motion.div
           className="font-extrabold text-white drop-shadow-[0_0_20px_rgba(0,212,255,0.35)]"
           style={{ fontSize: `${titleFontSize}rem` }}
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1, duration: 0.8 }}
         >
           {scene.title}
-        </div>
+        </motion.div>
       )
     }
 
@@ -92,7 +99,7 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
       )
     }
 
-    // Default: components scope with KineticText (classic style) or simple animation
+    // Default: components scope with KineticText (classic style) or plain div for other styles
     if (style === 'classic') {
       return (
         <KineticText
@@ -103,17 +110,14 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
       )
     }
 
-    // Component-level animation (non-classic)
+    // Component-level animation - plain div (no base animation to avoid double animation)
     return (
-      <motion.div
+      <div
         className="font-extrabold text-white drop-shadow-[0_0_20px_rgba(0,212,255,0.35)]"
         style={{ fontSize: `${titleFontSize}rem` }}
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.1, duration: 0.8 }}
       >
         {scene.title}
-      </motion.div>
+      </div>
     )
   }
 
@@ -180,26 +184,46 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
         )}
         <TitleComponent />
         {scene.subtitle && (
-          <motion.div
-            className="mt-12 text-white/90 leading-relaxed"
-            style={{ fontSize: `${subtitleFontSize}rem` }}
-            initial={{ opacity: 0, y: 12, filter: 'blur(6px)' }}
-            animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-            transition={{ delay: 0.6, duration: 0.8 }}
-            dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
-          />
+          hasBuildAnimations ? (
+            // No base animation when build animations are active
+            <div
+              className="mt-12 text-white/90 leading-relaxed"
+              style={{ fontSize: `${subtitleFontSize}rem` }}
+              dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
+            />
+          ) : (
+            // Use base animation when build animations are off
+            <motion.div
+              className="mt-12 text-white/90 leading-relaxed"
+              style={{ fontSize: `${subtitleFontSize}rem` }}
+              initial={{ opacity: 0, y: 12, filter: 'blur(6px)' }}
+              animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+              transition={{ delay: 0.6, duration: 0.8 }}
+              dangerouslySetInnerHTML={{ __html: parseFormatting(scene.subtitle) }}
+            />
+          )
         )}
         {scene.cta && (
-          <motion.div
-            className="mt-10 inline-flex items-center justify-center"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1.0, duration: 0.6 }}
-          >
-            <div className="px-6 py-3 rounded-full bg-white/10 backdrop-blur border border-white/30 text-white uppercase tracking-widest text-sm shadow-lg animate-glow">
-              {scene.cta}
+          hasBuildAnimations ? (
+            // No base animation when build animations are active
+            <div className="mt-10 inline-flex items-center justify-center">
+              <div className="px-6 py-3 rounded-full bg-white/10 backdrop-blur border border-white/30 text-white uppercase tracking-widest text-sm shadow-lg animate-glow">
+                {scene.cta}
+              </div>
             </div>
-          </motion.div>
+          ) : (
+            // Use base animation when build animations are off
+            <motion.div
+              className="mt-10 inline-flex items-center justify-center"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 1.0, duration: 0.6 }}
+            >
+              <div className="px-6 py-3 rounded-full bg-white/10 backdrop-blur border border-white/30 text-white uppercase tracking-widest text-sm shadow-lg animate-glow">
+                {scene.cta}
+              </div>
+            </motion.div>
+          )
         )}
       </div>
 
