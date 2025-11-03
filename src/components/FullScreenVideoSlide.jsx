@@ -42,27 +42,39 @@ export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
     const video = videoRef.current;
     if (!video) return;
 
+    let isMounted = true;
+
     // Auto-play when component mounts
     const playPromise = video.play();
     if (playPromise !== undefined) {
       playPromise.catch(error => {
-        console.error('Video autoplay failed:', error);
-        // Fallback: try playing on user interaction
+        // Only log if component is still mounted
+        if (isMounted && error.name !== 'AbortError') {
+          console.error('Video autoplay failed:', error);
+        }
+        // Silently ignore AbortError (normal when component unmounts)
       });
     }
 
     // Handle video end event
     const handleEnded = () => {
-      console.log('[FullScreenVideoSlide] Video ended, advancing to next slide');
-      if (onVideoEnd) {
-        onVideoEnd();
+      if (isMounted) {
+        console.log('[FullScreenVideoSlide] Video ended, advancing to next slide');
+        if (onVideoEnd) {
+          onVideoEnd();
+        }
       }
     };
 
     video.addEventListener('ended', handleEnded);
 
     return () => {
+      isMounted = false;
       video.removeEventListener('ended', handleEnded);
+      // Pause video to stop any pending play requests
+      if (video && !video.paused) {
+        video.pause();
+      }
     };
   }, [onVideoEnd, isYouTube]);
 
