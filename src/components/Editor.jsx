@@ -1683,9 +1683,40 @@ export default function Editor() {
             {/* Video (for fullscreen-video type) */}
             {selectedScene.type === 'fullscreen-video' && (
               <div>
-                <label className="block text-sm font-medium mb-1">Video</label>
+                <label className="block text-sm font-medium mb-1">Video Source</label>
+
+                {/* YouTube URL Input */}
+                <div className="mb-3">
+                  <label className="block text-xs text-gray-400 mb-1">YouTube URL (paste link here)</label>
+                  <input
+                    type="text"
+                    placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/..."
+                    value={selectedScene.video?.includes('youtube.com') || selectedScene.video?.includes('youtu.be') ? selectedScene.video : ''}
+                    onChange={(e) => {
+                      const url = e.target.value.trim();
+                      if (url) {
+                        updateScene(selectedIndex, {
+                          video: url,
+                          videoName: 'YouTube Video'
+                        });
+                      } else {
+                        updateScene(selectedIndex, { video: null, videoName: null });
+                      }
+                    }}
+                    className="w-full bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white placeholder-gray-500 text-sm"
+                  />
+                </div>
+
+                {/* OR Separator */}
+                <div className="flex items-center gap-3 my-3">
+                  <div className="flex-1 h-px bg-gray-600"></div>
+                  <span className="text-xs text-gray-500">OR</span>
+                  <div className="flex-1 h-px bg-gray-600"></div>
+                </div>
+
+                {/* File Upload */}
                 <div className="flex gap-2">
-                  {selectedScene.video ? (
+                  {selectedScene.video && !selectedScene.video.includes('youtube.com') && !selectedScene.video.includes('youtu.be') ? (
                     <div className="flex-1 bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white flex items-center justify-between">
                       <span className="text-sm">🎬 {selectedScene.videoName || 'Uploaded Video'}</span>
                       <button
@@ -1697,13 +1728,13 @@ export default function Editor() {
                     </div>
                   ) : (
                     <div className="flex-1 bg-gray-700 border border-gray-600 rounded px-3 py-2 text-white text-gray-400">
-                      No video uploaded
+                      No video file uploaded
                     </div>
                   )}
                   <label className={`px-4 py-2 rounded transition-colors cursor-pointer text-sm whitespace-nowrap ${
                     uploadingVideo ? 'bg-blue-600' : 'bg-gray-700 hover:bg-gray-600'
                   }`}>
-                    {uploadingVideo ? '⏳ Uploading...' : '📁 Upload'}
+                    {uploadingVideo ? '⏳ Uploading...' : '📁 Upload File'}
                     <input
                       type="file"
                       accept="video/*"
@@ -1789,7 +1820,8 @@ export default function Editor() {
                   </div>
                 )}
                 <div className="mt-2 text-xs text-gray-400">
-                  Upload videos (max 500MB) - stored in Supabase. Large files may take several minutes.
+                  📺 <strong>YouTube</strong>: Paste any YouTube link (no ads with embed settings)<br/>
+                  📁 <strong>Upload</strong>: Max 500MB - stored in Supabase. Large files may take several minutes.
                 </div>
 
                 {/* Video Options */}

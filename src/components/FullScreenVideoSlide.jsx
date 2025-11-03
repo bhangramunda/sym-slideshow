@@ -1,11 +1,44 @@
 import { motion } from 'framer-motion';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { parseFormatting } from '../utils/formatText';
+
+// Utility to extract YouTube video ID from various URL formats
+function getYouTubeId(url) {
+  if (!url) return null;
+
+  // Match youtube.com/watch?v=VIDEO_ID
+  const watchMatch = url.match(/(?:youtube\.com\/watch\?v=)([a-zA-Z0-9_-]{11})/);
+  if (watchMatch) return watchMatch[1];
+
+  // Match youtu.be/VIDEO_ID
+  const shortMatch = url.match(/(?:youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+  if (shortMatch) return shortMatch[1];
+
+  // Match youtube.com/embed/VIDEO_ID
+  const embedMatch = url.match(/(?:youtube\.com\/embed\/)([a-zA-Z0-9_-]{11})/);
+  if (embedMatch) return embedMatch[1];
+
+  return null;
+}
 
 export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
   const videoRef = useRef(null);
+  const [isYouTube, setIsYouTube] = useState(false);
+  const [youtubeId, setYoutubeId] = useState(null);
 
+  // Detect if video is a YouTube URL
   useEffect(() => {
+    if (scene.video) {
+      const ytId = getYouTubeId(scene.video);
+      setIsYouTube(!!ytId);
+      setYoutubeId(ytId);
+    }
+  }, [scene.video]);
+
+  // Handle regular video (non-YouTube) playback
+  useEffect(() => {
+    if (isYouTube) return; // Skip for YouTube videos
+
     const video = videoRef.current;
     if (!video) return;
 
@@ -31,7 +64,33 @@ export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
     return () => {
       video.removeEventListener('ended', handleEnded);
     };
-  }, [onVideoEnd]);
+  }, [onVideoEnd, isYouTube]);
+
+  // Handle YouTube video end event via postMessage API
+  useEffect(() => {
+    if (!isYouTube || !scene.loop) return;
+
+    // Listen for YouTube player messages
+    const handleMessage = (event) => {
+      if (event.origin !== 'https://www.youtube.com') return;
+
+      try {
+        const data = JSON.parse(event.data);
+        // YT.PlayerState.ENDED = 0
+        if (data.event === 'onStateChange' && data.info === 0) {
+          console.log('[FullScreenVideoSlide] YouTube video ended, advancing to next slide');
+          if (onVideoEnd) {
+            onVideoEnd();
+          }
+        }
+      } catch (e) {
+        // Ignore parsing errors
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isYouTube, scene.loop, onVideoEnd]);
 
   // Text position options: 'bottom-edge' (default), 'top-edge', 'middle', 'middle-top', 'middle-bottom'
   const textPosition = scene.textPosition || 'bottom-edge';
@@ -79,19 +138,35 @@ export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
     >
       {/* Full-screen video - centered and cropped proportionally */}
       {scene.video ? (
-        <video
-          ref={videoRef}
-          src={scene.video}
-          className="absolute inset-0 w-full h-full object-cover object-center"
-          style={{
-            objectFit: 'cover',
-            objectPosition: 'center center'
-          }}
-          playsInline
-          muted={scene.muted !== false} // Default to muted for autoplay
-          loop={scene.loop === true} // Default to no loop
-          preload="auto"
-        />
+        isYouTube ? (
+          // YouTube embed
+          <iframe
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=${scene.muted !== false ? 1 : 0}&loop=${scene.loop ? 1 : 0}&playlist=${youtubeId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1`}
+            className="absolute inset-0 w-full h-full"
+            style={{
+              border: 'none',
+              pointerEvents: 'none'
+            }}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            title="YouTube video"
+          />
+        ) : (
+          // Regular video file
+          <video
+            ref={videoRef}
+            src={scene.video}
+            className="absolute inset-0 w-full h-full object-cover object-center"
+            style={{
+              objectFit: 'cover',
+              objectPosition: 'center center'
+            }}
+            playsInline
+            muted={scene.muted !== false} // Default to muted for autoplay
+            loop={scene.loop === true} // Default to no loop
+            preload="auto"
+          />
+        )
       ) : (
         // Fallback if no video is provided
         <div className="absolute inset-0 flex items-center justify-center">
