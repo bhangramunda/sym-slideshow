@@ -413,6 +413,7 @@ function Slideshow() {
               aspectRatio={ASPECT_RATIOS[settings.aspectRatio]}
               fireworksIntensity={settings.fireworksIntensity}
               gradientTheme={settings.gradientTheme}
+              isPaused={isPaused}
               onVideoEnd={() => {
                 console.log('[App] Video ended, advancing to next slide');
                 setIndex(prev => (prev + 1) % scenes.length);

@@ -21,8 +21,9 @@ function getYouTubeId(url) {
   return null;
 }
 
-export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
+export default function FullScreenVideoSlide({ scene, onVideoEnd, isPaused }) {
   const videoRef = useRef(null);
+  const iframeRef = useRef(null);
   const [isYouTube, setIsYouTube] = useState(false);
   const [youtubeId, setYoutubeId] = useState(null);
 
@@ -104,6 +105,40 @@ export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
     return () => window.removeEventListener('message', handleMessage);
   }, [isYouTube, scene.loop, onVideoEnd]);
 
+  // Pause/play video based on isPaused state
+  useEffect(() => {
+    if (isYouTube) {
+      // Handle YouTube pause/play via postMessage
+      const iframe = iframeRef.current;
+      if (!iframe || !iframe.contentWindow) return;
+
+      try {
+        if (isPaused) {
+          iframe.contentWindow.postMessage('{"event":"command","func":"pauseVideo","args":""}', '*');
+        } else {
+          iframe.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        }
+      } catch (e) {
+        console.error('Failed to control YouTube video:', e);
+      }
+    } else {
+      // Handle regular video pause/play
+      const video = videoRef.current;
+      if (!video) return;
+
+      if (isPaused) {
+        video.pause();
+      } else {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.error('Video play failed:', error);
+          });
+        }
+      }
+    }
+  }, [isPaused, isYouTube]);
+
   // Text position options: 'bottom-edge' (default), 'top-edge', 'middle', 'middle-top', 'middle-bottom'
   const textPosition = scene.textPosition || 'bottom-edge';
 
@@ -153,11 +188,12 @@ export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
         isYouTube ? (
           // YouTube embed
           <iframe
-            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=${scene.muted !== false ? 1 : 0}&loop=${scene.loop ? 1 : 0}&playlist=${youtubeId}&controls=0&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1`}
+            ref={iframeRef}
+            src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1&mute=${scene.muted !== false ? 1 : 0}&loop=${scene.loop ? 1 : 0}&playlist=${youtubeId}&controls=${isPaused ? 1 : 0}&showinfo=0&rel=0&modestbranding=1&playsinline=1&enablejsapi=1`}
             className="absolute inset-0 w-full h-full"
             style={{
               border: 'none',
-              pointerEvents: 'none'
+              pointerEvents: isPaused ? 'auto' : 'none'
             }}
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowFullScreen
@@ -177,6 +213,7 @@ export default function FullScreenVideoSlide({ scene, onVideoEnd }) {
             muted={scene.muted !== false} // Default to muted for autoplay
             loop={scene.loop === true} // Default to no loop
             preload="auto"
+            controls={isPaused} // Show controls when paused
           />
         )
       ) : (

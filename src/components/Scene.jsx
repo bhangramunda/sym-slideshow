@@ -239,7 +239,7 @@ function DefaultSlide({ scene, buildScope, buildStyle, gradientTheme }) {
 }
 
 // Main Scene component - routes to appropriate slide type with transition
-export default function Scene({ scene, isActive, buildScope, buildStyle, onVideoEnd, aspectRatio, fireworksIntensity, gradientTheme }) {
+export default function Scene({ scene, isActive, buildScope, buildStyle, onVideoEnd, aspectRatio, fireworksIntensity, gradientTheme, isPaused }) {
   // Safety check: ensure scene exists
   if (!scene) {
     console.error('[Scene] Scene prop is undefined!');
@@ -270,7 +270,7 @@ export default function Scene({ scene, isActive, buildScope, buildStyle, onVideo
       SlideContent = <FullScreenImageSlide scene={scene} />
       break
     case 'fullscreen-video':
-      SlideContent = <FullScreenVideoSlide scene={scene} onVideoEnd={onVideoEnd} />
+      SlideContent = <FullScreenVideoSlide scene={scene} onVideoEnd={onVideoEnd} isPaused={isPaused} />
       break
     case 'impact':
       SlideContent = <ImpactSlide scene={scene} fireworksIntensity={fireworksIntensity} gradientTheme={gradientTheme} />
