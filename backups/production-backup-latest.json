@@ -1,9 +1,9 @@
 {
   "metadata": {
-    "backupDate": "2025-11-02T20:33:43.089Z",
-    "backupVersion": 821,
+    "backupDate": "2025-11-02T20:51:18.270Z",
+    "backupVersion": 830,
     "supabaseProjectUrl": "https://fyiwpqnbiutuzuxjdeot.supabase.co",
-    "totalSlides": 18,
+    "totalSlides": 17,
     "totalLogos": 18
   },
   "slideshow_data": {
@@ -20,26 +20,6 @@
         "company": "American Bankers Association",
         "featured": false,
         "subtitle": "American Bankers Association saved $500k using Kajoo.ai \nfor migrations instead of their agency partner. ",
-        "fireworks": "heavy",
-        "imageName": "canada-night-sky",
-        "buildScope": "components",
-        "buildStyle": "slideIn",
-        "transition": "blurFade",
-        "description": "saved in agency fees in the first year.",
-        "durationSec": 12,
-        "impactNumber": "$500k "
-      },
-      {
-        "role": "Senior Director, User Experience",
-        "type": "impact",
-        "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761931082115-v9oy6b.jpg",
-        "quote": "We are so grateful for our partnership with TechGuilds and for their willingness to step in and support us. It has meant so much that they've been there for us and helped us get to 'go' more than once over this last year. Thank you.\n",
-        "title": "ABA chose Kajoo ",
-        "author": "Jess Moore",
-        "rating": 5,
-        "company": "American Bankers Association",
-        "featured": false,
-        "subtitle": "American Bankers Association saved $500k using Kajoo.ai \nfor migrations and you can too - Let's talk!",
         "fireworks": "heavy",
         "imageName": "canada-night-sky",
         "buildScope": "components",
@@ -399,10 +379,11 @@
         "cta": null,
         "type": "fullscreen-image",
         "image": "https://fyiwpqnbiutuzuxjdeot.supabase.co/storage/v1/object/public/slideshow-images/slides/1761965903059-wqyt1o.jpg",
-        "title": "Enter to Win - Lego Maclaren P1",
+        "title": "Enter to Win - Maclaren P1 Lego Set",
         "subtitle": "",
         "imageName": "p1-maclaren",
-        "durationSec": 12
+        "durationSec": 12,
+        "textPosition": "middle"
       }
     ],
     "settings": {
@@ -413,8 +394,8 @@
       "featuredRepeats": 2,
       "fireworksIntensity": "medium"
     },
-    "version": 821,
-    "updated_at": "2025-11-02T20:27:45.503107+00:00",
+    "version": 830,
+    "updated_at": "2025-11-02T20:50:10.421199+00:00",
     "updated_by": "editor"
   },
   "client_logos": [

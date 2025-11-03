@@ -995,6 +995,30 @@ export default function Editor() {
                         Controls the number of firework animations on Impact/ROI slides. Can be overridden per-slide.
                       </p>
                     </div>
+
+                    <div className="mt-3">
+                      <label className="text-sm text-gray-300 font-medium">Gradient Theme</label>
+                      <select
+                        value={settings.gradientTheme ?? 'techguilds'}
+                        onChange={(e) => {
+                          console.log('[Editor] Gradient theme changed to:', e.target.value);
+                          setSettings({ ...settings, gradientTheme: e.target.value });
+                        }}
+                        className="w-full bg-gray-700 text-white rounded px-2 py-1 text-sm border border-gray-600 focus:border-tgteal focus:outline-none mt-1"
+                      >
+                        <option value="techguilds">🎨 TechGuilds (Default) - Violet → Magenta → Cyan</option>
+                        <option value="ocean">🌊 Ocean Blue - Navy → Blue → Light Blue</option>
+                        <option value="sunset">🌅 Sunset - Orange → Gold → Magenta</option>
+                        <option value="forest">🌲 Forest Green - Dark green → Forest → Light green</option>
+                        <option value="monochrome">⬛ Monochrome - Dark gray → Gray → Light gray</option>
+                        <option value="fire">🔥 Fire - Dark red → Orange → Gold</option>
+                        <option value="royal">👑 Royal Purple - Deep purple → Indigo → Medium purple</option>
+                        <option value="arctic">❄️ Arctic - Deep navy → Ocean → Sky blue</option>
+                      </select>
+                      <p className="text-xs text-gray-500 mt-1">
+                        Background gradient color scheme for most slides. Quick change for onsite adjustments.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -1690,13 +1714,19 @@ export default function Editor() {
                         if (file) {
                           setUploadingVideo(true);
                           try {
-                            // Check file size (limit to 100MB)
-                            const MAX_SIZE = 100 * 1024 * 1024;
+                            // Check file size (limit to 500MB)
+                            const MAX_SIZE = 500 * 1024 * 1024;
                             if (file.size > MAX_SIZE) {
                               throw new Error(
                                 `Video file is too large (${(file.size / 1024 / 1024).toFixed(2)}MB). ` +
                                 `Maximum size is ${MAX_SIZE / 1024 / 1024}MB.`
                               );
+                            }
+
+                            // Show progress for large files
+                            const sizeMB = file.size / 1024 / 1024;
+                            if (sizeMB > 50) {
+                              console.log(`[Editor] Uploading large video (${sizeMB.toFixed(2)}MB)... This may take a few minutes.`);
                             }
 
                             // Upload to Supabase Storage
@@ -1759,7 +1789,7 @@ export default function Editor() {
                   </div>
                 )}
                 <div className="mt-2 text-xs text-gray-400">
-                  Upload videos (max 100MB) - stored in Supabase
+                  Upload videos (max 500MB) - stored in Supabase. Large files may take several minutes.
                 </div>
 
                 {/* Video Options */}

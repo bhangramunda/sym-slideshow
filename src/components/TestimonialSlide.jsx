@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
 import KineticText from './KineticText';
+import { getGradientStyle } from '../utils/gradientThemes.js';
 
 // Calculate dynamic font size based on text length
 const getDynamicFontSize = (text, baseSize, minSize, maxSize) => {
@@ -25,7 +26,7 @@ const getDynamicFontSize = (text, baseSize, minSize, maxSize) => {
   return Math.max(minSize, Math.min(maxSize, calculatedSize));
 };
 
-export default function TestimonialSlide({ scene }) {
+export default function TestimonialSlide({ scene, gradientTheme }) {
   // Calculate dynamic sizes based on content length
   const quoteFontSize = getDynamicFontSize(scene.quote, 5, 3.5, 7); // base 5rem (text-5xl)
   const authorFontSize = getDynamicFontSize(scene.author, 1.5, 1.25, 2.5); // base 1.5rem (text-2xl)
@@ -34,7 +35,7 @@ export default function TestimonialSlide({ scene }) {
       className="relative w-screen h-screen overflow-hidden bg-black flex items-center justify-center"
     >
       {/* Background Gradient */}
-      <div className="absolute inset-0 gradient-bg animate-gradientShift" />
+      <div className="absolute inset-0 animate-gradientShift" style={getGradientStyle(gradientTheme)} />
 
       {/* Background Image with Blend Mode */}
       {scene.image && (

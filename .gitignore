@@ -8,3 +8,4 @@ dist
 
 # Keep only latest backup in Git, ignore timestamped ones
 backups/production-backup-20*.json
+.zip

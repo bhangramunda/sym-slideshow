@@ -1,7 +1,8 @@
 import { motion } from 'framer-motion';
 import { parseFormatting } from '../utils/formatText';
+import { getGradientStyle } from '../utils/gradientThemes.js';
 
-export default function ImpactSlide({ scene, fireworksIntensity }) {
+export default function ImpactSlide({ scene, fireworksIntensity, gradientTheme }) {
   // Determine fireworks count based on intensity setting
   const getFireworksCount = () => {
     // Check for per-slide override first
@@ -41,7 +42,7 @@ export default function ImpactSlide({ scene, fireworksIntensity }) {
       className="relative w-screen h-screen overflow-hidden bg-black"
     >
       {/* Background Gradient */}
-      <div className="absolute inset-0 gradient-bg animate-gradientShift" />
+      <div className="absolute inset-0 animate-gradientShift" style={getGradientStyle(gradientTheme)} />
 
       {/* Background Image with Blend Mode */}
       {scene.image && (

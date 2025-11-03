@@ -1,14 +1,15 @@
 import { motion } from 'framer-motion';
 import KineticText from './KineticText';
 import { parseFormatting } from '../utils/formatText';
+import { getGradientStyle } from '../utils/gradientThemes.js';
 
-export default function ServiceCardSlide({ scene }) {
+export default function ServiceCardSlide({ scene, gradientTheme }) {
   return (
     <div
       className="relative w-screen h-screen overflow-hidden bg-black flex items-center justify-center"
     >
       {/* Background Gradient */}
-      <div className="absolute inset-0 gradient-bg animate-gradientShift" />
+      <div className="absolute inset-0 animate-gradientShift" style={getGradientStyle(gradientTheme)} />
 
       {/* Background Image with Blend Mode */}
       {scene.image && (

@@ -35,7 +35,9 @@
       "Bash(node scripts/test-rename.js:*)",
       "Bash(node scripts/ensure-settings-saved.js:*)",
       "Bash(node scripts/verify-content-persistence.js:*)",
-      "Bash(node scripts/backup-production-data.js:*)"
+      "Bash(node scripts/backup-production-data.js:*)",
+      "Bash(node scripts/compare-backups.js:*)",
+      "Bash(node scripts/check-animation-settings.js:*)"
     ],
     "deny": [],
     "ask": []

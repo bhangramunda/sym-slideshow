@@ -1,8 +1,9 @@
 import { motion } from 'framer-motion';
 import KineticText from './KineticText';
 import { parseFormatting } from '../utils/formatText';
+import { getGradientStyle } from '../utils/gradientThemes.js';
 
-export default function SplitContentSlide({ scene }) {
+export default function SplitContentSlide({ scene, gradientTheme }) {
   const isLeftImage = scene.layout === 'image-left';
 
   return (
@@ -10,7 +11,7 @@ export default function SplitContentSlide({ scene }) {
       className="relative w-screen h-screen overflow-hidden bg-black"
     >
       {/* Background Gradient */}
-      <div className="absolute inset-0 gradient-bg animate-gradientShift opacity-60" />
+      <div className="absolute inset-0 animate-gradientShift opacity-60" style={getGradientStyle(gradientTheme)} />
 
       {/* Floating Particles */}
       <div className="absolute inset-0 pointer-events-none">

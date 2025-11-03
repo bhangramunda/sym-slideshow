@@ -12,6 +12,7 @@ import ImpactSlide from './ImpactSlide.jsx'
 import SlideTransition from './SlideTransition.jsx'
 import { AnimatedText, AnimatedTextChars } from './BuildAnimation.jsx'
 import { parseFormatting } from '../utils/formatText.js'
+import { getGradientStyle } from '../utils/gradientThemes.js'
 import cx from 'classnames'
 
 // Calculate dynamic font size based on text length with smooth curve
@@ -48,7 +49,7 @@ const getDynamicFontSize = (text, baseSize, minSize, maxSize) => {
 };
 
 // Default/Hero slide layout
-function DefaultSlide({ scene, buildScope, buildStyle }) {
+function DefaultSlide({ scene, buildScope, buildStyle, gradientTheme }) {
   // Calculate dynamic sizes with much larger base for hero impact
   const titleFontSize = getDynamicFontSize(scene.title, 10, 7, 14); // base 10rem, up to 14rem for short titles
   const subtitleFontSize = getDynamicFontSize(scene.subtitle, 5, 3.5, 7); // base 5rem, up to 7rem for short subtitles
@@ -125,7 +126,10 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
     <div className="relative w-screen h-screen overflow-hidden bg-black flex items-center justify-center">
 
       {/* Background gradient */}
-      <div className='absolute inset-0 gradient-bg animate-gradientShift' />
+      <div
+        className='absolute inset-0 animate-gradientShift'
+        style={getGradientStyle(gradientTheme)}
+      />
 
       {/* Optional overlay image placeholder */}
       {scene.image && (
@@ -235,7 +239,7 @@ function DefaultSlide({ scene, buildScope, buildStyle }) {
 }
 
 // Main Scene component - routes to appropriate slide type with transition
-export default function Scene({ scene, isActive, buildScope, buildStyle, onVideoEnd, aspectRatio, fireworksIntensity }) {
+export default function Scene({ scene, isActive, buildScope, buildStyle, onVideoEnd, aspectRatio, fireworksIntensity, gradientTheme }) {
   // Safety check: ensure scene exists
   if (!scene) {
     console.error('[Scene] Scene prop is undefined!');
@@ -248,19 +252,19 @@ export default function Scene({ scene, isActive, buildScope, buildStyle, onVideo
   let SlideContent
   switch (scene.type) {
     case 'testimonial':
-      SlideContent = <TestimonialSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
+      SlideContent = <TestimonialSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} gradientTheme={gradientTheme} />
       break
     case 'logo-grid':
-      SlideContent = <LogoGridSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
+      SlideContent = <LogoGridSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} gradientTheme={gradientTheme} />
       break
     case 'client-logos':
-      SlideContent = <ClientLogosSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
+      SlideContent = <ClientLogosSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} gradientTheme={gradientTheme} />
       break
     case 'service-card':
-      SlideContent = <ServiceCardSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
+      SlideContent = <ServiceCardSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} gradientTheme={gradientTheme} />
       break
     case 'split-content':
-      SlideContent = <SplitContentSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
+      SlideContent = <SplitContentSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} gradientTheme={gradientTheme} />
       break
     case 'fullscreen-image':
       SlideContent = <FullScreenImageSlide scene={scene} />
@@ -269,11 +273,11 @@ export default function Scene({ scene, isActive, buildScope, buildStyle, onVideo
       SlideContent = <FullScreenVideoSlide scene={scene} onVideoEnd={onVideoEnd} />
       break
     case 'impact':
-      SlideContent = <ImpactSlide scene={scene} fireworksIntensity={fireworksIntensity} />
+      SlideContent = <ImpactSlide scene={scene} fireworksIntensity={fireworksIntensity} gradientTheme={gradientTheme} />
       break
     case 'hero':
     default:
-      SlideContent = <DefaultSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} />
+      SlideContent = <DefaultSlide scene={scene} buildScope={buildScope} buildStyle={buildStyle} gradientTheme={gradientTheme} />
   }
 
   // Wrap with transition

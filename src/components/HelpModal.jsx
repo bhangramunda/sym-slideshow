@@ -835,6 +835,51 @@ Options: 0-5 (Default: 2)
 
 *Only affects Impact/ROI slide type*`,
         type: "setting"
+      },
+      {
+        title: "Gradient Theme",
+        content: `**Background gradient color scheme for slides**
+
+**TechGuilds (Default)** 🎨
+- Deep violet → Magenta → Cyan
+- Professional, tech-forward
+- Original brand colors
+
+**Ocean Blue** 🌊
+- Navy → Blue → Light Blue
+- Calm, professional
+
+**Sunset** 🌅
+- Orange → Gold → Magenta
+- Warm, energetic
+
+**Forest Green** 🌲
+- Dark green → Forest → Light green
+- Natural, growth-oriented
+
+**Monochrome** ⬛
+- Dark gray → Gray → Light gray
+- Minimal, sophisticated
+
+**Fire** 🔥
+- Dark red → Orange → Gold
+- Bold, passionate
+
+**Royal Purple** 👑
+- Deep purple → Indigo → Medium purple
+- Luxurious, premium
+
+**Arctic** ❄️
+- Deep navy → Ocean → Sky blue
+- Cool, modern
+
+**When to use**:
+- Match brand colors to venue/theme
+- Quick onsite adjustments at conference
+- Create different moods for different sections
+
+*Applies to most slide types (Hero, Testimonial, Logo Grid, Service Card, Split Content, Impact)*`,
+        type: "setting"
       }
     ]
   },
